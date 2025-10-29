@@ -67,4 +67,14 @@ struct Vec3f
     }
 };
 
+// compiler expands this to what det3x3() does
+inline float det3cols(const Vec3f& a, const Vec3f& b, const Vec3f& c) {
+    return a.dotProduct(b.crossProduct(c));
+}
+
+// compiler expands this to what det3x3() does
+inline float det3rows(const Vec3f& a, const Vec3f& b, const Vec3f& c) {
+    return a.crossProduct(b).dotProduct(c);
+}
+
 #endif // VEC3F_H

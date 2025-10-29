@@ -1,14 +1,15 @@
 #ifndef MATHF_H
 #define MATHF_H
 
-#include <algorithm>
 #include "BitCast.h"
-#include "Vec3f.h"
 
 #define FLT_MAX 3.402823466e+38F
 
-float clampF(float val, float min, float max) {
-    return std::min(std::max(val, min), max);
+inline float clampF(float v, float lo, float hi)
+{
+    if (v < lo) return lo;
+    if (v > hi) return hi;
+    return v;
 }
 
 inline float Q_rsqrt(float x) {
@@ -31,16 +32,6 @@ inline float det3x3(
     return a11 * (a22 * a33 - a23 * a32)
          - a12 * (a21 * a33 - a23 * a31)
          + a13 * (a21 * a32 - a22 * a31);
-}
-
-// compiler expands this to what det3x3() does
-inline float det3cols(const Vec3f& a, const Vec3f& b, const Vec3f& c) {
-    return a.dotProduct(b.crossProduct(c));
-}
-
-// compiler expands this to what det3x3() does
-inline float det3rows(const Vec3f& a, const Vec3f& b, const Vec3f& c) {
-    return a.crossProduct(b).dotProduct(c);
 }
 
 #endif // MATHF_H

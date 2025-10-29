@@ -8,19 +8,12 @@
 using std::vector;
 using std::string;
 
-struct parser
-{
-    // Functions
-    Scene loadFromJson(const string &filepath);
-    vector<int> loadFromPly(const string &filepath);
-};
-
 struct LRBT_vec
 {
     float l, r, b, t;
 };
 
-enum CameraType : uint32_t
+enum class CameraType : uint32_t
 {
     None = 0,
     LookAt,
@@ -42,7 +35,7 @@ struct PointLight
     float r, g, b;
 };
 
-enum MaterialType : uint32_t
+enum class MaterialType : uint32_t
 {
     None = 0,
     Mirror,
@@ -118,6 +111,13 @@ struct Scene
     vector<Triangle> triangles;
     vector<Sphere> spheres;
     vector<Plane> planes;
+};
+
+struct parser
+{
+    // Functions
+    Scene loadFromJson(const string &filepath);
+    vector<int> loadFromPly(const string &filepath);
 };
 
 #endif // PARSER_H
