@@ -348,15 +348,10 @@ Vec3f ApplyShading(const Ray& ray, const Scene& scene, const Camera& camera, con
     if (n_original.dotProduct(d_inc) < 0.0f) // we see the surface front-face
     { 
         n_shading = n_original;
-    } 
-    else if (closestHit.type == ObjectType::Plane)  // TODO: sometimes plane normals are given reversed, verify this
-    {   
-        n_shading = n_original * -1;
     }
     else // we see the surface back-face
     {
         n_shading = n_original * -1;
-        //return {31, 0, 0};
     }
     
     Vec3f x = closestHit.intersectionPoint;
@@ -364,20 +359,45 @@ Vec3f ApplyShading(const Ray& ray, const Scene& scene, const Camera& camera, con
 
     Vec3f w0 = (ray.origin - x).normalize();
 
-    // Mirror Logic (Use n_shading for stability shift and reflection)
-    if (mat.type == MaterialType::Mirror) 
+    if (mat.type == MaterialType::Mirror) // Note: can let Dielectrics in here also
     {
         Vec3f wr = n_shading * 2 * (n_shading.dotProduct(w0)) - w0;
         const Ray reflectionRay = {x + n_shading * eps_shift, wr, ray.depth + 1};
-        color += ComputeColor(reflectionRay, scene, camera).elwiseMult(mat.mirror_refl);
+        color += mat.mirror_refl.elwiseMult(ComputeColor(reflectionRay, scene, camera));
     }
     else if (mat.type == MaterialType::Conductor)
     {
-        // TODO: implement
+        Vec3f wr = n_shading * 2 * (n_shading.dotProduct(w0)) - w0;
+        const Ray reflectionRay = {x + n_shading * eps_shift, wr, ray.depth + 1};
+
+        float cosTheta = w0.dotProduct(n_shading);
+        float Fresnel_r = Fresnel_Conductor(cosTheta, mat.refraction_index, mat.absorption_index);
+
+        color += Fresnel_r * mat.mirror_refl.elwiseMult(ComputeColor(reflectionRay, scene, camera));
     }
     else if (mat.type == MaterialType::Dielectric)
     {
-        // TODO: implement
+
+        float n1 = 1.0f;    // TODO: assuming incoming rays only come from air, may change it
+        float n2 = mat.refraction_index;
+
+        float eta = n1 / n2;
+        float cosTheta = w0.dotProduct(n_shading);
+        float cosPhi_sq = 1 - eta * eta * (1 - cosTheta * cosTheta);
+        float Fresnel_r;
+
+        if (cosPhi_sq < 0.0f) { // total reflection
+            Fresnel_r = 1.0f;  
+        } else {
+            Fresnel_r = Fresnel_Dielectric(cosTheta, std::sqrt(cosPhi_sq), n1, n2);
+            // TODO: compute refraction
+            float Fresnel_t = 1.0f - Fresnel_r;
+        }
+        
+        Vec3f wr = n_shading * 2 * (n_shading.dotProduct(w0)) - w0;
+        const Ray reflectionRay = {x + n_shading * eps_shift, wr, ray.depth + 1};
+
+        color += Fresnel_r * mat.mirror_refl.elwiseMult(ComputeColor(reflectionRay, scene, camera));
     }
 
     for (const auto& point_light: scene.point_lights)
@@ -391,6 +411,37 @@ Vec3f ApplyShading(const Ray& ray, const Scene& scene, const Camera& camera, con
     }
 
     return color;
+}
+
+float Fresnel_Dielectric(float cosTheta, float cosPhi, float n1, float n2)
+{
+    float r_par_num = n2 * cosTheta - n1 * cosPhi;
+    float r_par_den = n2 * cosTheta + n1 * cosPhi;
+    float R_paralel = r_par_num / r_par_den;
+
+    float r_perp_num = n1 * cosTheta - n2 * cosPhi;
+    float r_perp_den = n1 * cosTheta - n2 * cosPhi;
+    float R_perp = r_perp_num / r_perp_den;
+
+    return (R_paralel * R_paralel + R_perp * R_perp) * 0.5;
+}
+
+float Fresnel_Conductor(float cosTheta, float refractionIndex, float absorptionIndex)
+{
+    float cos_sq = cosTheta * cosTheta;
+    float n_sq = refractionIndex * refractionIndex;
+    float k_sq = absorptionIndex * absorptionIndex;
+    float two_n_cos = 2.0f * refractionIndex * cosTheta;
+
+    float rs_num = (n_sq + k_sq) - two_n_cos + cos_sq;
+    float rs_den = (n_sq + k_sq) + two_n_cos + cos_sq;
+    float R_S = rs_num / rs_den;
+
+    float rp_num = (n_sq + k_sq) * cos_sq - two_n_cos + 1;
+    float rp_den = (n_sq + k_sq) * cos_sq + two_n_cos + 1;
+    float R_P = rp_num / rp_den;
+
+    return (R_S + R_P) * 0.5;
 }
 
 bool InShadow(Vec3f point, const PointLight& I, const Vec3f& n, float eps_shadow, Scene scene) 
