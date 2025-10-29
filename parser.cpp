@@ -520,3 +520,16 @@ PlyData parser::load_ply(const std::string& path) {
     return out;
 }
 
+std::string parser::flatten_faces_to_string(const std::vector<std::array<int,3>>& tris)
+{
+    std::string out;
+    out.reserve(tris.size() * 12); // reserve some space to avoid reallocations
+
+    for (const auto& t : tris) {
+        out += std::to_string(t[0]) + " "
+            + std::to_string(t[1]) + " "
+            + std::to_string(t[2]) + " ";
+    }
+    if (!out.empty()) out.pop_back(); // remove last space
+    return out;
+}
