@@ -28,5 +28,8 @@ float IntersectSphere(const Ray& ray, const Vertex& center, float radius, const 
 Vec3f FindNormal_Sphere(const Vertex& center, const Vec3f& point, float radius);
 
 Vec3f ApplyShading(const Ray& ray, const Scene& scene, const Camera& camera, const HitRecord& closestHit);
+bool InShadow(Vec3f point, const PointLight& I, const Vec3f& n, float eps_shadow, Scene scene);
+Vec3f ComputeDiffuseAndSpecular(const Vec3f& origin, const Material& material, const PointLight& light, 
+    const Vec3f& point, const Vec3f& normal, const Vec3f& w0);
 
 #endif // RAYTRACER_H

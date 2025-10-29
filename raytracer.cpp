@@ -317,6 +317,143 @@ Vec3f FindNormal_Sphere(const Vertex& center, const Vec3f& point, float radius)
 
 Vec3f ApplyShading(const Ray& ray, const Scene& scene, const Camera& camera, const HitRecord& closestHit)
 {   
-    // TODO: implement
-    return {0, 0, 0};
+    Material mat = scene.materials[closestHit.materialId - 1];
+    Vec3f color = scene.ambient_light.elwiseMult(mat.ambient_refl);
+    
+    Vec3f n_original = closestHit.normal; // The normal calculated in FindNormal_Triangle
+    Vec3f d_inc = ray.direction;          // The ray direction (points from camera to surface)
+    
+    Vec3f n_shading = n_original;
+    
+    if (n_original.dotProduct(d_inc) < 0.0f) // we see the surface front-face
+    { 
+        n_shading = n_original;
+    } 
+    else if (closestHit.type == ObjectType::Plane)  // TODO: sometimes plane normals are given reversed, verify this
+    {   
+        n_shading = n_original * -1;
+    }
+    else // we see the surface back-face
+    {
+        n_shading = n_original * -1;
+        //return {31, 0, 0};
+    }
+    
+    Vec3f x = closestHit.intersectionPoint;
+    float eps_shift = scene.shadow_ray_epsilon;
+
+    Vec3f w0 = (ray.origin - x).normalize();
+
+    // Mirror Logic (Use n_shading for stability shift and reflection)
+    if (mat.type == MaterialType::Mirror) 
+    {
+        Vec3f wr = n_shading * 2 * (n_shading.dotProduct(w0)) - w0;
+        const Ray reflectionRay = {x + n_shading * eps_shift, wr, ray.depth + 1};
+        color += ComputeColor(reflectionRay, scene, camera).elwiseMult(mat.mirror_refl);
+    }
+    else if (mat.type == MaterialType::Conductor)
+    {
+        // TODO: implement
+    }
+    else if (mat.type == MaterialType::Dielectric)
+    {
+        // TODO: implement
+    }
+
+    for (const auto& point_light: scene.point_lights)
+    {
+        // Use the corrected n_shading for shadow check
+        if (!InShadow(x, point_light, n_shading, eps_shift, scene))
+        {
+            // Use n_shading for diffuse and specular terms
+            color += ComputeDiffuseAndSpecular(ray.origin, mat, point_light, closestHit.intersectionPoint, n_shading, w0);
+        }
+    }
+
+    return color;
+}
+
+bool InShadow(Vec3f point, const PointLight& I, const Vec3f& n, float eps_shadow, Scene scene) 
+{
+    Ray shadowRay;
+    shadowRay.origin = point + n * eps_shadow;
+    shadowRay.direction = I.position - point;
+    shadowRay.depth = 0;
+
+    Face hitTriFace;
+    float hitT, minT = 1; // at t=1 we are at the light source. so we search for obj that have hitT < 1
+
+    for (size_t i = 0, n = scene.meshes.size(); i < n; i++) {
+        const Mesh& mesh = scene.meshes[i];
+        hitT = IntersectsMesh(shadowRay, mesh, scene.vertex_data, minT, /*ref*/ hitTriFace);
+        if (hitT < minT && hitT != RAY_MISS_VALUE)
+        {
+            return true;
+        }
+    }
+
+    for (size_t i = 0, n = scene.triangles.size(); i < n; i++) {
+        const Triangle& triangle = scene.triangles[i];
+        hitT = IntersectsTriangle_Bary(shadowRay, triangle.face, scene.vertex_data, minT);
+        if (hitT < minT && hitT != RAY_MISS_VALUE)
+        {
+            return true;
+        }
+    }
+
+    for(size_t i = 0, n = scene.spheres.size(); i < n; i++) {
+        const Sphere& sphere = scene.spheres[i];
+        const Vertex& center = scene.vertex_data[sphere.center_vertex_id - 1];
+        hitT = IntersectSphere(shadowRay, center, sphere.radius, minT);
+        if (hitT < minT && hitT != RAY_MISS_VALUE) 
+        {
+            return true;
+        }
+    }
+
+    for (size_t i = 0, n = scene.planes.size(); i < n; i++) {
+        const Plane& plane = scene.planes[i];
+        const Vertex& center_point = scene.vertex_data[plane.vertex_id - 1];
+        hitT = IntersectsPlane(shadowRay, plane.n_face, center_point, minT);
+        if (hitT < minT && hitT != RAY_MISS_VALUE){
+            return true;
+        }
+    }
+
+    return false;
+}
+
+Vec3f ComputeDiffuseAndSpecular(const Vec3f& origin, const Material& material, const PointLight& light, 
+    const Vec3f& point, const Vec3f& normal, const Vec3f& w0)
+{
+    Vec3f L = light.position - point; // Unnormalized vector
+    Vec3f wi = L.normalize();         // Normalized direction
+
+    // theta is angle bw wi and normal
+    float cos_theta = wi.dotProduct(normal);
+
+    if (cos_theta < 0.0f)
+    {
+        return {0.0f, 0.0f, 0.f};
+    }
+
+    float d_sq = L.dotProduct(L);             // Squared distance d^2
+    Vec3f irradiance = light.intensity / d_sq;
+
+    Vec3f diffuseTerm = (material.diffuse_refl * cos_theta).elwiseMult(irradiance);
+
+    Vec3f h = (wi + w0).normalize();
+
+    // theta is angle bw normal and h
+    float cos_alpha = normal.dotProduct(h);
+
+    if (cos_alpha < 0.0f)
+    {
+        return diffuseTerm;
+    }
+
+    // Note: if theta > 90, specularTerm should be 0. we do this check and early exit (with setting terms to 0) above
+    Vec3f specularTerm = (material.specular_refl * std::pow(cos_alpha, material.phong_exponent)).elwiseMult(irradiance);
+
+    return diffuseTerm + specularTerm;
 }
