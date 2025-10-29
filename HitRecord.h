@@ -18,6 +18,7 @@ typedef struct {
     Vec3f intersectionPoint;
     Vec3f normal;
     ObjectType type;
+    int objIndex;
 } HitRecord;
 
 #endif // HITRECORD_H

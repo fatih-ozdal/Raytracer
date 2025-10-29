@@ -83,6 +83,7 @@ bool FindClosestHit(const Ray& ray, const Scene& scene, const Camera& camera, /*
     ObjectType closestType;
     int closestMatId;
     float bary_beta, bary_gamma;
+    int index;
 
     // misc vars to find normal at the end
     Face hitTriFace;
@@ -106,6 +107,7 @@ bool FindClosestHit(const Ray& ray, const Scene& scene, const Camera& camera, /*
             closest_is_smooth = mesh.is_smooth;
             bary_beta = temp_b;
             bary_gamma = temp_g;
+            index = i;
         }
     }
 
@@ -122,6 +124,7 @@ bool FindClosestHit(const Ray& ray, const Scene& scene, const Camera& camera, /*
             closestType = ObjectType::Triangle;
             hitTriFace = triangle.face;
             has_intersected = true;
+            index = i;
         }
     }
 
@@ -138,6 +141,7 @@ bool FindClosestHit(const Ray& ray, const Scene& scene, const Camera& camera, /*
             closestType = ObjectType::Sphere;
             closestSphere = sphere;
             has_intersected = true;
+            index = i;
         }
     }
 
@@ -152,6 +156,7 @@ bool FindClosestHit(const Ray& ray, const Scene& scene, const Camera& camera, /*
             closestType = ObjectType::Plane;
             closestPlane = plane;
             has_intersected = true;
+            index = i;
         }
     }
     
@@ -197,7 +202,7 @@ bool FindClosestHit(const Ray& ray, const Scene& scene, const Camera& camera, /*
         }
     }
 
-    closestHit = {closestMatId, hit_x, normal, closestType};
+    closestHit = {closestMatId, hit_x, normal, closestType, index};
     return true;
 }
 
@@ -377,7 +382,6 @@ Vec3f ApplyShading(const Ray& ray, const Scene& scene, const Camera& camera, con
     }
     else if (mat.type == MaterialType::Dielectric)
     {
-
         float n1 = 1.0f;    // TODO: assuming incoming rays only come from air, may change it
         float n2 = mat.refraction_index;
 
@@ -387,11 +391,91 @@ Vec3f ApplyShading(const Ray& ray, const Scene& scene, const Camera& camera, con
         float Fresnel_r;
 
         if (cosPhi_sq < 0.0f) { // total reflection
-            Fresnel_r = 1.0f;  
+            Fresnel_r = 1.0f;
         } else {
-            Fresnel_r = Fresnel_Dielectric(cosTheta, std::sqrt(cosPhi_sq), n1, n2);
-            // TODO: compute refraction
+            float cosPhi = std::sqrt(cosPhi_sq);
+            Fresnel_r = Fresnel_Dielectric(cosTheta, cosPhi, n1, n2);
             float Fresnel_t = 1.0f - Fresnel_r;
+
+            // compute refraction
+            const float BIAS = 1e-4f;
+            Vec3f wt = (-1 * w0 + n_shading * cosTheta) * eta - n_shading * cosPhi;
+            
+            // shift starting point towards inside the object
+            Ray refractionRay = {x - n_shading * BIAS, wt, ray.depth + 1};
+
+            float t_exit;   // also known as attenuation
+            if (closestHit.type == ObjectType::Sphere) 
+            {
+                Sphere hitSphere = scene.spheres[closestHit.objIndex];
+                Vertex center = scene.vertex_data[hitSphere.center_vertex_id - 1];
+                t_exit = IntersectSphere(refractionRay, center, hitSphere.radius, FLT_MAX);
+                
+                // try to exit with refraction
+                Vec3f exitPoint =  x + wt * t_exit;
+                Vec3f n_exit = FindNormal_Sphere(center, exitPoint, hitSphere.radius);
+
+                float cosTheta_pr = wt.dotProduct(n_exit);
+                float eta_pr = n2 / n1;
+                float cosPhi_pr_sq = 1 - eta_pr * eta_pr * (1 - cosTheta_pr * cosTheta_pr);
+
+                if (!(cosPhi_pr_sq < 0.0f)) { // will refract while exiting
+                    float cosPhi_pr = std::sqrt(cosPhi_pr_sq);
+                    float Fresnel_r_exit = Fresnel_Dielectric(cosTheta_pr, cosPhi_pr, n2, n1);
+                    
+                    Vec3f wt_prime = (wt - n_exit * cosTheta_pr) * eta_pr + n_exit * cosPhi_pr;
+                    Ray exitRefractRay = {exitPoint + eps_shift * n_exit, wt_prime, refractionRay.depth + 1};
+
+                    Vec3f L0 = ComputeColor(exitRefractRay, scene, camera);
+                    Vec3f e_to_the_cx = { std::exp(t_exit * mat.absorption_coef.x),
+                                            std::exp(t_exit * mat.absorption_coef.y),
+                                            std::exp(t_exit * mat.absorption_coef.z) };
+                    Vec3f Lx = L0.elwiseMult(e_to_the_cx);
+                    color += Fresnel_t * Lx; 
+                }
+            }
+            else if (closestHit.type == ObjectType::Mesh)
+            {
+                Mesh hitMesh = scene.meshes[closestHit.objIndex];
+                Face exitHitTriFace;
+                float bary_beta, bary_gamma;
+                t_exit = IntersectsMesh(refractionRay, hitMesh, scene.vertex_data, FLT_MAX, exitHitTriFace, bary_beta, bary_gamma);
+
+                // try to exit with refraction
+                Vec3f exitPoint =  x + wt * t_exit;
+
+                Vec3f n_exit;
+                if (hitMesh.is_smooth) {
+                    const Vec3f& nA = scene.vertex_data[exitHitTriFace.i0 - 1].normal;
+                    const Vec3f& nB = scene.vertex_data[exitHitTriFace.i1 - 1].normal;
+                    const Vec3f& nC = scene.vertex_data[exitHitTriFace.i2 - 1].normal;
+
+                    float alpha = 1.f - bary_beta - bary_gamma;
+                    n_exit = (nA * alpha + nB * bary_beta + nC * bary_gamma).normalize();
+                }
+                else {
+                    n_exit = exitHitTriFace.n_face;
+                }
+
+                float cosTheta_pr = wt.dotProduct(n_exit);
+                float eta_pr = n2 / n1;
+                float cosPhi_pr_sq = 1 - eta_pr * eta_pr * (1 - cosTheta_pr * cosTheta_pr);
+
+                if (!(cosPhi_pr_sq < 0.0f)) { // will refract while exiting
+                    float cosPhi_pr = std::sqrt(cosPhi_pr_sq);
+                    float Fresnel_r_exit = Fresnel_Dielectric(cosTheta_pr, cosPhi_pr, n2, n1);
+                    
+                    Vec3f wt_prime = (wt - n_exit * cosTheta_pr) * eta_pr + n_exit * cosPhi_pr;
+                    Ray exitRefractRay = {exitPoint + eps_shift * n_exit, wt_prime, refractionRay.depth + 1};
+
+                    Vec3f L0 = ComputeColor(exitRefractRay, scene, camera);
+                    Vec3f e_to_the_cx = {std::exp(t_exit * mat.absorption_coef.x),
+                                        std::exp(t_exit * mat.absorption_coef.y),
+                                        std::exp(t_exit * mat.absorption_coef.z)};
+                    Vec3f Lx = L0.elwiseMult(e_to_the_cx);
+                    color += Fresnel_t * Lx; 
+                }
+            }
         }
         
         Vec3f wr = n_shading * 2 * (n_shading.dotProduct(w0)) - w0;
