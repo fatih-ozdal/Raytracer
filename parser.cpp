@@ -4,6 +4,12 @@
 #include <cctype>
 #include <algorithm>
 
+#include <array>
+#include <string>
+#include <vector>
+#include <cstdint>
+#include <limits>
+
 #include <iostream>
 using std::cout;
 using std::endl;
@@ -225,8 +231,17 @@ Scene parser::loadFromJson(const string &filepath)
                 mesh.is_smooth = mj.value("_shadingMode", "flat") == "smooth";
                 mesh.material_id = std::stoi(mj.at("Material").get<std::string>());
 
-                // Note: assuming no need to check _type == triangle
-                std::string facesStr = mj.at("Faces").at("_data").get<std::string>();
+                std::string facesStr;
+                if (mj.contains("Faces") && mj["Faces"].contains("_plyFile")) {
+                    std::string ply_rel = mj["Faces"]["_plyFile"].get<std::string>();
+                    std::string ply_path = join_with_json_dir(filepath, ply_rel);
+                    facesStr = flatten_faces_to_string(load_ply_faces(ply_path));
+                }
+                else if (mj.contains("Faces") && mj["Faces"].contains("_data")) 
+                {
+                    facesStr = mj.at("Faces").at("_data").get<std::string>();
+                }
+                
                 std::stringstream ss(facesStr);
 
                 // Track which vertex indices we touched so we normalize only those
@@ -286,6 +301,7 @@ Scene parser::loadFromJson(const string &filepath)
                 }
 
                 scene.meshes.push_back(mesh);
+            
             };
 
             if (meshNode.is_array()) {
@@ -397,3 +413,109 @@ float parser::parseFloat(const std::string& s)
 {
     return std::strtof(s.c_str(), nullptr);
 }
+
+std::string parser::join_with_json_dir(const std::string& scene_path, const std::string& rel_or_abs)
+{
+    // absolute? just return
+    if (!rel_or_abs.empty() && (rel_or_abs[0] == '/' || rel_or_abs[0] == '\\'
+#ifdef _WIN32
+        || (rel_or_abs.size() > 1 && rel_or_abs[1] == ':')
+#endif
+        )) return rel_or_abs;
+
+    // dir of scene_path
+    size_t slash = scene_path.find_last_of("/\\");
+    if (slash == std::string::npos) return rel_or_abs;
+    return scene_path.substr(0, slash + 1) + rel_or_abs;
+}
+
+std::string parser::flatten_faces_to_string(const std::vector<std::array<int,3>>& tris)
+{
+    std::string out;
+    out.reserve(tris.size() * 12); // reserve some space to avoid reallocations
+
+    for (const auto& t : tris) {
+        out += std::to_string(t[0]) + " "
+            + std::to_string(t[1]) + " "
+            + std::to_string(t[2]) + " ";
+    }
+    if (!out.empty()) out.pop_back(); // remove last space
+    return out;
+}
+
+std::vector<std::array<int,3>> parser::load_ply_faces(const std::string& ply_path)
+{
+    std::vector<std::array<int,3>> faces;
+
+    std::ifstream in(ply_path, std::ios::binary);
+    if (!in) return faces;
+
+    std::string line;
+    bool in_header = true;
+    bool is_ascii = false, is_bin_le = false;
+    int64_t vertex_count = -1, face_count = -1;
+
+    // --- header ---
+    while (in_header && std::getline(in, line)) {
+        if (line.rfind("format ", 0) == 0) {
+            if (line.find("ascii") != std::string::npos) is_ascii = true;
+            else if (line.find("binary_little_endian") != std::string::npos) is_bin_le = true;
+        } else if (line.rfind("element vertex", 0) == 0) {
+            std::istringstream ls(line); std::string a,b; ls >> a >> b >> vertex_count;
+        } else if (line.rfind("element face", 0) == 0) {
+            std::istringstream ls(line); std::string a,b; ls >> a >> b >> face_count;
+        } else if (line == "end_header") {
+            in_header = false;
+        }
+    }
+    if (!is_ascii && !is_bin_le) return faces; // unsupported format
+
+    if (is_ascii) {
+        // --- ASCII faces (read lines; “n i0 i1 i2 …”) ---
+        // Skip vertex lines if present (x y z …)
+        for (int64_t i = 0; i < vertex_count && std::getline(in, line); ++i) {
+            if (line.empty()) { --i; continue; } // be tolerant
+        }
+        faces.reserve(face_count > 0 ? size_t(face_count) * 2 : 4096);
+        int64_t read_faces = 0;
+        while ((face_count < 0 || read_faces < face_count) && std::getline(in, line)) {
+            if (line.empty()) continue;
+            std::istringstream ls(line);
+            int n; if (!(ls >> n) || n < 3) { ++read_faces; continue; }
+            std::vector<int> idx(n); for (int i=0;i<n;++i) ls >> idx[i];
+            for (int k = 1; k+1 < n; ++k) faces.push_back({ idx[0]+1, idx[k]+1, idx[k+1]+1 });
+            ++read_faces;
+        }
+        return faces;
+    }
+
+    // --- Binary little-endian ---
+    // Skip vertex blob. Header says: property float x/y/z → 12 bytes per vertex.
+    const int BYTES_PER_VERTEX = 12;
+    if (vertex_count > 0) {
+        in.seekg(int64_t(BYTES_PER_VERTEX) * vertex_count, std::ios::cur);
+    }
+
+    faces.reserve(face_count > 0 ? size_t(face_count) * 2 : 4096);
+
+    // Read faces: [uint8 n][int32 idx0]...[int32 idx(n-1)]
+    for (int64_t f = 0; f < face_count; ++f) {
+        uint8_t n = 0;
+        if (!in.read(reinterpret_cast<char*>(&n), 1)) break;
+        if (n < 3) { // skip degenerate
+            in.seekg(int64_t(n) * sizeof(int32_t), std::ios::cur);
+            continue;
+        }
+        std::vector<int32_t> idx(n);
+        if (!in.read(reinterpret_cast<char*>(idx.data()), int64_t(n) * sizeof(int32_t))) break;
+
+        // triangulate fan; convert 0-based → 1-based for your scene
+        for (int k = 1; k + 1 < n; ++k) {
+            faces.push_back({ idx[0] + 1, idx[k] + 1, idx[k+1] + 1 });
+        }
+    }
+
+    return faces;
+}
+
+

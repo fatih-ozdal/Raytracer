@@ -128,6 +128,9 @@ private:
     // Small parser helpers
     static Vec3f parseVec3f(const std::string& s);
     static float parseFloat(const std::string& s);
+    static std::vector<std::array<int,3>> load_ply_faces(const std::string& ply_path);
+    static std::string flatten_faces_to_string(const std::vector<std::array<int,3>>& tris);
+    static std::string join_with_json_dir(const std::string& scene_path, const std::string& rel_or_abs);
 };
 
 #endif // PARSER_H
