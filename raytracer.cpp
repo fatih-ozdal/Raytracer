@@ -81,38 +81,44 @@ bool FindClosestHit(const Ray& ray, const Scene& scene, const Camera& camera, /*
     float minT = FLT_MAX, hitT;
     bool has_intersected = false; // means obj is null
     ObjectType closestType;
-    int closestMaterialId;
+    int closestMatId;
+    float bary_beta, bary_gamma;
 
     // misc vars to find normal at the end
     Face hitTriFace;
     Plane closestPlane;
     Sphere closestSphere;
+    bool closest_is_smooth = false;
 
     for (size_t i = 0, n = scene.meshes.size(); i < n; i++) {
         const Mesh& mesh = scene.meshes[i];
-        float baryBeta, baryGamma;
-        float t = IntersectsMesh(ray, mesh, scene.vertex_data, minT, /*ref*/ hitTriFace);
+        float temp_b, temp_g;
+        float t = IntersectsMesh(ray, mesh, scene.vertex_data, minT, /*ref*/ hitTriFace, /*ref*/ temp_b, /*ref*/ temp_g);
 
         if (t < minT && t > 0 && t != RAY_MISS_VALUE)
         {
             hitT = t;
             minT = hitT;
-            closestMaterialId = mesh.material_id;
+            closestMatId = mesh.material_id;
             closestType = ObjectType::Mesh;
             // hitTriFace set by IntersectsMesh
             has_intersected = true;
+            closest_is_smooth = mesh.is_smooth;
+            bary_beta = temp_b;
+            bary_gamma = temp_g;
         }
     }
 
     for (size_t i = 0, n = scene.triangles.size(); i < n; i++) {
         const Triangle& triangle = scene.triangles[i];
-        float t = IntersectsTriangle_Bary(ray, triangle.face, scene.vertex_data, minT);
+        float dummy_b, dummy_g;
+        float t = IntersectsTriangle_Bary(ray, triangle.face, scene.vertex_data, minT, /*ref*/ dummy_b, /*ref*/ dummy_g);
 
         if (t < minT && t > 0 && t != RAY_MISS_VALUE)
         {
             hitT = t;
             minT = hitT;
-            closestMaterialId = triangle.material_id;
+            closestMatId = triangle.material_id;
             closestType = ObjectType::Triangle;
             hitTriFace = triangle.face;
             has_intersected = true;
@@ -128,7 +134,7 @@ bool FindClosestHit(const Ray& ray, const Scene& scene, const Camera& camera, /*
         {
             hitT = t;
             minT = hitT;
-            closestMaterialId = sphere.material_id;
+            closestMatId = sphere.material_id;
             closestType = ObjectType::Sphere;
             closestSphere = sphere;
             has_intersected = true;
@@ -143,7 +149,7 @@ bool FindClosestHit(const Ray& ray, const Scene& scene, const Camera& camera, /*
         if (t < minT && t > 0 && t != RAY_MISS_VALUE){
             hitT = t;
             minT = hitT;
-            closestMaterialId = plane.material_id;
+            closestMatId = plane.material_id;
             closestType = ObjectType::Plane;
             closestPlane = plane;
             has_intersected = true;
@@ -160,7 +166,20 @@ bool FindClosestHit(const Ray& ray, const Scene& scene, const Camera& camera, /*
     Vec3f normal;
 
     switch(closestType) {
-        case ObjectType::Mesh:  // TODO: Use vertex normal for smooth mesh
+        case ObjectType::Mesh: {
+            if (closest_is_smooth) {
+                const Vec3f& nA = scene.vertex_data[hitTriFace.i0 - 1].normal;
+                const Vec3f& nB = scene.vertex_data[hitTriFace.i1 - 1].normal;
+                const Vec3f& nC = scene.vertex_data[hitTriFace.i2 - 1].normal;
+
+                float alpha = 1.f - bary_beta - bary_gamma;
+                normal = (nA * alpha + nB * bary_beta + nC * bary_gamma).normalize();
+            }
+            else {
+                normal = hitTriFace.n_face;
+            }
+            break;
+        }
         case ObjectType::Triangle: {
             normal = hitTriFace.n_face;
             break;
@@ -179,24 +198,25 @@ bool FindClosestHit(const Ray& ray, const Scene& scene, const Camera& camera, /*
         }
     }
 
-    closestHit = {closestMaterialId, hit_x, normal, closestType};
+    closestHit = {closestMatId, hit_x, normal, closestType};
     return true;
 }
 
-// TODO: store bary vars
-float IntersectsMesh(const Ray& ray, const Mesh& mesh, const std::vector<Vertex>& vertex_data, const float& minT, /*out*/ Face& hitFace) 
+float IntersectsMesh(const Ray& ray, const Mesh& mesh, const std::vector<Vertex>& vertex_data, const float& minT, /*out*/ Face& hitFace, /*out*/ float& beta_out, /*out*/ float& gamma_out) 
 {
-    float meshMinT = minT;
-    float t, currBaryBeta, currBaryGamma;
+    float meshMinT = minT, t;
     bool noIntersects = true;
 
     for (size_t i = 0, n = mesh.faces.size(); i < n; i++) {
         const Face& currTriFace = mesh.faces[i];
-        float t = IntersectsTriangle_Bary(ray, currTriFace, vertex_data, meshMinT);
+        float temp_b, temp_g;
+        float t = IntersectsTriangle_Bary(ray, currTriFace, vertex_data, meshMinT, temp_b, temp_g);
         if (t < meshMinT && t != RAY_MISS_VALUE) {
             meshMinT = t;
             noIntersects = false;
             hitFace = currTriFace;
+            beta_out = temp_b;
+            gamma_out = temp_g;
         }
     }
 
@@ -207,7 +227,7 @@ float IntersectsMesh(const Ray& ray, const Mesh& mesh, const std::vector<Vertex>
     return meshMinT;
 }
 
-float IntersectsTriangle_Bary(const Ray& ray, const Face& tri_face, const std::vector<Vertex>& vertex_data, const float& minT) 
+float IntersectsTriangle_Bary(const Ray& ray, const Face& tri_face, const std::vector<Vertex>& vertex_data, const float& minT, /*out*/ float& beta_out, /*out*/ float& gamma_out) 
 {
    Vec3f tri_va = vertex_data[tri_face.i0 - 1].pos;
    Vec3f tri_vb = vertex_data[tri_face.i1 - 1].pos;
@@ -256,6 +276,8 @@ float IntersectsTriangle_Bary(const Ray& ray, const Face& tri_face, const std::v
         return RAY_MISS_VALUE;
     }
 
+    beta_out = beta;
+    gamma_out = gamma;
     return t;
 }
 
@@ -385,7 +407,8 @@ bool InShadow(Vec3f point, const PointLight& I, const Vec3f& n, float eps_shadow
 
     for (size_t i = 0, n = scene.meshes.size(); i < n; i++) {
         const Mesh& mesh = scene.meshes[i];
-        hitT = IntersectsMesh(shadowRay, mesh, scene.vertex_data, minT, /*ref*/ hitTriFace);
+        float dummy_b, dummy_g;
+        hitT = IntersectsMesh(shadowRay, mesh, scene.vertex_data, minT, /*ref*/ hitTriFace, dummy_b, dummy_g);
         if (hitT < minT && hitT != RAY_MISS_VALUE)
         {
             return true;
@@ -394,7 +417,8 @@ bool InShadow(Vec3f point, const PointLight& I, const Vec3f& n, float eps_shadow
 
     for (size_t i = 0, n = scene.triangles.size(); i < n; i++) {
         const Triangle& triangle = scene.triangles[i];
-        hitT = IntersectsTriangle_Bary(shadowRay, triangle.face, scene.vertex_data, minT);
+        float dummy_b, dummy_g;
+        hitT = IntersectsTriangle_Bary(shadowRay, triangle.face, scene.vertex_data, minT, dummy_b, dummy_g);
         if (hitT < minT && hitT != RAY_MISS_VALUE)
         {
             return true;
