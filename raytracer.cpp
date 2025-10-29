@@ -427,9 +427,9 @@ Vec3f ApplyShading(const Ray& ray, const Scene& scene, const Camera& camera, con
                     Ray exitRefractRay = {exitPoint + eps_shift * n_exit, wt_prime, refractionRay.depth + 1};
 
                     Vec3f L0 = ComputeColor(exitRefractRay, scene, camera);
-                    Vec3f e_to_the_cx = { std::exp(t_exit * mat.absorption_coef.x),
-                                            std::exp(t_exit * mat.absorption_coef.y),
-                                            std::exp(t_exit * mat.absorption_coef.z) };
+                    Vec3f e_to_the_cx = { std::exp(-t_exit * mat.absorption_coef.x),
+                                            std::exp(-t_exit * mat.absorption_coef.y),
+                                            std::exp(-t_exit * mat.absorption_coef.z) };
                     Vec3f Lx = L0.elwiseMult(e_to_the_cx);
                     color += Fresnel_t * Lx; 
                 }
@@ -469,9 +469,9 @@ Vec3f ApplyShading(const Ray& ray, const Scene& scene, const Camera& camera, con
                     Ray exitRefractRay = {exitPoint + eps_shift * n_exit, wt_prime, refractionRay.depth + 1};
 
                     Vec3f L0 = ComputeColor(exitRefractRay, scene, camera);
-                    Vec3f e_to_the_cx = {std::exp(t_exit * mat.absorption_coef.x),
-                                        std::exp(t_exit * mat.absorption_coef.y),
-                                        std::exp(t_exit * mat.absorption_coef.z)};
+                    Vec3f e_to_the_cx = {std::exp(-t_exit * mat.absorption_coef.x),
+                                        std::exp(-t_exit * mat.absorption_coef.y),
+                                        std::exp(-t_exit * mat.absorption_coef.z)};
                     Vec3f Lx = L0.elwiseMult(e_to_the_cx);
                     color += Fresnel_t * Lx; 
                 }
@@ -504,7 +504,7 @@ float Fresnel_Dielectric(float cosTheta, float cosPhi, float n1, float n2)
     float R_paralel = r_par_num / r_par_den;
 
     float r_perp_num = n1 * cosTheta - n2 * cosPhi;
-    float r_perp_den = n1 * cosTheta - n2 * cosPhi;
+    float r_perp_den = n1 * cosTheta + n2 * cosPhi;
     float R_perp = r_perp_num / r_perp_den;
 
     return (R_paralel * R_paralel + R_perp * R_perp) * 0.5;
