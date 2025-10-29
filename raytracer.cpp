@@ -143,8 +143,7 @@ bool FindClosestHit(const Ray& ray, const Scene& scene, const Camera& camera, /*
 
     for (size_t i = 0, n = scene.planes.size(); i < n; i++) {
         const Plane& plane = scene.planes[i];
-        Vertex center_point = scene.vertex_data[plane.vertex_id - 1];
-        float t = IntersectsPlane(ray, plane.n_face, center_point, minT);
+        float t = IntersectsPlane(ray, plane.n_face, plane.plane_d, minT);
 
         if (t < minT && t > 0 && t != RAY_MISS_VALUE){
             hitT = t;
@@ -310,8 +309,7 @@ float IntersectSphere(const Ray& ray, const Vertex& center, float radius, const 
     return t1;
 }
 
-// TODO: use plane_d
-float IntersectsPlane(const Ray& ray, const Vec3f& normal, const Vertex& point_on_plane, const float& minT) 
+float IntersectsPlane(const Ray& ray, const Vec3f& normal, float plane_d, float minT) 
 {
     float t_formula_denom = ray.direction.dotProduct(normal);
 
@@ -321,7 +319,7 @@ float IntersectsPlane(const Ray& ray, const Vec3f& normal, const Vertex& point_o
         return RAY_MISS_VALUE;
     }
 
-    float t = (point_on_plane.pos - ray.origin).dotProduct(normal) / t_formula_denom;
+    float t = -(ray.origin.dotProduct(normal) + plane_d) / t_formula_denom;
 
     // intersection is behind the ray origin or we have closer intersection
     if (t < 0.0f || t >= minT) 
@@ -437,8 +435,7 @@ bool InShadow(Vec3f point, const PointLight& I, const Vec3f& n, float eps_shadow
 
     for (size_t i = 0, n = scene.planes.size(); i < n; i++) {
         const Plane& plane = scene.planes[i];
-        const Vertex& center_point = scene.vertex_data[plane.vertex_id - 1];
-        hitT = IntersectsPlane(shadowRay, plane.n_face, center_point, minT);
+        hitT = IntersectsPlane(shadowRay, plane.n_face, plane.plane_d, minT);
         if (hitT < minT && hitT != RAY_MISS_VALUE){
             return true;
         }

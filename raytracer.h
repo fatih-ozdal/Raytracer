@@ -23,7 +23,7 @@ Vec3f ComputeColor(const Ray& ray, const Scene& scene, const Camera& camera);
 bool FindClosestHit(const Ray& ray, const Scene& scene, const Camera& camera, /*out*/ HitRecord& closestHit);
 float IntersectsMesh(const Ray& ray, const Mesh& mesh, const std::vector<Vertex>& vertex_data, const float& minT, /*out*/ Face& hitFace, /*out*/ float& beta_out, /*out*/ float& gamma_out);
 float IntersectsTriangle_Bary(const Ray& ray, const Face& tri_face, const std::vector<Vertex>& vertex_data, const float& minT, /*out*/ float& beta_out, /*out*/ float& gamma_out);
-float IntersectsPlane(const Ray& ray, const Vec3f& normal, const Vertex& point_on_plane, const float& minT);
+float IntersectsPlane(const Ray& ray, const Vec3f& normal, float plane_d, float minT);
 float IntersectSphere(const Ray& ray, const Vertex& center, float radius, const float& minT);
 Vec3f FindNormal_Sphere(const Vertex& center, const Vec3f& point, float radius);
 
