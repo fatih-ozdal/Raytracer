@@ -118,6 +118,11 @@ struct Scene
     vector<Plane> planes;
 };
 
+struct PlyData {
+    std::vector<Vec3f> verts;
+    std::vector<std::array<int,3>> faces;
+};
+
 struct parser
 {
 public:
@@ -131,6 +136,7 @@ private:
     static std::vector<std::array<int,3>> load_ply_faces(const std::string& ply_path);
     static std::string flatten_faces_to_string(const std::vector<std::array<int,3>>& tris);
     static std::string join_with_json_dir(const std::string& scene_path, const std::string& rel_or_abs);
+    static PlyData load_ply(const std::string& path);
 };
 
 #endif // PARSER_H
