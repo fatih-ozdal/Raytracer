@@ -4,6 +4,9 @@
 #include "BitCast.h"
 
 #define FLT_MAX 3.402823466e+38F
+static constexpr float PI = 3.14159265358979323846f;
+
+static inline float deg2rad(float d) { return d * float(PI) / 180.0f; }
 
 inline float clampF(float v, float lo, float hi)
 {

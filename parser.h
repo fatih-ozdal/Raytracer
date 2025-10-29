@@ -68,8 +68,9 @@ struct Vertex
 struct Face
 {
     int i0, i1, i2;     // vertex indices
-    Vec3f n_face;
+    Vec3f n_face;       // is a unit vector
     float plane_d;
+    // Vec3f n_area;    // can be added
 };
 
 struct Mesh
@@ -97,6 +98,7 @@ struct Plane
     int material_id;
     int vertex_id;
     Vec3f n_face;
+    float plane_d;
 };
 
 struct Scene
