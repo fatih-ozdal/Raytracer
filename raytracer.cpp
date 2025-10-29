@@ -1,5 +1,7 @@
 #include "parser.h"
 
+#define EPS_INTERSECTION 1e-6f
+
 int main(int argc, char* argv[])
 {
     if (argc < 2) {

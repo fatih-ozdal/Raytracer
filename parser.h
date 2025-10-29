@@ -1,10 +1,12 @@
 #ifndef PARSER_H
 #define PARSER_H
 
+#include <nlohmann/json.hpp>
 #include <vector>
 #include <string>
 #include "Vec3f.h"
 
+using json = nlohmann::json;
 using std::vector;
 using std::string;
 
@@ -23,6 +25,7 @@ struct Camera
 {
     Vec3f position;
     Vec3f gaze, up;
+    Vec3f u, v, w;
     LRBT_vec near_plane;
     float near_distance;
     int width, height;
@@ -32,7 +35,7 @@ struct Camera
 struct PointLight
 {
     Vec3f position;
-    float r, g, b;
+    Vec3f intensity;
 };
 
 enum class MaterialType : uint32_t
@@ -115,9 +118,14 @@ struct Scene
 
 struct parser
 {
-    // Functions
+public:
+    // API
     Scene loadFromJson(const string &filepath);
     vector<int> loadFromPly(const string &filepath);
+private:
+    // Small parser helpers
+    static Vec3f parseVec3f(const std::string& s);
+    static float parseFloat(const std::string& s);
 };
 
 #endif // PARSER_H
