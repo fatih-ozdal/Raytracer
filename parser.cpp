@@ -240,6 +240,8 @@ Scene parser::loadFromJson(const string &filepath)
                 mesh.material_id = std::stoi(mj.at("Material").get<std::string>());
 
                 std::string facesStr;
+                bool ply_has_normals = false;  // Track if PLY provided normals
+                
                 if (mj.contains("Faces") && mj["Faces"].contains("_plyFile")) {
                     std::string ply_rel = mj["Faces"]["_plyFile"].get<std::string>();
                     std::string ply_path = join_with_json_dir(filepath, ply_rel);
@@ -249,13 +251,13 @@ Scene parser::loadFromJson(const string &filepath)
                     size_t base = scene.vertex_data.size();
                     scene.vertex_data.reserve(base + ply.verts.size());
                     
-                    bool has_normals = !ply.normals.empty();
+                    ply_has_normals = !ply.normals.empty();
                     
                     for (size_t i = 0; i < ply.verts.size(); ++i) {
                         Vertex v;
                         v.pos = ply.verts[i];
                         // Use normals from PLY if available, otherwise zero
-                        v.normal = has_normals ? ply.normals[i] : Vec3f{0, 0, 0};
+                        v.normal = ply_has_normals ? ply.normals[i] : Vec3f{0, 0, 0};
                         scene.vertex_data.push_back(v);
                     }
 
@@ -306,7 +308,9 @@ Scene parser::loadFromJson(const string &filepath)
 
                     mesh.faces.push_back(f);
 
-                    if (mesh.is_smooth)
+                    // Only accumulate normals if smooth shading AND no PLY normals
+                    // If PLY provided normals, we keep them as-is
+                    if (mesh.is_smooth && !ply_has_normals)
                     {
                         // Area-weighted vertex normals: accumulate only from Mesh faces
                         scene.vertex_data[i0 - 1].normal += n_area;
@@ -319,7 +323,8 @@ Scene parser::loadFromJson(const string &filepath)
                     }
                 }
 
-                if (mesh.is_smooth)
+                // Only normalize if we computed normals (smooth mode without PLY normals)
+                if (mesh.is_smooth && !ply_has_normals)
                 {
                     // Normalize the affected vertex normals
                     std::sort(touched.begin(), touched.end());
