@@ -14,6 +14,14 @@
 using std::cout;
 using std::endl;
 
+// Helper function to trim whitespace from string
+static std::string trim(const std::string& str) {
+    size_t first = str.find_first_not_of(" \t\r\n");
+    if (first == std::string::npos) return "";
+    size_t last = str.find_last_not_of(" \t\r\n");
+    return str.substr(first, last - first + 1);
+}
+
 // TODO: use .value() for optional fields, use at().get() for expected fields (not [].get(), it returns null)
 // TODO: use .value() instead of parseFloat()
 
@@ -240,8 +248,14 @@ Scene parser::loadFromJson(const string &filepath)
                     // append vertices and remember base
                     size_t base = scene.vertex_data.size();
                     scene.vertex_data.reserve(base + ply.verts.size());
-                    for (auto& p : ply.verts) {
-                        Vertex v; v.pos = p; v.normal = {0,0,0};
+                    
+                    bool has_normals = !ply.normals.empty();
+                    
+                    for (size_t i = 0; i < ply.verts.size(); ++i) {
+                        Vertex v;
+                        v.pos = ply.verts[i];
+                        // Use normals from PLY if available, otherwise zero
+                        v.normal = has_normals ? ply.normals[i] : Vec3f{0, 0, 0};
                         scene.vertex_data.push_back(v);
                     }
 
@@ -446,77 +460,258 @@ std::string parser::join_with_json_dir(const std::string& scene_path, const std:
     return scene_path.substr(0, slash + 1) + rel_or_abs;
 }
 
-// read both vertices and faces (binary LE or ASCII)
+// Property descriptor for PLY files
+struct PlyProperty {
+    std::string name;
+    std::string type;  // float, double, uchar, int, etc.
+    bool is_list = false;
+    std::string count_type;  // for list properties
+    std::string item_type;   // for list properties
+    int byte_size = 0;
+    
+    PlyProperty(const std::string& n = "", const std::string& t = "") 
+        : name(n), type(t) {
+        // Set byte size based on type
+        if (t == "char" || t == "uchar") byte_size = 1;
+        else if (t == "short" || t == "ushort") byte_size = 2;
+        else if (t == "int" || t == "uint" || t == "float") byte_size = 4;
+        else if (t == "double") byte_size = 8;
+    }
+};
+
+// read both vertices and faces (binary LE or ASCII), with proper property parsing
 PlyData parser::load_ply(const std::string& path) {
     PlyData out;
     std::ifstream in(path, std::ios::binary);
-    if (!in) return out;
+    if (!in) {
+        std::cerr << "Failed to open PLY file: " << path << std::endl;
+        return out;
+    }
 
     std::string line;
     bool in_header = true, is_ascii = false, is_bin_le = false;
     int64_t vcount = -1, fcount = -1;
+    
+    // Track which properties exist for vertices
+    std::vector<PlyProperty> vertex_props;
+    std::vector<PlyProperty> face_props;
+    bool parsing_vertex_element = false;
+    bool parsing_face_element = false;
 
-    // ---- header ----
+    // ---- Parse header ----
     while (in_header && std::getline(in, line)) {
-        if (line.rfind("format ",0)==0) {
-            is_ascii = line.find("ascii")!=std::string::npos;
-            is_bin_le = line.find("binary_little_endian")!=std::string::npos;
-        } else if (line.rfind("element vertex",0)==0) {
-            std::istringstream ls(line); std::string a,b; ls >> a >> b >> vcount;
-        } else if (line.rfind("element face",0)==0) {
-            std::istringstream ls(line); std::string a,b; ls >> a >> b >> fcount;
-        } else if (line=="end_header") {
+        line = trim(line);
+        
+        if (line.rfind("format ", 0) == 0) {
+            is_ascii = line.find("ascii") != std::string::npos;
+            is_bin_le = line.find("binary_little_endian") != std::string::npos;
+        } 
+        else if (line.rfind("element vertex", 0) == 0) {
+            std::istringstream ls(line); 
+            std::string a, b; 
+            ls >> a >> b >> vcount;
+            parsing_vertex_element = true;
+            parsing_face_element = false;
+        } 
+        else if (line.rfind("element face", 0) == 0) {
+            std::istringstream ls(line); 
+            std::string a, b; 
+            ls >> a >> b >> fcount;
+            parsing_vertex_element = false;
+            parsing_face_element = true;
+        }
+        else if (line.rfind("element ", 0) == 0) {
+            // Some other element type - stop tracking properties
+            parsing_vertex_element = false;
+            parsing_face_element = false;
+        }
+        else if (line.rfind("property ", 0) == 0) {
+            std::istringstream ls(line);
+            std::string keyword, type_or_list;
+            ls >> keyword >> type_or_list;
+            
+            if (type_or_list == "list") {
+                // property list <count_type> <item_type> <name>
+                PlyProperty prop;
+                prop.is_list = true;
+                ls >> prop.count_type >> prop.item_type >> prop.name;
+                
+                if (parsing_vertex_element) {
+                    vertex_props.push_back(prop);
+                } else if (parsing_face_element) {
+                    face_props.push_back(prop);
+                }
+            } else {
+                // property <type> <name>
+                std::string name;
+                ls >> name;
+                PlyProperty prop(name, type_or_list);
+                
+                if (parsing_vertex_element) {
+                    vertex_props.push_back(prop);
+                } else if (parsing_face_element) {
+                    face_props.push_back(prop);
+                }
+            }
+        }
+        else if (line == "end_header") {
             in_header = false;
         }
     }
 
-    if (!is_ascii && !is_bin_le) return out; // unsupported (e.g., big-endian)
-
-    if (is_ascii) {
-        // vertices
-        out.verts.reserve(vcount > 0 ? size_t(vcount) : 0);
-        for (int64_t i=0; i<vcount; ++i) {
-            std::getline(in, line);
-            std::istringstream ls(line);
-            float x,y,z; ls >> x >> y >> z;
-            out.verts.push_back({x,y,z});
-        }
-        // faces (n i0 i1 i2 …)
-        for (int64_t i=0; i<fcount; ++i) {
-            std::getline(in, line);
-            if (line.empty()) continue;
-            std::istringstream ls(line);
-            int n; if (!(ls>>n) || n<3) continue;
-            std::vector<int> idx(n);
-            for (int k=0;k<n;++k) ls>>idx[k];
-            for (int k=1; k+1<n; ++k)
-                out.faces.push_back({ idx[0]+1, idx[k]+1, idx[k+1]+1 });
-        }
+    if (!is_ascii && !is_bin_le) {
+        std::cerr << "Unsupported PLY format (must be ASCII or binary_little_endian)" << std::endl;
         return out;
     }
 
-    // ---- binary little-endian ----
-    // read vertices (x,y,z as float32)
-    out.verts.resize(vcount > 0 ? size_t(vcount) : 0);
-    for (int64_t i=0; i<vcount; ++i) {
-        float x,y,z;
-        in.read(reinterpret_cast<char*>(&x),4);
-        in.read(reinterpret_cast<char*>(&y),4);
-        in.read(reinterpret_cast<char*>(&z),4);
-        out.verts[size_t(i)] = {x,y,z};
+    // Find property indices for x, y, z, nx, ny, nz
+    int x_idx = -1, y_idx = -1, z_idx = -1;
+    int nx_idx = -1, ny_idx = -1, nz_idx = -1;
+    
+    for (size_t i = 0; i < vertex_props.size(); ++i) {
+        const auto& prop = vertex_props[i];
+        if (prop.name == "x") x_idx = i;
+        else if (prop.name == "y") y_idx = i;
+        else if (prop.name == "z") z_idx = i;
+        else if (prop.name == "nx") nx_idx = i;
+        else if (prop.name == "ny") ny_idx = i;
+        else if (prop.name == "nz") nz_idx = i;
+    }
+    
+    bool has_normals = (nx_idx >= 0 && ny_idx >= 0 && nz_idx >= 0);
+
+    // ---- Read data ----
+    if (is_ascii) {
+        // ASCII format
+        out.verts.reserve(vcount > 0 ? size_t(vcount) : 0);
+        if (has_normals) {
+            out.normals.reserve(vcount > 0 ? size_t(vcount) : 0);
+        }
+        
+        for (int64_t i = 0; i < vcount; ++i) {
+            std::getline(in, line);
+            std::istringstream ls(line);
+            
+            std::vector<float> values;
+            float val;
+            while (ls >> val) {
+                values.push_back(val);
+            }
+            
+            if (x_idx >= 0 && y_idx >= 0 && z_idx >= 0 && 
+                x_idx < (int)values.size() && y_idx < (int)values.size() && z_idx < (int)values.size()) {
+                out.verts.push_back({values[x_idx], values[y_idx], values[z_idx]});
+                
+                if (has_normals && nx_idx < (int)values.size() && ny_idx < (int)values.size() && nz_idx < (int)values.size()) {
+                    out.normals.push_back({values[nx_idx], values[ny_idx], values[nz_idx]});
+                }
+            }
+        }
+        
+        // Read faces (n i0 i1 i2 …)
+        for (int64_t i = 0; i < fcount; ++i) {
+            std::getline(in, line);
+            if (line.empty()) continue;
+            std::istringstream ls(line);
+            int n; 
+            if (!(ls >> n) || n < 3) continue;
+            std::vector<int> idx(n);
+            for (int k = 0; k < n; ++k) ls >> idx[k];
+            // Triangulate polygon (fan triangulation)
+            for (int k = 1; k + 1 < n; ++k)
+                out.faces.push_back({ idx[0] + 1, idx[k] + 1, idx[k+1] + 1 });
+        }
+        
+        return out;
     }
 
-    // faces: [uint8 n][int32 idx]*n
-    out.faces.reserve(fcount > 0 ? size_t(fcount) * 2 : 0);
-    for (int64_t f=0; f<fcount; ++f) {
-        uint8_t n=0;
-        if (!in.read(reinterpret_cast<char*>(&n),1)) break;
-        if (n<3) { in.seekg(int64_t(n)*4, std::ios::cur); continue; }
-        std::vector<int32_t> idx(n);
-        if (!in.read(reinterpret_cast<char*>(idx.data()), int64_t(n)*4)) break;
-        for (int k=1; k+1<n; ++k)
-            out.faces.push_back({ idx[0]+1, idx[k]+1, idx[k+1]+1 });
+    // ---- Binary little-endian format ----
+    out.verts.reserve(vcount > 0 ? size_t(vcount) : 0);
+    if (has_normals) {
+        out.normals.reserve(vcount > 0 ? size_t(vcount) : 0);
     }
+    
+    for (int64_t i = 0; i < vcount; ++i) {
+        std::vector<float> values(vertex_props.size(), 0.0f);
+        
+        // Read each property
+        for (size_t p = 0; p < vertex_props.size(); ++p) {
+            const auto& prop = vertex_props[p];
+            
+            if (prop.type == "float") {
+                float val;
+                in.read(reinterpret_cast<char*>(&val), 4);
+                values[p] = val;
+            }
+            else if (prop.type == "double") {
+                double val;
+                in.read(reinterpret_cast<char*>(&val), 8);
+                values[p] = static_cast<float>(val);
+            }
+            else if (prop.type == "uchar") {
+                uint8_t val;
+                in.read(reinterpret_cast<char*>(&val), 1);
+                values[p] = static_cast<float>(val);
+            }
+            else if (prop.type == "char") {
+                int8_t val;
+                in.read(reinterpret_cast<char*>(&val), 1);
+                values[p] = static_cast<float>(val);
+            }
+            else if (prop.type == "ushort") {
+                uint16_t val;
+                in.read(reinterpret_cast<char*>(&val), 2);
+                values[p] = static_cast<float>(val);
+            }
+            else if (prop.type == "short") {
+                int16_t val;
+                in.read(reinterpret_cast<char*>(&val), 2);
+                values[p] = static_cast<float>(val);
+            }
+            else if (prop.type == "uint") {
+                uint32_t val;
+                in.read(reinterpret_cast<char*>(&val), 4);
+                values[p] = static_cast<float>(val);
+            }
+            else if (prop.type == "int") {
+                int32_t val;
+                in.read(reinterpret_cast<char*>(&val), 4);
+                values[p] = static_cast<float>(val);
+            }
+            else {
+                // Unknown type, skip
+                if (prop.byte_size > 0) {
+                    in.seekg(prop.byte_size, std::ios::cur);
+                }
+            }
+        }
+        
+        // Extract position and normal
+        if (x_idx >= 0 && y_idx >= 0 && z_idx >= 0) {
+            out.verts.push_back({values[x_idx], values[y_idx], values[z_idx]});
+            
+            if (has_normals) {
+                out.normals.push_back({values[nx_idx], values[ny_idx], values[nz_idx]});
+            }
+        }
+    }
+
+    // Read faces: [uint8 n][int32 idx]*n  (most common format)
+    out.faces.reserve(fcount > 0 ? size_t(fcount) * 2 : 0);
+    for (int64_t f = 0; f < fcount; ++f) {
+        uint8_t n = 0;
+        if (!in.read(reinterpret_cast<char*>(&n), 1)) break;
+        if (n < 3) { 
+            in.seekg(int64_t(n) * 4, std::ios::cur); 
+            continue; 
+        }
+        std::vector<int32_t> idx(n);
+        if (!in.read(reinterpret_cast<char*>(idx.data()), int64_t(n) * 4)) break;
+        // Triangulate polygon (fan triangulation)
+        for (int k = 1; k + 1 < n; ++k)
+            out.faces.push_back({ idx[0] + 1, idx[k] + 1, idx[k+1] + 1 });
+    }
+    
     return out;
 }
 

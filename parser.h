@@ -120,6 +120,7 @@ struct Scene
 
 struct PlyData {
     std::vector<Vec3f> verts;
+    std::vector<Vec3f> normals;  // Added: store normals separately
     std::vector<std::array<int,3>> faces;
 };
 
