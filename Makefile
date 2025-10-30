@@ -1,7 +1,6 @@
 CXX = g++
 
-# TODO add -fopemp
-CXXFLAGS = -std=c++11 -Iinclude -O3
+CXXFLAGS = -std=c++11 -Iinclude -O3 -fopenmp
 SRC = $(wildcard *.cpp)
 TARGET = raytracer
 

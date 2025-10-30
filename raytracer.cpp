@@ -20,6 +20,7 @@ int main(int argc, char* argv[])
         int idx = 0;
         HitRecord closestHit;
 
+        #pragma omp parallel
         for (int i = 0; i < height; i++)
         {
             for (int j = 0; j < width; j++)
@@ -73,7 +74,7 @@ Vec3f ComputeColor(const Ray& ray, const Scene& scene, const Camera& camera)
     else
     {
         return {0, 0, 0};
-    }
+    } 
 }
 
 bool FindClosestHit(const Ray& ray, const Scene& scene, const Camera& camera, /*out*/ HitRecord& closestHit)
@@ -169,6 +170,7 @@ bool FindClosestHit(const Ray& ray, const Scene& scene, const Camera& camera, /*
     Vec3f hit_x = ray.origin + ray.direction * minT;
     Vec3f normal;
 
+    // find normal to store in hit record
     switch(closestType) {
         case ObjectType::Mesh: {
             if (closest_is_smooth) {
