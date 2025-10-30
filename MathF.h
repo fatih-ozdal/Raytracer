@@ -6,16 +6,16 @@
 #define FLT_MAX 3.402823466e+38F
 static constexpr float PI = 3.14159265358979323846f;
 
-static inline float deg2rad(float d) { return d * float(PI) / 180.0f; }
+static inline float deg2rad(float d) noexcept { return d * float(PI) / 180.0f; }
 
-inline float clampF(float v, float lo, float hi)
+inline float clampF(float v, float lo, float hi) noexcept
 {
     if (v < lo) return lo;
     if (v > hi) return hi;
     return v;
 }
 
-inline float Q_rsqrt(float x) {
+inline float Q_rsqrt(float x) noexcept {
     if (x <= 0.0f) return 0.0f;
 
     uint32_t i = portable_bit_cast<uint32_t>(x);
@@ -30,7 +30,7 @@ inline float Q_rsqrt(float x) {
 inline float det3x3(
     float a11, float a12, float a13,
     float a21, float a22, float a23,
-    float a31, float a32, float a33)
+    float a31, float a32, float a33) noexcept
 {
     return a11 * (a22 * a33 - a23 * a32)
          - a12 * (a21 * a33 - a23 * a31)

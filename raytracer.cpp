@@ -38,7 +38,7 @@ int main(int argc, char* argv[])
     return 0;
 }
 
-Ray ComputeRay(const Scene& scene, const Camera& camera, int j, int i)
+Ray ComputeRay(const Scene& scene, const Camera& camera, int j, int i) noexcept
 {   
     Vec3f e = camera.position;
     Vec3f m = e - camera.w * camera.near_distance;
@@ -75,7 +75,7 @@ Vec3f ComputeColor(const Ray& ray, const Scene& scene, const Camera& camera)
     } 
 }
 
-bool FindClosestHit(const Ray& ray, const Scene& scene, const Camera& camera, /*out*/ HitRecord& closestHit)
+bool FindClosestHit(const Ray& ray, const Scene& scene, const Camera& camera, /*out*/ HitRecord& closestHit) noexcept
 {
     float minT = FLT_MAX, hitT;
     bool has_intersected = false; // means obj is null
@@ -206,7 +206,7 @@ bool FindClosestHit(const Ray& ray, const Scene& scene, const Camera& camera, /*
     return true;
 }
 
-float IntersectsMesh(const Ray& ray, const Mesh& mesh, const std::vector<Vertex>& vertex_data, float minT, /*out*/ Face& hitFace, /*out*/ float& beta_out, /*out*/ float& gamma_out)
+float IntersectsMesh(const Ray& ray, const Mesh& mesh, const std::vector<Vertex>& vertex_data, float minT, /*out*/ Face& hitFace, /*out*/ float& beta_out, /*out*/ float& gamma_out) noexcept
 {
     float meshMinT = minT, t;
     bool noIntersects = true;
@@ -231,7 +231,7 @@ float IntersectsMesh(const Ray& ray, const Mesh& mesh, const std::vector<Vertex>
     return meshMinT;
 }
 
-float IntersectsTriangle_Bary(const Ray& ray, const Face& tri_face, const std::vector<Vertex>& vertex_data, float minT, /*out*/ float& beta_out, /*out*/ float& gamma_out)
+float IntersectsTriangle_Bary(const Ray& ray, const Face& tri_face, const std::vector<Vertex>& vertex_data, float minT, /*out*/ float& beta_out, /*out*/ float& gamma_out) noexcept
 {
    Vec3f tri_va = vertex_data[tri_face.i0 - 1].pos;
    Vec3f tri_vb = vertex_data[tri_face.i1 - 1].pos;
@@ -285,7 +285,7 @@ float IntersectsTriangle_Bary(const Ray& ray, const Face& tri_face, const std::v
     return t;
 }
 
-float IntersectSphere(const Ray& ray, const Vertex& center, float radius, float minT) 
+float IntersectSphere(const Ray& ray, const Vertex& center, float radius, float minT) noexcept
 {
     Vec3f oc = ray.origin - center.pos;
     Vec3f d = ray.direction;
@@ -319,7 +319,7 @@ float IntersectSphere(const Ray& ray, const Vertex& center, float radius, float 
     return t;
 }
 
-float IntersectsPlane(const Ray& ray, const Vec3f& normal, float plane_d, float minT) 
+float IntersectsPlane(const Ray& ray, const Vec3f& normal, float plane_d, float minT) noexcept
 {
     float t_formula_denom = ray.direction.dotProduct(normal);
 
@@ -340,7 +340,7 @@ float IntersectsPlane(const Ray& ray, const Vec3f& normal, float plane_d, float 
     return t;
 }
 
-Vec3f FindNormal_Sphere(const Vertex& center, const Vec3f& point, float radius)
+Vec3f FindNormal_Sphere(const Vertex& center, const Vec3f& point, float radius) noexcept
 {
    return ((point - center.pos) * (1 / radius)).normalize();
 }
@@ -458,7 +458,7 @@ Vec3f ApplyShading(const Ray& ray, const Scene& scene, const Camera& camera, con
     return color;
 }
 
-float Fresnel_Dielectric(float cosTheta, float cosPhi, float n1, float n2)
+float Fresnel_Dielectric(float cosTheta, float cosPhi, float n1, float n2) noexcept
 {
     float r_par_num = n2 * cosTheta - n1 * cosPhi;
     float r_par_den = n2 * cosTheta + n1 * cosPhi;
@@ -471,7 +471,7 @@ float Fresnel_Dielectric(float cosTheta, float cosPhi, float n1, float n2)
     return (R_paralel * R_paralel + R_perp * R_perp) * 0.5;
 }
 
-float Fresnel_Conductor(float cosTheta, float refractionIndex, float absorptionIndex)
+float Fresnel_Conductor(float cosTheta, float refractionIndex, float absorptionIndex) noexcept
 {
     float cos_sq = cosTheta * cosTheta;
     float n_sq = refractionIndex * refractionIndex;
@@ -489,7 +489,7 @@ float Fresnel_Conductor(float cosTheta, float refractionIndex, float absorptionI
     return (R_S + R_P) * 0.5;
 }
 
-bool InShadow(const Vec3f& point, const PointLight& I, const Vec3f& n, float eps_shadow, const Scene& scene)
+bool InShadow(const Vec3f& point, const PointLight& I, const Vec3f& n, float eps_shadow, const Scene& scene) noexcept
 {
     Ray shadowRay;
     shadowRay.origin = point + n * eps_shadow;
@@ -541,7 +541,7 @@ bool InShadow(const Vec3f& point, const PointLight& I, const Vec3f& n, float eps
 }
 
 Vec3f ComputeDiffuseAndSpecular(const Vec3f& origin, const Material& material, const PointLight& light, 
-    const Vec3f& point, const Vec3f& normal, const Vec3f& w0)
+    const Vec3f& point, const Vec3f& normal, const Vec3f& w0) noexcept
 {
     Vec3f L = light.position - point; // Unnormalized vector
     Vec3f wi = L.normalize();         // Normalized direction
