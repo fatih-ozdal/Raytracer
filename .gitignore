@@ -1,5 +1,3 @@
-/include
-/Makefile
 /.vscode
 raytracer.exe
 *.json
