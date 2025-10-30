@@ -289,31 +289,36 @@ float IntersectsTriangle_Bary(const Ray& ray, const Face& tri_face, const std::v
 
 float IntersectSphere(const Ray& ray, const Vertex& center, float radius, const float& minT) 
 {
-    Vec3f oc =  ray.origin - center.pos;
+    Vec3f oc = ray.origin - center.pos;
     Vec3f d = ray.direction;
     float A = d.dotProduct(d);
     float B = 2 * d.dotProduct(oc);
     float C = oc.dotProduct(oc) - radius * radius;
     float delta = B * B - 4 * A * C;
+    
     if (delta < 0.0f) {
-        return  RAY_MISS_VALUE;
-    }
-    if (fabs(delta) < EPS_PARALLEL && delta >= 0.0f) {
-        float t = (-B + sqrt(delta)) / (2 * A); 
-        if (t < 0.0f || t >= minT) 
-        { 
-            return RAY_MISS_VALUE;
-        }
-        return t;
-    }
-    float t1 = (-B + sqrt(delta)) / (2 * A);
-    float t2 = (-B - sqrt(delta)) / (2 * A);
-    t1 = std::min(t1, t2);
-    if (t1 < 0.0f || t1 >= minT) 
-    { 
         return RAY_MISS_VALUE;
     }
-    return t1;
+    
+    float sqrtDelta = sqrt(delta);
+    float t1 = (-B - sqrtDelta) / (2 * A);  // Near intersection
+    float t2 = (-B + sqrtDelta) / (2 * A);  // Far intersection
+    
+    // Find the smallest positive t
+    float t;
+    if (t1 > 0.0f) {
+        t = t1;  // Use near intersection if it's in front
+    } else if (t2 > 0.0f) {
+        t = t2;  // Otherwise use far intersection (we're inside sphere)
+    } else {
+        return RAY_MISS_VALUE;  // Both behind us
+    }
+    
+    if (t >= minT) {
+        return RAY_MISS_VALUE;  // Too far or not closer than previous hit
+    }
+    
+    return t;
 }
 
 float IntersectsPlane(const Ray& ray, const Vec3f& normal, float plane_d, float minT) 
@@ -342,39 +347,41 @@ Vec3f FindNormal_Sphere(const Vertex& center, const Vec3f& point, float radius)
    return ((point - center.pos) * (1 / radius)).normalize();
 }
 
+#include <iostream>
+
 Vec3f ApplyShading(const Ray& ray, const Scene& scene, const Camera& camera, const HitRecord& closestHit)
-{   
+{
     Material mat = scene.materials[closestHit.materialId - 1];
-    Vec3f color = scene.ambient_light.elwiseMult(mat.ambient_refl);
-    
-    Vec3f n_original = closestHit.normal; // The normal calculated in FindNormal_Triangle
-    Vec3f d_inc = ray.direction;          // The ray direction (points from camera to surface)
-    
+    Vec3f color = {0, 0, 0};
+
+    Vec3f n_original = closestHit.normal;
+    Vec3f d_inc = ray.direction;
+
     Vec3f n_shading = n_original;
-    
-    if (n_original.dotProduct(d_inc) < 0.0f) // we see the surface front-face
-    { 
+
+    if (n_original.dotProduct(d_inc) < 0.0f) // front-face
+    {
         n_shading = n_original;
     }
-    else // we see the surface back-face
+    else // back-face
     {
         n_shading = n_original * -1;
     }
-    
+
     Vec3f x = closestHit.intersectionPoint;
     float eps_shift = scene.shadow_ray_epsilon;
 
     Vec3f w0 = (ray.origin - x).normalize();
 
-    if (mat.type == MaterialType::Mirror) // Note: can let Dielectrics in here also
+    if (mat.type == MaterialType::Mirror)
     {
-        Vec3f wr = n_shading * 2 * (n_shading.dotProduct(w0)) - w0;
+        Vec3f wr = (n_shading * 2 * (n_shading.dotProduct(w0)) - w0).normalize();
         const Ray reflectionRay = {x + n_shading * eps_shift, wr, ray.depth + 1};
         color += mat.mirror_refl.elwiseMult(ComputeColor(reflectionRay, scene, camera));
     }
     else if (mat.type == MaterialType::Conductor)
     {
-        Vec3f wr = n_shading * 2 * (n_shading.dotProduct(w0)) - w0;
+        Vec3f wr = (n_shading * 2 * (n_shading.dotProduct(w0)) - w0).normalize();
         const Ray reflectionRay = {x + n_shading * eps_shift, wr, ray.depth + 1};
 
         float cosTheta = w0.dotProduct(n_shading);
@@ -384,114 +391,71 @@ Vec3f ApplyShading(const Ray& ray, const Scene& scene, const Camera& camera, con
     }
     else if (mat.type == MaterialType::Dielectric)
     {
-        float n1 = 1.0f;    // TODO: assuming incoming rays only come from air, may change it
-        float n2 = mat.refraction_index;
-
-        float eta = n1 / n2;
-        float cosTheta = w0.dotProduct(n_shading);
-        float cosPhi_sq = 1 - eta * eta * (1 - cosTheta * cosTheta);
-        float Fresnel_r;
-
-        if (cosPhi_sq < 0.0f) { // total reflection
-            Fresnel_r = 1.0f;
-        } else {
-            float cosPhi = std::sqrt(cosPhi_sq);
-            Fresnel_r = Fresnel_Dielectric(cosTheta, cosPhi, n1, n2);
-            float Fresnel_t = 1.0f - Fresnel_r;
-
-            // compute refraction
-            const float BIAS = 1e-4f;
-            Vec3f wt = (-1 * w0 + n_shading * cosTheta) * eta - n_shading * cosPhi;
+        // DON'T use n_shading here - work with n_original directly
+        Vec3f d_inc = ray.direction;
+        
+        // Check entering/exiting using the ORIGINAL normal
+        bool entering = n_original.dotProduct(d_inc) < 0.0f;
+        std::cout << entering << std::endl;
+        
+        // Flip the normal to point against the ray (for consistent math)
+        Vec3f normal = entering ? n_original : (n_original * -1.0f);
+        
+        // Now w0 should point back along the ray
+        Vec3f w0 = (ray.origin - x).normalize();
+        
+        float etaI = entering ? 1.0f : mat.refraction_index;
+        float etaT = entering ? mat.refraction_index : 1.0f;
+        float eta = etaI / etaT;
+        
+        float cosThetaI = w0.dotProduct(normal);
+        float sin2ThetaI = std::max(0.0f, 1.0f - cosThetaI * cosThetaI);
+        float sin2ThetaT = eta * eta * sin2ThetaI;
+        
+        // Total internal reflection
+        if (sin2ThetaT >= 1.0f) {
+            Vec3f wr = (normal * 2.0f * cosThetaI - w0).normalize();
+            Ray reflectionRay = {x + normal * eps_shift, wr, ray.depth + 1};
+            color += mat.mirror_refl.elwiseMult(ComputeColor(reflectionRay, scene, camera));
+        }
+        else {
+            float cosThetaT = std::sqrt(1.0f - sin2ThetaT);
+            float Fr = Fresnel_Dielectric(cosThetaI, cosThetaT, etaI, etaT);
             
-            // shift starting point towards inside the object
-            Ray refractionRay = {x - n_shading * BIAS, wt, ray.depth + 1};
-
-            float t_exit;   // also known as attenuation
-            if (closestHit.type == ObjectType::Sphere) 
-            {
-                Sphere hitSphere = scene.spheres[closestHit.objIndex];
-                Vertex center = scene.vertex_data[hitSphere.center_vertex_id - 1];
-                t_exit = IntersectSphere(refractionRay, center, hitSphere.radius, FLT_MAX);
-                
-                // try to exit with refraction
-                Vec3f exitPoint =  x + wt * t_exit;
-                Vec3f n_exit = FindNormal_Sphere(center, exitPoint, hitSphere.radius);
-
-                float cosTheta_pr = wt.dotProduct(n_exit);
-                float eta_pr = n2 / n1;
-                float cosPhi_pr_sq = 1 - eta_pr * eta_pr * (1 - cosTheta_pr * cosTheta_pr);
-
-                if (!(cosPhi_pr_sq < 0.0f)) { // will refract while exiting
-                    float cosPhi_pr = std::sqrt(cosPhi_pr_sq);
-                    float Fresnel_r_exit = Fresnel_Dielectric(cosTheta_pr, cosPhi_pr, n2, n1);
-                    
-                    Vec3f wt_prime = (wt - n_exit * cosTheta_pr) * eta_pr + n_exit * cosPhi_pr;
-                    Ray exitRefractRay = {exitPoint + eps_shift * n_exit, wt_prime, refractionRay.depth + 1};
-
-                    Vec3f L0 = ComputeColor(exitRefractRay, scene, camera);
-                    Vec3f e_to_the_cx = { std::exp(-t_exit * mat.absorption_coef.x),
-                                            std::exp(-t_exit * mat.absorption_coef.y),
-                                            std::exp(-t_exit * mat.absorption_coef.z) };
-                    Vec3f Lx = L0.elwiseMult(e_to_the_cx);
-                    color += Fresnel_t * Lx; 
-                }
+            // Reflection
+            Vec3f wr = (normal * 2.0f * cosThetaI - w0).normalize();
+            Ray reflectionRay = {x + normal * eps_shift, wr, ray.depth + 1};
+            Vec3f reflectColor = mat.mirror_refl.elwiseMult(ComputeColor(reflectionRay, scene, camera));
+            
+            // Refraction  
+            Vec3f wt = ((w0 * -1.0f) * eta + normal * (eta * cosThetaI - cosThetaT)).normalize();
+            Ray refractionRay = {x - normal * eps_shift, wt, ray.depth + 1};
+            Vec3f refractColor = ComputeColor(refractionRay, scene, camera);
+            
+            // Apply Beer's Law when exiting
+            if (!entering) {
+                float d = (x - ray.origin).length();
+                refractColor.x *= std::exp(-mat.absorption_coef.x * d);
+                refractColor.y *= std::exp(-mat.absorption_coef.y * d);
+                refractColor.z *= std::exp(-mat.absorption_coef.z * d);
             }
-            else if (closestHit.type == ObjectType::Mesh)
-            {
-                Mesh hitMesh = scene.meshes[closestHit.objIndex];
-                Face exitHitTriFace;
-                float bary_beta, bary_gamma;
-                t_exit = IntersectsMesh(refractionRay, hitMesh, scene.vertex_data, FLT_MAX, exitHitTriFace, bary_beta, bary_gamma);
-
-                // try to exit with refraction
-                Vec3f exitPoint =  x + wt * t_exit;
-
-                Vec3f n_exit;
-                if (hitMesh.is_smooth) {
-                    const Vec3f& nA = scene.vertex_data[exitHitTriFace.i0 - 1].normal;
-                    const Vec3f& nB = scene.vertex_data[exitHitTriFace.i1 - 1].normal;
-                    const Vec3f& nC = scene.vertex_data[exitHitTriFace.i2 - 1].normal;
-
-                    float alpha = 1.f - bary_beta - bary_gamma;
-                    n_exit = (nA * alpha + nB * bary_beta + nC * bary_gamma).normalize();
-                }
-                else {
-                    n_exit = exitHitTriFace.n_face;
-                }
-
-                float cosTheta_pr = wt.dotProduct(n_exit);
-                float eta_pr = n2 / n1;
-                float cosPhi_pr_sq = 1 - eta_pr * eta_pr * (1 - cosTheta_pr * cosTheta_pr);
-
-                if (!(cosPhi_pr_sq < 0.0f)) { // will refract while exiting
-                    float cosPhi_pr = std::sqrt(cosPhi_pr_sq);
-                    float Fresnel_r_exit = Fresnel_Dielectric(cosTheta_pr, cosPhi_pr, n2, n1);
-                    
-                    Vec3f wt_prime = (wt - n_exit * cosTheta_pr) * eta_pr + n_exit * cosPhi_pr;
-                    Ray exitRefractRay = {exitPoint + eps_shift * n_exit, wt_prime, refractionRay.depth + 1};
-
-                    Vec3f L0 = ComputeColor(exitRefractRay, scene, camera);
-                    Vec3f e_to_the_cx = {std::exp(-t_exit * mat.absorption_coef.x),
-                                        std::exp(-t_exit * mat.absorption_coef.y),
-                                        std::exp(-t_exit * mat.absorption_coef.z)};
-                    Vec3f Lx = L0.elwiseMult(e_to_the_cx);
-                    color += Fresnel_t * Lx; 
-                }
-            }
+            
+            color += Fr * reflectColor + (1.0f - Fr) * refractColor;
         }
         
-        Vec3f wr = n_shading * 2 * (n_shading.dotProduct(w0)) - w0;
-        const Ray reflectionRay = {x + n_shading * eps_shift, wr, ray.depth + 1};
-
-        color += Fresnel_r * mat.mirror_refl.elwiseMult(ComputeColor(reflectionRay, scene, camera));
+        // Only add local lighting when entering
+        if (!entering) {
+            return color;
+        }
     }
 
+    color += scene.ambient_light.elwiseMult(mat.ambient_refl);
+
+    // Compute local lighting (Blinn-Phong) for all materials except when exiting dielectrics
     for (const auto& point_light: scene.point_lights)
     {
-        // Use the corrected n_shading for shadow check
         if (!InShadow(x, point_light, n_shading, eps_shift, scene))
         {
-            // Use n_shading for diffuse and specular terms
             color += ComputeDiffuseAndSpecular(ray.origin, mat, point_light, closestHit.intersectionPoint, n_shading, w0);
         }
     }
