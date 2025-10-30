@@ -11,36 +11,34 @@ int main(int argc, char* argv[])
     string jsonFile = argv[1];
     Scene scene = p.loadFromJson(jsonFile);
 
-    for (Camera camera : scene.cameras)
+    for (const Camera& camera : scene.cameras)  // read-only ref is fine
     {
-        int width = camera.width;
-        int height = camera.height;
-        unsigned char *image = new unsigned char [width * height * 3];
-        
-        int idx = 0;
-        HitRecord closestHit;
+        const int width  = camera.width;
+        const int height = camera.height;
+        auto* image = new unsigned char[(size_t)width * height * 3];
 
-        #pragma omp parallel
-        for (int i = 0; i < height; i++)
-        {
-            for (int j = 0; j < width; j++)
-            {
-                Ray ray = ComputeRay(scene, camera, j, i); 
+        #pragma omp parallel for collapse(2) schedule(static) default(none) \
+            shared(image, width, height, scene, camera)
+        for (int i = 0; i < height; ++i) {
+            for (int j = 0; j < width; ++j) {
+                Ray   ray   = ComputeRay(scene, camera, j, i);
                 Vec3f color = ComputeColor(ray, scene, camera);
 
-                image[idx++] = (unsigned char) clampF(color.x, 0.0f, 255.0f);
-                image[idx++] = (unsigned char) clampF(color.y, 0.0f, 255.0f);
-                image[idx++] = (unsigned char) clampF(color.z, 0.0f, 255.0f);         
+                const size_t idx = (static_cast<size_t>(i) * width + j) * 3;
+                image[idx + 0] = (unsigned char)clampF(color.x, 0.0f, 255.0f);
+                image[idx + 1] = (unsigned char)clampF(color.y, 0.0f, 255.0f);
+                image[idx + 2] = (unsigned char)clampF(color.z, 0.0f, 255.0f);
             }
         }
-        
+
         stbi_write_png(camera.image_name.c_str(), width, height, 3, image, width * 3);
+        delete[] image;
     }
 
     return 0;
 }
 
-Ray ComputeRay(Scene scene, Camera camera, int j, int i)
+Ray ComputeRay(const Scene& scene, const Camera& camera, int j, int i)
 {   
     Vec3f e = camera.position;
     Vec3f m = e - camera.w * camera.near_distance;
@@ -208,7 +206,7 @@ bool FindClosestHit(const Ray& ray, const Scene& scene, const Camera& camera, /*
     return true;
 }
 
-float IntersectsMesh(const Ray& ray, const Mesh& mesh, const std::vector<Vertex>& vertex_data, const float& minT, /*out*/ Face& hitFace, /*out*/ float& beta_out, /*out*/ float& gamma_out) 
+float IntersectsMesh(const Ray& ray, const Mesh& mesh, const std::vector<Vertex>& vertex_data, float minT, /*out*/ Face& hitFace, /*out*/ float& beta_out, /*out*/ float& gamma_out)
 {
     float meshMinT = minT, t;
     bool noIntersects = true;
@@ -233,7 +231,7 @@ float IntersectsMesh(const Ray& ray, const Mesh& mesh, const std::vector<Vertex>
     return meshMinT;
 }
 
-float IntersectsTriangle_Bary(const Ray& ray, const Face& tri_face, const std::vector<Vertex>& vertex_data, const float& minT, /*out*/ float& beta_out, /*out*/ float& gamma_out) 
+float IntersectsTriangle_Bary(const Ray& ray, const Face& tri_face, const std::vector<Vertex>& vertex_data, float minT, /*out*/ float& beta_out, /*out*/ float& gamma_out)
 {
    Vec3f tri_va = vertex_data[tri_face.i0 - 1].pos;
    Vec3f tri_vb = vertex_data[tri_face.i1 - 1].pos;
@@ -287,7 +285,7 @@ float IntersectsTriangle_Bary(const Ray& ray, const Face& tri_face, const std::v
     return t;
 }
 
-float IntersectSphere(const Ray& ray, const Vertex& center, float radius, const float& minT) 
+float IntersectSphere(const Ray& ray, const Vertex& center, float radius, float minT) 
 {
     Vec3f oc = ray.origin - center.pos;
     Vec3f d = ray.direction;
@@ -347,8 +345,6 @@ Vec3f FindNormal_Sphere(const Vertex& center, const Vec3f& point, float radius)
    return ((point - center.pos) * (1 / radius)).normalize();
 }
 
-#include <iostream>
-
 Vec3f ApplyShading(const Ray& ray, const Scene& scene, const Camera& camera, const HitRecord& closestHit)
 {
     Material mat = scene.materials[closestHit.materialId - 1];
@@ -396,7 +392,6 @@ Vec3f ApplyShading(const Ray& ray, const Scene& scene, const Camera& camera, con
         
         // Check entering/exiting using the ORIGINAL normal
         bool entering = n_original.dotProduct(d_inc) < 0.0f;
-        std::cout << entering << std::endl;
         
         // Flip the normal to point against the ray (for consistent math)
         Vec3f normal = entering ? n_original : (n_original * -1.0f);
@@ -494,7 +489,7 @@ float Fresnel_Conductor(float cosTheta, float refractionIndex, float absorptionI
     return (R_S + R_P) * 0.5;
 }
 
-bool InShadow(Vec3f point, const PointLight& I, const Vec3f& n, float eps_shadow, Scene scene) 
+bool InShadow(const Vec3f& point, const PointLight& I, const Vec3f& n, float eps_shadow, const Scene& scene)
 {
     Ray shadowRay;
     shadowRay.origin = point + n * eps_shadow;
