@@ -1,8 +1,4 @@
-/.vscode
 /inputs
 /outputs
 raytracer.exe
 raytracer
-*.json
-*.png
-*.pdf

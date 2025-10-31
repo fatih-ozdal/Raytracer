@@ -1,0 +1,28 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug Ray Tracer",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/raytracer",
+      "args": ["${workspaceFolder}/../inputs/simple.json"],
+      "cwd": "${workspaceFolder}",
+      "MIMode": "gdb",
+      "stopAtEntry": false,
+      "externalConsole": true,
+      "setupCommands": [
+        { "text": "-enable-pretty-printing" }
+      ],
+
+      "linux": {
+        "miDebuggerPath": "/usr/bin/gdb",
+        "program": "${workspaceFolder}/raytracer"
+      },
+      "windows": {
+        "miDebuggerPath": "C:/msys64/mingw64/bin/gdb.exe",
+        "program": "${workspaceFolder}/raytracer.exe"
+      }
+    }
+  ]
+}

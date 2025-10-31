@@ -17,8 +17,7 @@ int main(int argc, char* argv[])
         const int height = camera.height;
         auto* image = new unsigned char[(size_t)width * height * 3];
 
-        #pragma omp parallel for collapse(2) schedule(static) default(none) \
-            shared(image, width, height, scene, camera)
+        #pragma omp parallel for collapse(2) schedule(static)
         for (int i = 0; i < height; ++i) {
             for (int j = 0; j < width; ++j) {
                 Ray   ray   = ComputeRay(scene, camera, j, i);
