@@ -1,0 +1,81 @@
+{
+  "Scene": {
+    "BackgroundColor": "0 0 0",
+    "MaxRecursionDepth": "6",
+    "Cameras": {
+      "Camera": {
+        "_id": "1",
+        "_type": "lookAt",
+        "Position": "500 -100 100",
+        "GazePoint": "0 100 -60",
+        "Up": "0 0 1",
+        "FovY": "32",
+        "NearDistance": "1",
+        "ImageResolution": "800 480",
+        "ImageName": "other_dragon.png"
+      }
+    },
+    "Lights": {
+      "AmbientLight": "25 25 25",
+      "PointLight": [
+        {
+          "_id": "1",
+          "Position": "400 100 200",
+          "Intensity": "50000000 50000000 50000000"
+        },
+        {
+          "_id": "2",
+          "Position": "600 -200 200",
+          "Intensity": "50000000 50000000 50000000"
+        }
+      ]
+    },
+    "VertexData": {
+      "_data": "-1000 -1000 -100 1000 -1000 -100 1000 1000 -100 -1000 1000 -100",
+      "_type": "xyz"
+    },
+    "Materials": {
+      "Material": [
+        {
+          "_id": "1",
+          "_type": "conductor",
+          "AmbientReflectance": "0 0 0",
+          "DiffuseReflectance": "0 0 0",
+          "SpecularReflectance": "1 0.86 0.57",
+          "PhongExponent": "5",
+          "MirrorReflectance": "1 0.86 0.57",
+          "RefractionIndex": "0.370",
+          "AbsorptionIndex": "2.820"
+        },
+        {
+          "_id": "2",
+          "_type": "mirror",
+          "AmbientReflectance": "0 0 0",
+          "DiffuseReflectance": "0.5 0.5 0.5",
+          "SpecularReflectance": "0 0 0",
+          "PhongExponent": "1",
+          "MirrorReflectance": "0.5 0.5 0.5"
+        }
+      ]
+    },
+    "Objects": {
+      "Mesh": [
+        {
+          "_id": "1",
+          "Material": "1",
+          "Faces": {
+            "_plyFile": "ply/dragon_remeshed_fixed.ply"
+          }
+        },
+        {
+          "_id": "2",
+          "Material": "2",
+          "Faces": {
+            "_data": "1 2 3 3 4 1",
+            "_type": "triangle"
+          }
+        }
+      ]
+    }
+  }
+}

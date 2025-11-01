@@ -1,0 +1,91 @@
+{
+  "Scene": {
+    "BackgroundColor": "25 76 113",
+    "ShadowRayEpsilon": "1e-3",
+    "Cameras": {
+      "Camera": {
+        "_id": "1",
+        "Position": "-3.916900157928467 -16.159503936767578 -1.0512659549713135",
+        "Gaze": "0.22766843438148499 0.971221923828125 -0.06996545195579529",
+        "Up": "-7.450580596923828e-09 0.07185239344835281 0.99741530418396",
+        "NearPlane": "-1 1 -1.0 1.0",
+        "NearDistance": "3",
+        "ImageResolution": "1080 1080",
+        "ImageName": "ton_Roosendaal_smooth.png"
+      }
+    },
+    "Lights": {
+      "AmbientLight": "0 0 0",
+      "PointLight": {
+        "_id": "1",
+        "Position": "-6.154719352722168 -47.027748107910156 16.88732147216797",
+        "Intensity": "500000.0 500000.0 500000.0"
+      }
+    },
+    "Materials": {
+      "Material": [
+        {
+          "_id": "1",
+          "AmbientReflectance": "1 1 1",
+          "DiffuseReflectance": "0.800000011920929 0.800000011920929 0.800000011920929",
+          "SpecularReflectance": "0.5 0.5 0.5",
+          "PhongExponent": "1"
+        },
+        {
+          "_id": "2",
+          "AmbientReflectance": "1 1 1",
+          "DiffuseReflectance": "0.8000000715255737 0.3557424247264862 0.04346328601241112",
+          "SpecularReflectance": "0.5 0.5 0.5",
+          "PhongExponent": "1"
+        },
+        {
+          "_id": "3",
+          "AmbientReflectance": "1 1 1",
+          "DiffuseReflectance": "0.8000000715255737 0.3774781823158264 0.04441830515861511",
+          "SpecularReflectance": "0.5 0.5 0.5",
+          "PhongExponent": "1"
+        },
+        {
+          "_id": "4",
+          "AmbientReflectance": "0 0 0",
+          "DiffuseReflectance": "0 0 0",
+          "SpecularReflectance": "0 0 0",
+          "PhongExponent": "1"
+        }
+      ]
+    },
+    "VertexData": {
+      "_data": "0 0 0",
+      "_type": "xyz"
+    },
+    "TexCoordData": null,
+    "Objects": {
+      "Mesh": [
+        {
+          "_id": "1",
+          "_shadingMode": "smooth",
+          "Material": "2",
+          "Faces": {
+            "_plyFile": "ton_Roosendaal_smooth_ply/mesh_1.ply"
+          }
+        },
+        {
+          "_id": "2",
+          "_shadingMode": "smooth",
+          "Material": "1",
+          "Faces": {
+            "_plyFile": "ton_Roosendaal_smooth_ply/mesh_2.ply"
+          }
+        },
+        {
+          "_id": "3",
+          "_shadingMode": "smooth",
+          "Material": "3",
+          "Faces": {
+            "_plyFile": "ton_Roosendaal_smooth_ply/mesh_3.ply"
+          }
+        }
+      ]
+    }
+  }
+}
