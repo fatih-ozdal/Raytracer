@@ -5,6 +5,7 @@
 #include <vector>
 #include <string>
 #include "Vec3f.h"
+#include "Aabb.h"
 
 using json = nlohmann::json;
 using std::vector;
@@ -64,7 +65,6 @@ struct Face
     int i0, i1, i2;     // vertex indices
     Vec3f n_unit;       // is a unit vector
     float plane_d;
-    // Vec3f n_area;    // can be added
 };
 
 struct Mesh
@@ -72,12 +72,14 @@ struct Mesh
     bool is_smooth;
     int material_id;
     vector<Face> faces;
+    AABB localBounds;
 };
 
 struct Triangle
 {
     int material_id;
     Face face;
+    AABB localBounds;
 };
 
 struct Sphere
@@ -85,6 +87,7 @@ struct Sphere
     int material_id;
     int center_vertex_id;
     float radius;
+    AABB localBounds;
 };
 
 struct Plane 

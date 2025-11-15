@@ -240,8 +240,9 @@ Scene parser::loadFromJson(const string &filepath)
                 mesh.material_id = std::stoi(mj.at("Material").get<std::string>());
 
                 std::string facesStr;
-                bool ply_has_normals = false;  // Track if PLY provided normals
-                
+                bool ply_has_normals = false;   // Track if PLY provided normals
+
+                // Get all of the Vertex ids for Faces
                 if (mj.contains("Faces") && mj["Faces"].contains("_plyFile")) {
                     std::string ply_rel = mj["Faces"]["_plyFile"].get<std::string>();
                     std::string ply_path = join_with_json_dir(filepath, ply_rel);
@@ -285,6 +286,9 @@ Scene parser::loadFromJson(const string &filepath)
                     if (touched.empty() || touched.back() != idx) touched.push_back(idx);
                 };
 
+                // Update Mesh Local Bound according to each new face
+                mesh.localBounds.reset();
+
                 int i0, i1, i2;
                 while (ss >> i0 >> i1 >> i2) {
                     Face f{};
@@ -305,6 +309,10 @@ Scene parser::loadFromJson(const string &filepath)
                     
                     f.n_unit = n_unit;
                     f.plane_d = -n_unit.dotProduct(va);
+
+                    mesh.localBounds.expand(va);
+                    mesh.localBounds.expand(vb);
+                    mesh.localBounds.expand(vc);
 
                     mesh.faces.push_back(f);
 
@@ -374,6 +382,11 @@ Scene parser::loadFromJson(const string &filepath)
                 tri.face.n_unit  = n_unit;
                 tri.face.plane_d = -n_unit.dotProduct(tri_va);
 
+                tri.localBounds.reset();
+                tri.localBounds.expand(tri_va);
+                tri.localBounds.expand(tri_vb);
+                tri.localBounds.expand(tri_vc);
+
                 scene.triangles.push_back(tri);
             };
 
@@ -393,6 +406,11 @@ Scene parser::loadFromJson(const string &filepath)
                 sp.material_id       = std::stoi(sj.at("Material").get<std::string>());
                 sp.center_vertex_id  = std::stoi(sj.at("Center").get<std::string>());
                 sp.radius            = parser::parseFloat(sj.at("Radius").get<std::string>());
+
+                Vec3f rVec = {sp.radius, sp.radius, sp.radius};
+                Vec3f center = scene.vertex_data[sp.center_vertex_id - 1].pos;
+                sp.localBounds.min = center - rVec;
+                sp.localBounds.max = center + rVec;
 
                 scene.spheres.push_back(sp);
             };
