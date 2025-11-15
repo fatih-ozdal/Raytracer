@@ -303,7 +303,7 @@ Scene parser::loadFromJson(const string &filepath)
                         continue;
                     }
                     
-                    f.n_face = n_unit;
+                    f.n_unit = n_unit;
                     f.plane_d = -n_unit.dotProduct(va);
 
                     mesh.faces.push_back(f);
@@ -371,7 +371,7 @@ Scene parser::loadFromJson(const string &filepath)
                     return;
                 }
 
-                tri.face.n_face  = n_unit;
+                tri.face.n_unit  = n_unit;
                 tri.face.plane_d = -n_unit.dotProduct(tri_va);
 
                 scene.triangles.push_back(tri);
@@ -413,15 +413,15 @@ Scene parser::loadFromJson(const string &filepath)
 
                 p.material_id = std::stoi(pj.at("Material").get<std::string>());
                 p.vertex_id   = std::stoi(pj.at("Point").get<std::string>());
-                p.n_face      = parser::parseVec3f(pj.at("Normal").get<std::string>()).normalize();
+                p.n_unit      = parser::parseVec3f(pj.at("Normal").get<std::string>()).normalize();
 
                 // Degenerate plane
-                if (p.n_face.x == 0.f && p.n_face.y == 0.f && p.n_face.z == 0.f) {
+                if (p.n_unit.x == 0.f && p.n_unit.y == 0.f && p.n_unit.z == 0.f) {
                     return;
                 }
 
                 const Vertex& plane_vertex = scene.vertex_data[p.vertex_id - 1];
-                p.plane_d = -p.n_face.dotProduct(plane_vertex.pos);
+                p.plane_d = -p.n_unit.dotProduct(plane_vertex.pos);
 
                 scene.planes.push_back(p);
             };

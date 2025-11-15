@@ -145,7 +145,7 @@ bool FindClosestHit(const Ray& ray, const Scene& scene, const Camera& camera, /*
 
     for (size_t i = 0, n = scene.planes.size(); i < n; i++) {
         const Plane& plane = scene.planes[i];
-        float t = IntersectsPlane(ray, plane.n_face, plane.plane_d, minT);
+        float t = IntersectsPlane(ray, plane.n_unit, plane.plane_d, minT);
 
         if (t < minT && t > 0 && t != RAY_MISS_VALUE){
             hitT = t;
@@ -179,12 +179,12 @@ bool FindClosestHit(const Ray& ray, const Scene& scene, const Camera& camera, /*
                 normal = (nA * alpha + nB * bary_beta + nC * bary_gamma).normalize();
             }
             else {
-                normal = hitTriFace.n_face;
+                normal = hitTriFace.n_unit;
             }
             break;
         }
         case ObjectType::Triangle: {
-            normal = hitTriFace.n_face;
+            normal = hitTriFace.n_unit;
             break;
         }
         case ObjectType::Sphere: {
@@ -193,7 +193,7 @@ bool FindClosestHit(const Ray& ray, const Scene& scene, const Camera& camera, /*
             break;
         }
         case ObjectType::Plane: {
-            normal = closestPlane.n_face;
+            normal = closestPlane.n_unit;
             break;
         }
         default: {
@@ -530,7 +530,7 @@ bool InShadow(const Vec3f& point, const PointLight& I, const Vec3f& n, float eps
 
     for (size_t i = 0, n = scene.planes.size(); i < n; i++) {
         const Plane& plane = scene.planes[i];
-        hitT = IntersectsPlane(shadowRay, plane.n_face, plane.plane_d, minT);
+        hitT = IntersectsPlane(shadowRay, plane.n_unit, plane.plane_d, minT);
         if (hitT < minT && hitT != RAY_MISS_VALUE){
             return true;
         }

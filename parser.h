@@ -15,12 +15,6 @@ struct LRBT_vec
     float l, r, b, t;
 };
 
-enum class CameraType : uint32_t
-{
-    None = 0,
-    LookAt,
-};
-
 struct Camera
 {
     Vec3f position;
@@ -68,7 +62,7 @@ struct Vertex
 struct Face
 {
     int i0, i1, i2;     // vertex indices
-    Vec3f n_face;       // is a unit vector
+    Vec3f n_unit;       // is a unit vector
     float plane_d;
     // Vec3f n_area;    // can be added
 };
@@ -97,7 +91,7 @@ struct Plane
 {
     int material_id;
     int vertex_id;
-    Vec3f n_face;
+    Vec3f n_unit;
     float plane_d;
 };
 
@@ -120,7 +114,7 @@ struct Scene
 
 struct PlyData {
     std::vector<Vec3f> verts;
-    std::vector<Vec3f> normals;  // Added: store normals separately
+    std::vector<Vec3f> normals;
     std::vector<std::array<int,3>> faces;
 };
 
