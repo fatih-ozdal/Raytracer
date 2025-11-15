@@ -1,0 +1,448 @@
+{
+  "Scene": {
+    "BackgroundColor": "36 36 36",
+    "ShadowRayEpsilon": "1e-3",
+    "IntersectionTestEpsilon": "1e-6",
+    "Cameras": {
+      "Camera": {
+        "_id": "1",
+        "Position": "4.5321807861328125 -5.135167598724365 2.702077865600586",
+        "Gaze": "-0.6508852243423462 0.7487589120864868 -0.12533387541770935",
+        "Up": "-0.08222609758377075 0.09459094703197479 0.9921146631240845",
+        "NearPlane": "-1 1 -1.3333333333333333 1.3333333333333333",
+        "NearDistance": "3",
+        "ImageResolution": "768 1024",
+        "ImageName": "two_berserkers.png"
+      }
+    },
+    "Lights": {
+      "AmbientLight": "0 0 0",
+      "PointLight": [
+        {
+          "_id": "1",
+          "Position": "0.0 -1.6906746625900269 3.7716522216796875",
+          "Intensity": "1000.0 1000.0 1000.0"
+        },
+        {
+          "_id": "2",
+          "Position": "2.9091272354125977 -0.008594036102294922 0.41030049324035645",
+          "Intensity": "1000.0 1000.0 1000.0"
+        }
+      ]
+    },
+    "Materials": {
+      "Material": [
+        {
+          "_id": "1",
+          "AmbientReflectance": "1 1 1",
+          "DiffuseReflectance": "0.08175961673259735 0.02983682230114937 0.015673212707042694",
+          "SpecularReflectance": "0.0 0.0 0.0",
+          "MirrorReflectance": "0.0 0.0 0.0",
+          "PhongExponent": "1"
+        },
+        {
+          "_id": "2",
+          "AmbientReflectance": "1 1 1",
+          "DiffuseReflectance": "0.5197093486785889 0.590034008026123 0.8000000715255737",
+          "SpecularReflectance": "0.7440944910049438 0.7440944910049438 0.7440944910049438",
+          "MirrorReflectance": "0.5 0.5 0.5",
+          "PhongExponent": "1"
+        },
+        {
+          "_id": "3",
+          "AmbientReflectance": "1 1 1",
+          "DiffuseReflectance": "1.0 0.7590219974517822 0.5691599249839783",
+          "SpecularReflectance": "0.12007874250411987 0.12007874250411987 0.12007874250411987",
+          "MirrorReflectance": "0.0 0.0 0.0",
+          "PhongExponent": "1"
+        },
+        {
+          "_id": "4",
+          "AmbientReflectance": "1 1 1",
+          "DiffuseReflectance": "0.2171364426612854 0.05240148305892944 0.027949601411819458",
+          "SpecularReflectance": "0.5 0.5 0.5",
+          "MirrorReflectance": "0.0 0.0 0.0",
+          "PhongExponent": "1"
+        },
+        {
+          "_id": "5",
+          "AmbientReflectance": "1 1 1",
+          "DiffuseReflectance": "0.05637647211551666 0.01913260854780674 0.004609394818544388",
+          "SpecularReflectance": "0.5 0.5 0.5",
+          "MirrorReflectance": "0.0 0.0 0.0",
+          "PhongExponent": "1"
+        },
+        {
+          "_id": "6",
+          "AmbientReflectance": "1 1 1",
+          "DiffuseReflectance": "0.22341124713420868 0.22341124713420868 0.22341124713420868",
+          "SpecularReflectance": "0.7913385629653931 0.7913385629653931 0.7913385629653931",
+          "MirrorReflectance": "0.5 0.5 0.5",
+          "PhongExponent": "1"
+        },
+        {
+          "_id": "7",
+          "AmbientReflectance": "1 1 1",
+          "DiffuseReflectance": "0.08897995203733444 0.08897995203733444 0.08897995203733444",
+          "SpecularReflectance": "0.11417323350906372 0.11417323350906372 0.11417323350906372",
+          "MirrorReflectance": "0.0 0.0 0.0",
+          "PhongExponent": "1"
+        },
+        {
+          "_id": "8",
+          "AmbientReflectance": "1 1 1",
+          "DiffuseReflectance": "0.10035386681556702 0.26400086283683777 0.5019864439964294",
+          "SpecularReflectance": "0.5 0.5 0.5",
+          "MirrorReflectance": "0.5 0.5 0.5",
+          "PhongExponent": "1"
+        },
+        {
+          "_id": "9",
+          "AmbientReflectance": "1 1 1",
+          "DiffuseReflectance": "0.13054215908050537 0.04124774411320686 0.022744331508874893",
+          "SpecularReflectance": "0.5 0.5 0.5",
+          "MirrorReflectance": "0.0 0.0 0.0",
+          "PhongExponent": "1"
+        },
+        {
+          "_id": "10",
+          "AmbientReflectance": "1 1 1",
+          "DiffuseReflectance": "0.8000000715255737 0.29416996240615845 0.0",
+          "SpecularReflectance": "0.625984251499176 0.625984251499176 0.625984251499176",
+          "MirrorReflectance": "0.0 0.0 0.0",
+          "PhongExponent": "1"
+        },
+        {
+          "_id": "11",
+          "AmbientReflectance": "1 1 1",
+          "DiffuseReflectance": "0.14981022477149963 0.14981022477149963 0.14981022477149963",
+          "SpecularReflectance": "0.625984251499176 0.625984251499176 0.625984251499176",
+          "MirrorReflectance": "0.27952754497528076 0.27952754497528076 0.27952754497528076",
+          "PhongExponent": "1"
+        },
+        {
+          "_id": "12",
+          "AmbientReflectance": "0 0 0",
+          "DiffuseReflectance": "0 0 0",
+          "SpecularReflectance": "0 0 0",
+          "MirrorReflectance": "0 0 0",
+          "PhongExponent": "1"
+        },
+        {
+          "_id": "13",
+          "AmbientReflectance": "1 1 1",
+          "DiffuseReflectance": "0.800000011920929 0.800000011920929 0.800000011920929",
+          "SpecularReflectance": "0.5 0.5 0.5",
+          "MirrorReflectance": "0.5999999940395355 0.5999999940395355 0.5999999940395355",
+          "PhongExponent": "1"
+        }
+      ]
+    },
+    "Transformations": {
+      "Scaling": [
+        {
+          "_data": "0.75 0.75 0.75",
+          "_id": "1"
+        },
+        {
+          "_data": "0.75 -0.75 0.75",
+          "_id": "2"
+        }
+      ],
+      "Translation": [
+        {
+          "_data": "0 2 0",
+          "_id": "1"
+        },
+        {
+          "_data": "-1 -0.5 0",
+          "_id": "2"
+        }
+      ],
+      "Rotation": {
+        "_data": "70 0 0 1",
+        "_id": "1"
+      }
+    },
+    "VertexData": {
+      "_data": "0 0 0",
+      "_type": "xyz"
+    },
+    "Objects": {
+      "Mesh": [
+        {
+          "_id": "1",
+          "_shadingMode": "smooth",
+          "Material": "3",
+          "Transformations": "s1 t1",
+          "Faces": {
+            "_plyFile": "berserker_ply_ply/mesh_1.ply"
+          }
+        },
+        {
+          "_id": "2",
+          "_shadingMode": "smooth",
+          "Material": "9",
+          "Transformations": "s1 t1",
+          "Faces": {
+            "_plyFile": "berserker_ply_ply/mesh_2.ply"
+          }
+        },
+        {
+          "_id": "3",
+          "_shadingMode": "smooth",
+          "Material": "10",
+          "Transformations": "s1 t1",
+          "Faces": {
+            "_plyFile": "berserker_ply_ply/mesh_3.ply"
+          }
+        },
+        {
+          "_id": "4",
+          "_shadingMode": "smooth",
+          "Material": "11",
+          "Transformations": "s1 t1",
+          "Faces": {
+            "_plyFile": "berserker_ply_ply/mesh_4.ply"
+          }
+        },
+        {
+          "_id": "5",
+          "_shadingMode": "smooth",
+          "Material": "4",
+          "Transformations": "s1 t1",
+          "Faces": {
+            "_plyFile": "berserker_ply_ply/mesh_5.ply"
+          }
+        },
+        {
+          "_id": "6",
+          "_shadingMode": "smooth",
+          "Material": "5",
+          "Transformations": "s1 t1",
+          "Faces": {
+            "_plyFile": "berserker_ply_ply/mesh_6.ply"
+          }
+        },
+        {
+          "_id": "7",
+          "_shadingMode": "smooth",
+          "Material": "4",
+          "Transformations": "s1 t1",
+          "Faces": {
+            "_plyFile": "berserker_ply_ply/mesh_7.ply"
+          }
+        },
+        {
+          "_id": "8",
+          "_shadingMode": "smooth",
+          "Material": "6",
+          "Transformations": "s1 t1",
+          "Faces": {
+            "_plyFile": "berserker_ply_ply/mesh_8.ply"
+          }
+        },
+        {
+          "_id": "9",
+          "_shadingMode": "smooth",
+          "Material": "5",
+          "Transformations": "s1 t1",
+          "Faces": {
+            "_plyFile": "berserker_ply_ply/mesh_9.ply"
+          }
+        },
+        {
+          "_id": "10",
+          "_shadingMode": "smooth",
+          "Material": "6",
+          "Transformations": "s1 t1",
+          "Faces": {
+            "_plyFile": "berserker_ply_ply/mesh_10.ply"
+          }
+        },
+        {
+          "_id": "11",
+          "_shadingMode": "smooth",
+          "Material": "7",
+          "Transformations": "s1 t1",
+          "Faces": {
+            "_plyFile": "berserker_ply_ply/mesh_11.ply"
+          }
+        },
+        {
+          "_id": "12",
+          "_shadingMode": "smooth",
+          "Material": "6",
+          "Transformations": "s1 t1",
+          "Faces": {
+            "_plyFile": "berserker_ply_ply/mesh_12.ply"
+          }
+        },
+        {
+          "_id": "13",
+          "_shadingMode": "smooth",
+          "Material": "7",
+          "Transformations": "s1 t1",
+          "Faces": {
+            "_plyFile": "berserker_ply_ply/mesh_13.ply"
+          }
+        },
+        {
+          "_id": "14",
+          "_shadingMode": "smooth",
+          "Material": "8",
+          "Transformations": "s1 t1",
+          "Faces": {
+            "_plyFile": "berserker_ply_ply/mesh_14.ply"
+          }
+        },
+        {
+          "_id": "15",
+          "_shadingMode": "smooth",
+          "Material": "1",
+          "Transformations": "s1 t1",
+          "Faces": {
+            "_plyFile": "berserker_ply_ply/mesh_15.ply"
+          }
+        },
+        {
+          "_id": "16",
+          "_shadingMode": "smooth",
+          "Material": "2",
+          "Transformations": "s1 t1",
+          "Faces": {
+            "_plyFile": "berserker_ply_ply/mesh_16.ply"
+          }
+        },
+        {
+          "_id": "17",
+          "_shadingMode": "smooth",
+          "Material": "6",
+          "Transformations": "s1 t1",
+          "Faces": {
+            "_plyFile": "berserker_ply_ply/mesh_17.ply"
+          }
+        },
+        {
+          "_id": "18",
+          "_shadingMode": "smooth",
+          "Material": "5",
+          "Transformations": "s1 t1",
+          "Faces": {
+            "_plyFile": "berserker_ply_ply/mesh_18.ply"
+          }
+        }
+      ],
+      "MeshInstance": [
+        {
+          "_id": "19",
+          "_baseMeshId": "1",
+          "_resetTransform": "true",
+          "Transformations": "r1 s2 t2"
+        },
+        {
+          "_id": "20",
+          "_baseMeshId": "2",
+          "_resetTransform": "true",
+          "Transformations": "r1 s2 t2"
+        },
+        {
+          "_id": "21",
+          "_baseMeshId": "3",
+          "_resetTransform": "true",
+          "Transformations": "r1 s2 t2"
+        },
+        {
+          "_id": "22",
+          "_baseMeshId": "4",
+          "_resetTransform": "true",
+          "Transformations": "r1 s2 t2"
+        },
+        {
+          "_id": "23",
+          "_baseMeshId": "5",
+          "_resetTransform": "true",
+          "Transformations": "r1 s2 t2"
+        },
+        {
+          "_id": "24",
+          "_baseMeshId": "6",
+          "_resetTransform": "true",
+          "Transformations": "r1 s2 t2"
+        },
+        {
+          "_id": "25",
+          "_baseMeshId": "7",
+          "_resetTransform": "true",
+          "Transformations": "r1 s2 t2"
+        },
+        {
+          "_id": "26",
+          "_baseMeshId": "8",
+          "_resetTransform": "true",
+          "Transformations": "r1 s2 t2"
+        },
+        {
+          "_id": "27",
+          "_baseMeshId": "9",
+          "_resetTransform": "true",
+          "Transformations": "r1 s2 t2"
+        },
+        {
+          "_id": "28",
+          "_baseMeshId": "10",
+          "_resetTransform": "true",
+          "Transformations": "r1 s2 t2"
+        },
+        {
+          "_id": "29",
+          "_baseMeshId": "11",
+          "_resetTransform": "true",
+          "Transformations": "r1 s2 t2"
+        },
+        {
+          "_id": "30",
+          "_baseMeshId": "12",
+          "_resetTransform": "true",
+          "Transformations": "r1 s2 t2"
+        },
+        {
+          "_id": "31",
+          "_baseMeshId": "13",
+          "_resetTransform": "true",
+          "Transformations": "r1 s2 t2"
+        },
+        {
+          "_id": "32",
+          "_baseMeshId": "14",
+          "_resetTransform": "true",
+          "Transformations": "r1 s2 t2"
+        },
+        {
+          "_id": "33",
+          "_baseMeshId": "15",
+          "_resetTransform": "true",
+          "Transformations": "r1 s2 t2"
+        },
+        {
+          "_id": "34",
+          "_baseMeshId": "16",
+          "_resetTransform": "true",
+          "Transformations": "r1 s2 t2"
+        },
+        {
+          "_id": "35",
+          "_baseMeshId": "17",
+          "_resetTransform": "true",
+          "Transformations": "r1 s2 t2"
+        },
+        {
+          "_id": "36",
+          "_baseMeshId": "18",
+          "_resetTransform": "true",
+          "Transformations": "r1 s2 t2"
+        }
+      ]
+    }
+  }
+}

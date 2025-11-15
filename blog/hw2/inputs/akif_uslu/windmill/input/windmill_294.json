@@ -1,0 +1,337 @@
+{
+  "Scene": {
+    "BackgroundColor": "150 197 255",
+    "ShadowRayEpsilon": "1e-3",
+    "IntersectionTestEpsilon": "1e-6",
+    "Cameras": {
+      "Camera": {
+        "_id": "1",
+        "Position": "23.399429321289062 -30.164710998535156 27.274856567382812",
+        "Gaze": "-0.5495308637619019 0.7033665180206299 -0.450878381729126",
+        "Up": "-0.27758944034576416 0.3552963435649872 0.892585277557373",
+        "NearPlane": "-1 1 -1.0 1.0",
+        "NearDistance": "3",
+        "ImageResolution": "800 800",
+        "ImageName": "windmill_294.png"
+      }
+    },
+    "Lights": {
+      "AmbientLight": "0 0 0",
+      "PointLight": [
+        {
+          "_id": "1",
+          "Position": "17.64766502380371 -15.21084976196289 29.963754653930664",
+          "Intensity": "1000000.0 1000000.0 1000000.0"
+        },
+        {
+          "_id": "2",
+          "Position": "0.0 0.0 7.575457572937012",
+          "Intensity": "10000.0 10000.0 10000.0"
+        },
+        {
+          "_id": "3",
+          "Position": "-1.0418275493540951e-15 -2.1327154636383057 2.883483648300171",
+          "Intensity": "1000.0 1000.0 1000.0"
+        }
+      ]
+    },
+    "Transformations": {
+      "Rotation": {
+        "_data": "294 1 0 0",
+        "_id": "1"
+      },
+      "Translation": [
+        {
+          "_data": "3.3092 0.57503 -11.888",
+          "_id": "1"
+        },
+        {
+          "_data": "-3.3092 -0.57503 11.888",
+          "_id": "2"
+        }
+      ]
+    },
+    "Materials": {
+      "Material": [
+        {
+          "_id": "1",
+          "AmbientReflectance": "1 1 1",
+          "DiffuseReflectance": "0.20155633985996246 0.09989873319864273 0.036889463663101196",
+          "SpecularReflectance": "0.0 0.0 0.0",
+          "PhongExponent": "1"
+        },
+        {
+          "_id": "2",
+          "AmbientReflectance": "1 1 1",
+          "DiffuseReflectance": "0.8000000715255737 0.7391534447669983 0.08431411534547806",
+          "SpecularReflectance": "0.0 0.0 0.0",
+          "PhongExponent": "1"
+        },
+        {
+          "_id": "3",
+          "AmbientReflectance": "1 1 1",
+          "DiffuseReflectance": "0.5394797921180725 0.03688935562968254 0.022173896431922913",
+          "SpecularReflectance": "0.0 0.0 0.0",
+          "PhongExponent": "1"
+        },
+        {
+          "_id": "4",
+          "AmbientReflectance": "1 1 1",
+          "DiffuseReflectance": "0.3762623071670532 0.03560128062963486 0.015996301546692848",
+          "SpecularReflectance": "0.0 0.0 0.0",
+          "PhongExponent": "1"
+        },
+        {
+          "_id": "5",
+          "AmbientReflectance": "1 1 1",
+          "DiffuseReflectance": "0.5088815689086914 0.048171769827604294 0.021219030022621155",
+          "SpecularReflectance": "0.0 0.0 0.0",
+          "PhongExponent": "1"
+        },
+        {
+          "_id": "6",
+          "AmbientReflectance": "1 1 1",
+          "DiffuseReflectance": "0.36130690574645996 0.022173849865794182 0.010960100218653679",
+          "SpecularReflectance": "0.0 0.0 0.0",
+          "PhongExponent": "1"
+        },
+        {
+          "_id": "7",
+          "AmbientReflectance": "1 1 1",
+          "DiffuseReflectance": "0.9734452962875366 0.9130988717079163 0.701102077960968",
+          "SpecularReflectance": "0.0 0.0 0.0",
+          "PhongExponent": "1"
+        },
+        {
+          "_id": "8",
+          "AmbientReflectance": "1 1 1",
+          "DiffuseReflectance": "0.11193245649337769 0.04970655217766762 0.018500227481126785",
+          "SpecularReflectance": "0.0 0.0 0.0",
+          "PhongExponent": "1"
+        },
+        {
+          "_id": "9",
+          "AmbientReflectance": "1 1 1",
+          "DiffuseReflectance": "0.799103319644928 0.4178849160671234 0.1620294600725174",
+          "SpecularReflectance": "0.0 0.0 0.0",
+          "PhongExponent": "1"
+        },
+        {
+          "_id": "10",
+          "AmbientReflectance": "1 1 1",
+          "DiffuseReflectance": "0.7454042434692383 0.7991030812263489 0.10461653769016266",
+          "SpecularReflectance": "0.0 0.0 0.0",
+          "PhongExponent": "1"
+        },
+        {
+          "_id": "11",
+          "AmbientReflectance": "1 1 1",
+          "DiffuseReflectance": "0.11443539708852768 0.11443538963794708 0.13286834955215454",
+          "SpecularReflectance": "0.0 0.0 0.0",
+          "PhongExponent": "1"
+        },
+        {
+          "_id": "12",
+          "AmbientReflectance": "1 1 1",
+          "DiffuseReflectance": "0.20155633985996246 0.06480325758457184 0.028426043689250946",
+          "SpecularReflectance": "0.0 0.0 0.0",
+          "PhongExponent": "1"
+        },
+        {
+          "_id": "13",
+          "AmbientReflectance": "1 1 1",
+          "DiffuseReflectance": "0.3712379038333893 0.6307572722434998 0.7991030216217041",
+          "SpecularReflectance": "0.5 0.5 0.5",
+          "PhongExponent": "1"
+        }
+      ]
+    },
+    "VertexData": {
+      "_data": "0 0 0",
+      "_type": "xyz"
+    },
+    "TexCoordData": null,
+    "Objects": {
+      "Mesh": [
+        {
+          "_id": "1",
+          "_shadingMode": "smooth",
+          "Material": "13",
+          "Faces": {
+            "_plyFile": "../windmill_smooth_ply_ply/mesh_1.ply"
+          }
+        },
+        {
+          "_id": "2",
+          "_shadingMode": "smooth",
+          "Material": "8",
+          "Faces": {
+            "_plyFile": "../windmill_smooth_ply_ply/mesh_2.ply"
+          }
+        },
+        {
+          "_id": "3",
+          "_shadingMode": "smooth",
+          "Material": "8",
+          "Faces": {
+            "_plyFile": "../windmill_smooth_ply_ply/mesh_3.ply"
+          }
+        },
+        {
+          "_id": "4",
+          "_shadingMode": "smooth",
+          "Material": "6",
+          "Faces": {
+            "_plyFile": "../windmill_smooth_ply_ply/mesh_4.ply"
+          }
+        },
+        {
+          "_id": "5",
+          "_shadingMode": "smooth",
+          "Material": "7",
+          "Transformations": "t1 r1 t2",
+          "Faces": {
+            "_plyFile": "../windmill_smooth_ply_ply/mesh_5.ply"
+          }
+        },
+        {
+          "_id": "6",
+          "_shadingMode": "smooth",
+          "Material": "11",
+          "Faces": {
+            "_plyFile": "../windmill_smooth_ply_ply/mesh_6.ply"
+          }
+        },
+        {
+          "_id": "7",
+          "_shadingMode": "smooth",
+          "Material": "11",
+          "Faces": {
+            "_plyFile": "../windmill_smooth_ply_ply/mesh_7.ply"
+          }
+        },
+        {
+          "_id": "8",
+          "_shadingMode": "smooth",
+          "Material": "1",
+          "Faces": {
+            "_plyFile": "../windmill_smooth_ply_ply/mesh_8.ply"
+          }
+        },
+        {
+          "_id": "9",
+          "_shadingMode": "smooth",
+          "Material": "1",
+          "Faces": {
+            "_plyFile": "../windmill_smooth_ply_ply/mesh_9.ply"
+          }
+        },
+        {
+          "_id": "10",
+          "_shadingMode": "smooth",
+          "Material": "1",
+          "Faces": {
+            "_plyFile": "../windmill_smooth_ply_ply/mesh_10.ply"
+          }
+        },
+        {
+          "_id": "11",
+          "_shadingMode": "smooth",
+          "Material": "1",
+          "Faces": {
+            "_plyFile": "../windmill_smooth_ply_ply/mesh_11.ply"
+          }
+        },
+        {
+          "_id": "12",
+          "_shadingMode": "smooth",
+          "Material": "1",
+          "Faces": {
+            "_plyFile": "../windmill_smooth_ply_ply/mesh_12.ply"
+          }
+        },
+        {
+          "_id": "13",
+          "_shadingMode": "smooth",
+          "Material": "1",
+          "Faces": {
+            "_plyFile": "../windmill_smooth_ply_ply/mesh_13.ply"
+          }
+        },
+        {
+          "_id": "14",
+          "_shadingMode": "smooth",
+          "Material": "1",
+          "Faces": {
+            "_plyFile": "../windmill_smooth_ply_ply/mesh_14.ply"
+          }
+        },
+        {
+          "_id": "15",
+          "_shadingMode": "smooth",
+          "Material": "2",
+          "Faces": {
+            "_plyFile": "../windmill_smooth_ply_ply/mesh_15.ply"
+          }
+        },
+        {
+          "_id": "16",
+          "_shadingMode": "smooth",
+          "Material": "12",
+          "Transformations": "t1 r1 t2",
+          "Faces": {
+            "_plyFile": "../windmill_smooth_ply_ply/mesh_16.ply"
+          }
+        },
+        {
+          "_id": "17",
+          "_shadingMode": "smooth",
+          "Material": "9",
+          "Faces": {
+            "_plyFile": "../windmill_smooth_ply_ply/mesh_17.ply"
+          }
+        },
+        {
+          "_id": "18",
+          "_shadingMode": "smooth",
+          "Material": "12",
+          "Faces": {
+            "_plyFile": "../windmill_smooth_ply_ply/mesh_18.ply"
+          }
+        },
+        {
+          "_id": "19",
+          "_shadingMode": "smooth",
+          "Material": "5",
+          "Faces": {
+            "_plyFile": "../windmill_smooth_ply_ply/mesh_19.ply"
+          }
+        },
+        {
+          "_id": "20",
+          "_shadingMode": "smooth",
+          "Material": "4",
+          "Faces": {
+            "_plyFile": "../windmill_smooth_ply_ply/mesh_20.ply"
+          }
+        },
+        {
+          "_id": "21",
+          "_shadingMode": "smooth",
+          "Material": "3",
+          "Faces": {
+            "_plyFile": "../windmill_smooth_ply_ply/mesh_21.ply"
+          }
+        },
+        {
+          "_id": "22",
+          "_shadingMode": "smooth",
+          "Material": "12",
+          "Faces": {
+            "_plyFile": "../windmill_smooth_ply_ply/mesh_22.ply"
+          }
+        }
+      ]
+    }
+  }
+}
