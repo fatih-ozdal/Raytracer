@@ -55,7 +55,7 @@ Scene parser::loadFromJson(const string &filepath)
     if (s.contains("MaxRecursionDepth")) {
         scene.max_recursion_depth = std::stoi(s.at("MaxRecursionDepth").get<std::string>());
     } else {
-        scene.max_recursion_depth = 0; // or whatever default you want
+        scene.max_recursion_depth = 6;
     }
 
     // --- Lights ---
