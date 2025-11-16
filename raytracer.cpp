@@ -78,7 +78,7 @@ bool FindClosestHit(const Ray& ray, const Scene& scene, const Camera& camera, /*
 {
     float minT = FLT_MAX, hitT;
     bool has_intersected = false; // means obj is null
-    ObjectType closestType;
+    PrimKind closestType;
     int closestMatId;
     float bary_beta, bary_gamma;
     int index;
@@ -99,7 +99,7 @@ bool FindClosestHit(const Ray& ray, const Scene& scene, const Camera& camera, /*
             hitT = t;
             minT = hitT;
             closestMatId = mesh.material_id;
-            closestType = ObjectType::Mesh;
+            closestType = PrimKind::Mesh;
             // hitTriFace set by IntersectsMesh
             has_intersected = true;
             closest_is_smooth = mesh.is_smooth;
@@ -119,7 +119,7 @@ bool FindClosestHit(const Ray& ray, const Scene& scene, const Camera& camera, /*
             hitT = t;
             minT = hitT;
             closestMatId = triangle.material_id;
-            closestType = ObjectType::Triangle;
+            closestType = PrimKind::Triangle;
             hitTriFace = triangle.face;
             has_intersected = true;
             index = i;
@@ -136,7 +136,7 @@ bool FindClosestHit(const Ray& ray, const Scene& scene, const Camera& camera, /*
             hitT = t;
             minT = hitT;
             closestMatId = sphere.material_id;
-            closestType = ObjectType::Sphere;
+            closestType = PrimKind::Sphere;
             closestSphere = sphere;
             has_intersected = true;
             index = i;
@@ -151,7 +151,7 @@ bool FindClosestHit(const Ray& ray, const Scene& scene, const Camera& camera, /*
             hitT = t;
             minT = hitT;
             closestMatId = plane.material_id;
-            closestType = ObjectType::Plane;
+            closestType = PrimKind::Plane;
             closestPlane = plane;
             has_intersected = true;
             index = i;
@@ -169,7 +169,7 @@ bool FindClosestHit(const Ray& ray, const Scene& scene, const Camera& camera, /*
 
     // find normal to store in hit record
     switch(closestType) {
-        case ObjectType::Mesh: {
+        case PrimKind::Mesh: {
             if (closest_is_smooth) {
                 const Vec3f& nA = scene.vertex_data[hitTriFace.i0 - 1].normal;
                 const Vec3f& nB = scene.vertex_data[hitTriFace.i1 - 1].normal;
@@ -183,16 +183,16 @@ bool FindClosestHit(const Ray& ray, const Scene& scene, const Camera& camera, /*
             }
             break;
         }
-        case ObjectType::Triangle: {
+        case PrimKind::Triangle: {
             normal = hitTriFace.n_unit;
             break;
         }
-        case ObjectType::Sphere: {
+        case PrimKind::Sphere: {
             Vertex center = scene.vertex_data[closestSphere.center_vertex_id - 1];
             normal = FindNormal_Sphere(center, hit_x, closestSphere.radius);
             break;
         }
-        case ObjectType::Plane: {
+        case PrimKind::Plane: {
             normal = closestPlane.n_unit;
             break;
         }
@@ -201,7 +201,7 @@ bool FindClosestHit(const Ray& ray, const Scene& scene, const Camera& camera, /*
         }
     }
 
-    closestHit = {closestMatId, hit_x, normal, closestType, index};
+    closestHit = {closestMatId, hit_x, normal, closestType};
     return true;
 }
 
