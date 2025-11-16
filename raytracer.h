@@ -33,9 +33,19 @@ void SubdivideMesh(MeshBVH& bvh, uint32_t nodeIdx);
 Ray ComputeRay(const Scene& scene, const Camera& camera, int j, int i) noexcept;
 Vec3f ComputeColor(const Ray& ray, const Scene& scene, const Camera& camera);
 
+bool FindClosestHit(const Ray& ray, const Scene& scene, const Camera& camera, HitRecord& closestHit) noexcept;
+
+void IntersectTopBVH(const Ray& ray, const Scene& scene, float& minT, bool& has_intersected,
+                     PrimKind& closestType, int& closestMatId, int& index,
+                     Face& hitTriFace, Sphere& closestSphere, bool& closest_is_smooth,
+                     float& bary_beta, float& bary_gamma) noexcept;
+
+float IntersectMeshBVH(const Ray& ray, const Mesh& mesh, const Scene& scene, 
+                       size_t meshIdx, float minT, Face& hitFace, 
+                       float& beta_out, float& gamma_out) noexcept;
+
 float IntersectAABB(const Ray& ray, const AABB& box, float minT) noexcept;
 
-bool FindClosestHit(const Ray& ray, const Scene& scene, const Camera& camera, /*out*/ HitRecord& closestHit) noexcept;
 float IntersectsMesh(const Ray& ray, const Mesh& mesh, const std::vector<Vertex>& vertex_data, float minT, /*out*/ Face& hitFace, /*out*/ float& beta_out, /*out*/ float& gamma_out) noexcept;
 float IntersectsTriangle_Bary(const Ray& ray, const Face& tri_face, const std::vector<Vertex>& vertex_data, float minT, /*out*/ float& beta_out, /*out*/ float& gamma_out) noexcept;
 float IntersectSphere(const Ray& ray, const Vertex& center, float radius, float minT) noexcept;

@@ -274,24 +274,6 @@ void SubdivideMesh(MeshBVH& bvh, uint32_t nodeIdx)
     SubdivideMesh(bvh, rightChildIdx);
 }
 
-void IntersectBVH( Ray& ray, const uint32_t nodeIdx, float minT )
-{
-    BVHNode& node = topBvhNodes[nodeIdx];
-    if (!IntersectAABB( ray, node.bounds, minT )) return;
-    if (node.isLeaf())
-    {
-        for (uint32_t i = 0; i < node.primCount; i++ )
-        {
-            // intersect prims according to their type
-        }
-    }
-    else
-    {
-        IntersectBVH( ray, node.leftNodeIdx, minT );
-        IntersectBVH( ray, node.leftNodeIdx + 1, minT );
-    }
-}
-
 Ray ComputeRay(const Scene& scene, const Camera& camera, int j, int i) noexcept
 {   
     Vec3f e = camera.position;
@@ -329,82 +311,28 @@ Vec3f ComputeColor(const Ray& ray, const Scene& scene, const Camera& camera)
     } 
 }
 
-bool FindClosestHit(const Ray& ray, const Scene& scene, const Camera& camera, /*out*/ HitRecord& closestHit) noexcept
+bool FindClosestHit(const Ray& ray, const Scene& scene, const Camera& camera, HitRecord& closestHit) noexcept
 {
-    float minT = FLT_MAX, hitT;
-    bool has_intersected = false; // means obj is null
+    float minT = FLT_MAX;
+    bool has_intersected = false;
     PrimKind closestType;
     int closestMatId;
     float bary_beta, bary_gamma;
     int index;
-
-    // misc vars to find normal at the end
+    
+    // Misc vars to find normal at the end
     Face hitTriFace;
     Plane closestPlane;
     Sphere closestSphere;
     bool closest_is_smooth = false;
-
-    for (size_t i = 0, n = scene.meshes.size(); i < n; i++) {
-        const Mesh& mesh = scene.meshes[i];
-        float temp_b, temp_g;
-        float t = IntersectsMesh(ray, mesh, scene.vertex_data, minT, /*ref*/ hitTriFace, /*ref*/ temp_b, /*ref*/ temp_g);
-
-        if (t < minT && t > 0 && t != RAY_MISS_VALUE)
-        {
-            hitT = t;
-            minT = hitT;
-            closestMatId = mesh.material_id;
-            closestType = PrimKind::Mesh;
-            // hitTriFace set by IntersectsMesh
-            has_intersected = true;
-            closest_is_smooth = mesh.is_smooth;
-            bary_beta = temp_b;
-            bary_gamma = temp_g;
-            index = i;
-        }
-    }
-
-    for (size_t i = 0, n = scene.triangles.size(); i < n; i++) {
-        const Triangle& triangle = scene.triangles[i];
-        float dummy_b, dummy_g;
-        float t = IntersectsTriangle_Bary(ray, triangle.face, scene.vertex_data, minT, /*ref*/ dummy_b, /*ref*/ dummy_g);
-
-        if (t < minT && t > 0 && t != RAY_MISS_VALUE)
-        {
-            hitT = t;
-            minT = hitT;
-            closestMatId = triangle.material_id;
-            closestType = PrimKind::Triangle;
-            hitTriFace = triangle.face;
-            has_intersected = true;
-            index = i;
-        }
-    }
-
-    for(size_t i = 0, n = scene.spheres.size(); i < n; i++) {
-        const Sphere& sphere = scene.spheres[i];
-        const Vertex& center = scene.vertex_data[sphere.center_vertex_id - 1];
-        float t = IntersectSphere(ray, center, sphere.radius, minT);
-
-        if (t < minT && t > 0 && t != RAY_MISS_VALUE) 
-        {
-            hitT = t;
-            minT = hitT;
-            closestMatId = sphere.material_id;
-            closestType = PrimKind::Sphere;
-            closestSphere = sphere;
-            has_intersected = true;
-            index = i;
-        }
-    }
-
-    for (size_t i = 0, n = scene.planes.size(); i < n; i++) {
+    
+    // 1. Test all planes first (not in BVH - infinite primitives)
+    for (size_t i = 0; i < scene.planes.size(); i++) {
         const Plane& plane = scene.planes[i];
         float t = IntersectsPlane(ray, plane.n_unit, plane.plane_d, minT);
-
-        if (t < minT && t > 0 && t != RAY_MISS_VALUE){
-            hitT = t;
-            minT = hitT;
+        
+        if (t < minT && t > 0 && t != RAY_MISS_VALUE) {
+            minT = t;
             closestMatId = plane.material_id;
             closestType = PrimKind::Plane;
             closestPlane = plane;
@@ -413,23 +341,26 @@ bool FindClosestHit(const Ray& ray, const Scene& scene, const Camera& camera, /*
         }
     }
     
-    if (!has_intersected)
-    {
+    // 2. Traverse top-level BVH
+    IntersectTopBVH(ray, scene, minT, has_intersected, closestType, closestMatId, 
+                    index, hitTriFace, closestSphere, closest_is_smooth, 
+                    bary_beta, bary_gamma);
+    
+    if (!has_intersected) {
         return false;
     }
-
-    // since intersection happened, closestType and minT is set correctly
+    
+    // 3. Compute hit point and normal
     Vec3f hit_x = ray.origin + ray.direction * minT;
     Vec3f normal;
-
-    // find normal to store in hit record
+    
     switch(closestType) {
         case PrimKind::Mesh: {
             if (closest_is_smooth) {
                 const Vec3f& nA = scene.vertex_data[hitTriFace.i0 - 1].normal;
                 const Vec3f& nB = scene.vertex_data[hitTriFace.i1 - 1].normal;
                 const Vec3f& nC = scene.vertex_data[hitTriFace.i2 - 1].normal;
-
+                
                 float alpha = 1.f - bary_beta - bary_gamma;
                 normal = (nA * alpha + nB * bary_beta + nC * bary_gamma).normalize();
             }
@@ -455,9 +386,169 @@ bool FindClosestHit(const Ray& ray, const Scene& scene, const Camera& camera, /*
             normal = {0, 0, 0};
         }
     }
-
+    
     closestHit = {closestMatId, hit_x, normal, closestType};
     return true;
+}
+
+void IntersectTopBVH(const Ray& ray, const Scene& scene, float& minT, bool& has_intersected,
+                     PrimKind& closestType, int& closestMatId, int& index,
+                     Face& hitTriFace, Sphere& closestSphere, bool& closest_is_smooth,
+                     float& bary_beta, float& bary_gamma) noexcept
+{
+    // Stack for iterative traversal
+    uint32_t stack[64];
+    uint32_t stackPtr = 0;
+    stack[stackPtr++] = rootNodeIdx;
+    
+    while (stackPtr > 0)
+    {
+        uint32_t nodeIdx = stack[--stackPtr];
+        BVHNode& node = topBvhNodes[nodeIdx];
+        
+        // Test AABB intersection
+        if (IntersectAABB(ray, node.bounds, minT) == RAY_MISS_VALUE) {
+            continue;
+        }
+        
+        if (node.primCount > 0)  // Leaf node
+        {
+            // Test all primitives in this leaf
+            for (uint32_t i = 0; i < node.primCount; i++)
+            {
+                uint32_t primIdx = topPrimIdx[node.firstPrimIdx + i];
+                TopPrim& prim = topPrims[primIdx];
+                
+                switch(prim.kind)
+                {
+                    case PrimKind::Mesh: {
+                        const Mesh& mesh = scene.meshes[prim.index];
+                        float temp_b, temp_g;
+                        Face tempFace;
+                        
+                        // Traverse mesh BVH
+                        float t = IntersectMeshBVH(ray, mesh, scene, prim.index, 
+                                                   minT, tempFace, temp_b, temp_g);
+                        
+                        if (t < minT && t > 0 && t != RAY_MISS_VALUE) {
+                            minT = t;
+                            closestMatId = mesh.material_id;
+                            closestType = PrimKind::Mesh;
+                            hitTriFace = tempFace;
+                            closest_is_smooth = mesh.is_smooth;
+                            bary_beta = temp_b;
+                            bary_gamma = temp_g;
+                            index = prim.index;
+                            has_intersected = true;
+                        }
+                        break;
+                    }
+                    
+                    case PrimKind::Sphere: {
+                        const Sphere& sphere = scene.spheres[prim.index];
+                        const Vertex& center = scene.vertex_data[sphere.center_vertex_id - 1];
+                        float t = IntersectSphere(ray, center, sphere.radius, minT);
+                        
+                        if (t < minT && t > 0 && t != RAY_MISS_VALUE) {
+                            minT = t;
+                            closestMatId = sphere.material_id;
+                            closestType = PrimKind::Sphere;
+                            closestSphere = sphere;
+                            index = prim.index;
+                            has_intersected = true;
+                        }
+                        break;
+                    }
+                    
+                    case PrimKind::Triangle: {
+                        const Triangle& triangle = scene.triangles[prim.index];
+                        float dummy_b, dummy_g;
+                        float t = IntersectsTriangle_Bary(ray, triangle.face, 
+                                                          scene.vertex_data, minT, 
+                                                          dummy_b, dummy_g);
+                        
+                        if (t < minT && t > 0 && t != RAY_MISS_VALUE) {
+                            minT = t;
+                            closestMatId = triangle.material_id;
+                            closestType = PrimKind::Triangle;
+                            hitTriFace = triangle.face;
+                            index = prim.index;
+                            has_intersected = true;
+                        }
+                        break;
+                    }
+                }
+            }
+        }
+        else  // Interior node
+        {
+            // Push children onto stack (right first, so left is processed first)
+            uint32_t leftChild = node.leftNodeIdx;
+            uint32_t rightChild = node.leftNodeIdx + 1;
+            
+            stack[stackPtr++] = rightChild;
+            stack[stackPtr++] = leftChild;
+        }
+    }
+}
+
+float IntersectMeshBVH(const Ray& ray, const Mesh& mesh, const Scene& scene, 
+                       size_t meshIdx, float minT, Face& hitFace, 
+                       float& beta_out, float& gamma_out) noexcept
+{
+    const MeshBVH& bvh = meshBVHs[meshIdx];
+    float meshMinT = minT;
+    bool found = false;
+    
+    // Stack for iterative traversal
+    uint32_t stack[64];
+    uint32_t stackPtr = 0;
+    stack[stackPtr++] = bvh.rootNodeIdx;
+    
+    while (stackPtr > 0)
+    {
+        uint32_t nodeIdx = stack[--stackPtr];
+        const BVHNode& node = bvh.nodes[nodeIdx];
+        
+        // Test AABB intersection
+        if (IntersectAABB(ray, node.bounds, meshMinT) == RAY_MISS_VALUE) {
+            continue;
+        }
+        
+        if (node.primCount > 0)  // Leaf node
+        {
+            // Test all triangles in this leaf
+            for (uint32_t i = 0; i < node.primCount; i++)
+            {
+                uint32_t primIdx = bvh.primIdx[node.firstPrimIdx + i];
+                const MeshPrim& meshPrim = bvh.prims[primIdx];
+                const Face& face = mesh.faces[meshPrim.faceIdx];
+                
+                float temp_b, temp_g;
+                float t = IntersectsTriangle_Bary(ray, face, scene.vertex_data, 
+                                                  meshMinT, temp_b, temp_g);
+                
+                if (t < meshMinT && t > 0 && t != RAY_MISS_VALUE) {
+                    meshMinT = t;
+                    hitFace = face;
+                    beta_out = temp_b;
+                    gamma_out = temp_g;
+                    found = true;
+                }
+            }
+        }
+        else  // Interior node
+        {
+            // Push children onto stack
+            uint32_t leftChild = node.leftNodeIdx;
+            uint32_t rightChild = node.leftNodeIdx + 1;
+            
+            stack[stackPtr++] = rightChild;
+            stack[stackPtr++] = leftChild;
+        }
+    }
+    
+    return found ? meshMinT : RAY_MISS_VALUE;
 }
 
 float IntersectAABB(const Ray& ray, const AABB& box, float minT) noexcept
@@ -540,7 +631,6 @@ float IntersectAABB(const Ray& ray, const AABB& box, float minT) noexcept
 
     return tHit;
 }
-
 
 float IntersectsMesh(const Ray& ray, const Mesh& mesh, const std::vector<Vertex>& vertex_data, float minT, /*out*/ Face& hitFace, /*out*/ float& beta_out, /*out*/ float& gamma_out) noexcept
 {
