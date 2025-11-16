@@ -574,7 +574,7 @@ bool InShadow(const Vec3f& point, const PointLight& I, const Vec3f& n, float eps
 {
     Ray shadowRay;
     shadowRay.origin = point + n * eps_shadow;
-    shadowRay.direction = I.position - shadowRay.origin;
+    shadowRay.direction = I.position - point;
     shadowRay.depth = 0;
 
     Face hitTriFace;
