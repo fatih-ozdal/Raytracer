@@ -164,12 +164,6 @@ void BuildTopLevelBVH(const Scene& scene)
     root.primCount = N;
 
     UpdateNodeBounds(rootNodeIdx);
-    
-    // DEBUG: Print root bounds
-    printf("ROOT NODE BOUNDS: min(%.2f,%.2f,%.2f) max(%.2f,%.2f,%.2f)\n",
-           root.bounds.min.x, root.bounds.min.y, root.bounds.min.z,
-           root.bounds.max.x, root.bounds.max.y, root.bounds.max.z);
-    
     Subdivide(rootNodeIdx);
 }
 
@@ -852,23 +846,22 @@ float IntersectSphere(const Ray& ray, const Vertex& center, float radius, float 
     }
     
     float sqrtDelta = sqrt(delta);
-    float t1 = (-B - sqrtDelta) / (2 * A);  // Near intersection
-    float t2 = (-B + sqrtDelta) / (2 * A);  // Far intersection
+    float t1 = (-B - sqrtDelta) / (2 * A);
+    float t2 = (-B + sqrtDelta) / (2 * A);
     
-    // Find the smallest positive t
     float t;
     if (t1 > 0.0f) {
-        t = t1;  // Use near intersection if it's in front
+        t = t1;
     } else if (t2 > 0.0f) {
-        t = t2;  // Otherwise use far intersection (we're inside sphere)
+        t = t2;
     } else {
-        return RAY_MISS_VALUE;  // Both behind us
+        return RAY_MISS_VALUE;
     }
     
     if (t >= minT) {
-        return RAY_MISS_VALUE;  // Too far or not closer than previous hit
+        return RAY_MISS_VALUE;
     }
-    
+
     return t;
 }
 
@@ -1143,7 +1136,6 @@ bool InShadow(const Vec3f& point, const PointLight& I, const Vec3f& n, float eps
     return false;
 }
 */
-
 bool InShadow(const Vec3f& point, const PointLight& I, const Vec3f& n, float eps_shadow, const Scene& scene) noexcept
 {
     Vec3f toLight = I.position - point;
@@ -1155,22 +1147,6 @@ bool InShadow(const Vec3f& point, const PointLight& I, const Vec3f& n, float eps
     shadowRay.depth = 0;
 
     float minT = distToLight;
-    
-    static int callCount = 0;
-    callCount++;
-    bool shouldDebug = (callCount == 1);  // Debug first shadow ray only
-    
-    if (shouldDebug) {
-        printf("\n=== SHADOW RAY DEBUG ===\n");
-        printf("Origin: (%.2f, %.2f, %.2f)\n", shadowRay.origin.x, shadowRay.origin.y, shadowRay.origin.z);
-        printf("Direction: (%.2f, %.2f, %.2f)\n", shadowRay.direction.x, shadowRay.direction.y, shadowRay.direction.z);
-        printf("DistToLight: %.2f\n", distToLight);
-
-        BVHNode& root = topBvhNodes[rootNodeIdx];
-        printf("ROOT NODE BOUNDS: min(%.2f,%.2f,%.2f) max(%.2f,%.2f,%.2f)\n",
-           root.bounds.min.x, root.bounds.min.y, root.bounds.min.z,
-           root.bounds.max.x, root.bounds.max.y, root.bounds.max.z);
-    }
 
     // 1. Test planes first
     for (size_t i = 0; i < scene.planes.size(); i++) {
@@ -1181,41 +1157,26 @@ bool InShadow(const Vec3f& point, const PointLight& I, const Vec3f& n, float eps
         }
     }
 
+    // 2. Traverse top-level BVH
     uint32_t stack[64];
     uint32_t stackPtr = 0;
     stack[stackPtr++] = rootNodeIdx;
-    
-    int nodesTested = 0;
-    int leafNodesReached = 0;
     
     while (stackPtr > 0)
     {
         uint32_t nodeIdx = stack[--stackPtr];
         BVHNode& node = topBvhNodes[nodeIdx];
         
-        nodesTested++;
-        
-        float aabbT = IntersectAABB(shadowRay, node.bounds, minT);
-        if (aabbT == RAY_MISS_VALUE) {
+        if (IntersectAABB(shadowRay, node.bounds, minT) == RAY_MISS_VALUE) {
             continue;
         }
         
         if (node.primCount > 0)  // Leaf node
         {
-            leafNodesReached++;
-            
-            if (shouldDebug) {
-                printf("Leaf node: primCount=%d\n", node.primCount);
-            }
-            
             for (uint32_t i = 0; i < node.primCount; i++)
             {
                 uint32_t primIdx = topPrimIdx[node.firstPrimIdx + i];
                 TopPrim& prim = topPrims[primIdx];
-                
-                if (shouldDebug) {
-                    printf("  Prim %d: kind=%d, index=%d\n", i, (int)prim.kind, prim.index);
-                }
                 
                 switch(prim.kind)
                 {
@@ -1234,26 +1195,12 @@ bool InShadow(const Vec3f& point, const PointLight& I, const Vec3f& n, float eps
                     }
                     
                     case PrimKind::Sphere: {
-                        if(shouldDebug)
-                            printf("  -> SPHERE CASE REACHED! prim.index=%d\n", prim.index);
-                        
                         const Sphere& sphere = scene.spheres[prim.index];
                         const Vertex& center = scene.vertex_data[sphere.center_vertex_id - 1];
-                        
-                        if(shouldDebug)
-                            printf("     Sphere center=(%.2f,%.2f,%.2f) r=%.2f\n",
-                                center.pos.x, center.pos.y, center.pos.z, sphere.radius);
-                        
                         float t = IntersectSphere(shadowRay, center, sphere.radius, minT);
                         
-                        if(shouldDebug)
-                        {
-                            printf("     IntersectSphere returned t=%.2f (minT=%.2f)\n", t, minT);
-                        
-                            if (t < minT && t != RAY_MISS_VALUE) {
-                                printf("     -> SHADOW DETECTED!\n");
-                                return true;
-                            }
+                        if (t < minT && t != RAY_MISS_VALUE) {
+                            return true;
                         }
                         break;
                     }
@@ -1281,11 +1228,6 @@ bool InShadow(const Vec3f& point, const PointLight& I, const Vec3f& n, float eps
             stack[stackPtr++] = rightChild;
             stack[stackPtr++] = leftChild;
         }
-    }
-    
-    if (shouldDebug) {
-        printf("Nodes tested: %d, Leaf nodes: %d\n", nodesTested, leafNodesReached);
-        printf("======================\n\n");
     }
     
     return false;
