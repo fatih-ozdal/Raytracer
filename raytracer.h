@@ -3,6 +3,7 @@
 
 #include "parser.h"
 #include "HitRecord.h"
+#include "Bvh.h"
 
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "stb_image_write.h"
@@ -16,6 +17,11 @@ struct Ray {
     Vec3f direction;
     int depth;
 };
+
+void BuildTopLevelBVH(const Scene& scene);
+void MakeTopLevelPrimsArray(const Scene& scene);
+void UpdateNodeBounds( uint32_t nodeIdx );
+void Subdivide( uint32_t nodeIdx );
 
 Ray ComputeRay(const Scene& scene, const Camera& camera, int j, int i) noexcept;
 Vec3f ComputeColor(const Ray& ray, const Scene& scene, const Camera& camera);

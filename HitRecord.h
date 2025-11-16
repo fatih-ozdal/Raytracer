@@ -20,13 +20,4 @@ struct HitRecord
     PrimKind kind;
 };
 
-struct PrimRef
-{
-    PrimKind kind;   // what type of object this refers to
-    uint32_t index;  // index into the corresponding object array (spheres[], meshes[], etc.)
-
-    PrimRef() = default;
-    PrimRef(PrimKind k, uint32_t i) : kind(k), index(i) {}
-};
-
 #endif // HITRECORD_H

@@ -1,5 +1,10 @@
 #include "raytracer.h"
 
+vector<TopPrim> topPrims;
+vector<uint32_t> topPrimIdx;
+vector<BVHNode> topBvhNodes; 
+uint32_t rootNodeIdx = 0, nodesUsed = 1;
+
 int main(int argc, char* argv[])
 {
     if (argc < 2) {
@@ -10,6 +15,7 @@ int main(int argc, char* argv[])
     parser p;
     string jsonFile = argv[1];
     Scene scene = p.loadFromJson(jsonFile);
+    BuildTopLevelBVH(scene);
 
     for (const Camera& camera : scene.cameras)  // read-only ref is fine
     {
@@ -36,6 +42,113 @@ int main(int argc, char* argv[])
 
     return 0;
 }
+
+void BuildTopLevelBVH(const Scene& scene)
+{
+    MakeTopLevelPrimsArray(scene);
+
+    uint32_t N = topPrims.size();
+    for (int i = 0; i < N; i++) topPrimIdx[i] = i;  // these will get swapped around
+
+    // assign all prims to root node
+    BVHNode& root = topBvhNodes[rootNodeIdx];
+    root.leftNodeIdx = 0;
+    root.firstPrimIdx = 0;
+    root.primCount = N;
+
+    UpdateNodeBounds( rootNodeIdx );
+    Subdivide( rootNodeIdx );
+}
+
+void MakeTopLevelPrimsArray(const Scene& scene)
+{
+    size_t i = 0;
+    for (const auto& mesh: scene.meshes)
+    {
+        const AABB box = mesh.localBounds;
+        Vec3f center = 0.5f * (box.min + box.max);
+        topPrims.push_back(TopPrim(i, PrimKind::Mesh, box, center));
+        i++;
+    }
+
+    i = 0;
+    for (const auto& sphere: scene.spheres)
+    {
+        const AABB box = sphere.localBounds;
+        Vec3f center = 0.5f * (box.min + box.max);
+        topPrims.push_back(TopPrim(i, PrimKind::Sphere, box, center));
+        i++;
+    }
+
+    i = 0;
+    for (const auto& tri: scene.triangles)
+    {
+        const AABB box = tri.localBounds;
+        Vec3f center = 0.5f * (box.min + box.max);
+        topPrims.push_back(TopPrim(i, PrimKind::Triangle, box, center));
+        i++;
+    }
+    
+    // TODO: ADD MESH INSTANCE
+}
+
+void UpdateNodeBounds( uint32_t nodeIdx )
+{
+    BVHNode& node = topBvhNodes[nodeIdx];
+    node.bounds.reset();    // TODO: this reset might be wrong
+
+    for (uint32_t first = node.firstPrimIdx, i = 0; i < node.primCount; i++)
+    {
+        uint32_t leafPrimIdx = topPrimIdx[first + i];
+        TopPrim& leafPrim = topPrims[leafPrimIdx];
+        node.bounds.expand(leafPrim.bounds);
+    }
+}
+
+void Subdivide( uint32_t nodeIdx )
+{
+    // terminate recursion
+    BVHNode& node = topBvhNodes[nodeIdx];
+    if (node.primCount <= 2) return;
+
+    // determine split axis and position
+    Vec3f extent = node.bounds.max - node.bounds.min;
+    int axis = 0;
+    if (extent.y > extent.x) axis = 1;
+    if (extent.z > extent[axis]) axis = 2;
+    float splitPos = node.bounds.min[axis] + extent[axis] * 0.5f;
+
+    // in-place partition
+    int i = node.firstPrimIdx;
+    int j = i + node.primCount - 1;
+    while (i <= j)
+    {
+        if (topPrims[topPrimIdx[i]].centroid[axis] < splitPos) i++;
+        else std::swap( topPrimIdx[i], topPrimIdx[j--] );
+    }
+
+    // abort split if one of the sides is empty
+    int leftCount = i - node.firstPrimIdx;
+    if (leftCount == 0 || leftCount == node.primCount) return;
+
+    // create child nodes
+    int leftChildIdx = nodesUsed++;
+    int rightChildIdx = nodesUsed++;
+    topBvhNodes[leftChildIdx].firstPrimIdx = node.firstPrimIdx;
+    topBvhNodes[leftChildIdx].primCount = leftCount;
+    topBvhNodes[rightChildIdx].firstPrimIdx = i;
+    topBvhNodes[rightChildIdx].primCount = node.primCount - leftCount;
+    node.leftNodeIdx = leftChildIdx;
+    node.primCount = 0;
+
+    UpdateNodeBounds( leftChildIdx );
+    UpdateNodeBounds( rightChildIdx );
+
+    // recurse
+    Subdivide( leftChildIdx );
+    Subdivide( rightChildIdx );
+}
+
 
 Ray ComputeRay(const Scene& scene, const Camera& camera, int j, int i) noexcept
 {   

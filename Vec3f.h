@@ -65,6 +65,11 @@ struct Vec3f
         z += v.z;
         return *this;
     }
+
+    float operator[](int idx) const noexcept {
+        assert(idx >= 0 && idx < 3);
+        return (&x)[idx];
+    }
 };
 
 // compiler expands this to what det3x3() does
