@@ -10,6 +10,9 @@ struct Vec3f
     float x, y, z;
 
     /* functions */
+    Vec3f() : x(0), y(0), z(0) {}
+    Vec3f(float X, float Y, float Z) : x(X), y(Y), z(Z) {}
+
     inline float dotProduct(const Vec3f& rhs) const noexcept {
         return x * rhs.x + y * rhs.y + z * rhs.z;
     }
