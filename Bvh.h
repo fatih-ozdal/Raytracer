@@ -46,4 +46,31 @@ struct BVHNode
     bool isLeaf() const noexcept { return primCount >= 0; }
 };
 
+// Mesh-level primitive (triangle)
+struct MeshPrim {
+    uint32_t faceIdx;      // Index into mesh.faces
+    AABB bounds;
+    Vec3f centroid;
+    
+    MeshPrim(uint32_t idx, const AABB& box, const Vec3f& center)
+        : faceIdx(idx), bounds(box), centroid(center) {}
+};
+
+// Mesh BVH container
+struct MeshBVH {
+    vector<BVHNode> nodes;
+    vector<MeshPrim> prims;
+    vector<uint32_t> primIdx;
+    uint32_t rootNodeIdx = 0;
+    uint32_t nodesUsed = 1;
+    
+    MeshBVH() {
+        nodes.resize(1024);  // Reserve space, adjust as needed
+        primIdx.resize(1024);
+    }
+};
+
+// Add to Scene or global
+vector<MeshBVH> meshBVHs;
+
 #endif // BVH_H

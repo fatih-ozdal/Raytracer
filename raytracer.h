@@ -18,13 +18,22 @@ struct Ray {
     int depth;
 };
 
+
 void BuildTopLevelBVH(const Scene& scene);
 void MakeTopLevelPrimsArray(const Scene& scene);
 void UpdateNodeBounds( uint32_t nodeIdx );
 void Subdivide( uint32_t nodeIdx );
 
+void BuildAllMeshBVHs(const Scene& scene);
+void BuildMeshBVH(const Scene& scene, size_t meshIdx);
+void MakeMeshPrimsArray(const Mesh& mesh, const vector<Vertex>& vertex_data, MeshBVH& bvh);
+void UpdateMeshNodeBounds(MeshBVH& bvh, uint32_t nodeIdx);
+void SubdivideMesh(MeshBVH& bvh, uint32_t nodeIdx);
+
 Ray ComputeRay(const Scene& scene, const Camera& camera, int j, int i) noexcept;
 Vec3f ComputeColor(const Ray& ray, const Scene& scene, const Camera& camera);
+
+float IntersectAABB(const Ray& ray, const AABB& box, float minT) noexcept;
 
 bool FindClosestHit(const Ray& ray, const Scene& scene, const Camera& camera, /*out*/ HitRecord& closestHit) noexcept;
 float IntersectsMesh(const Ray& ray, const Mesh& mesh, const std::vector<Vertex>& vertex_data, float minT, /*out*/ Face& hitFace, /*out*/ float& beta_out, /*out*/ float& gamma_out) noexcept;

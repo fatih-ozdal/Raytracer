@@ -15,7 +15,9 @@ int main(int argc, char* argv[])
     parser p;
     string jsonFile = argv[1];
     Scene scene = p.loadFromJson(jsonFile);
+
     BuildTopLevelBVH(scene);
+    BuildAllMeshBVHs(scene);
 
     for (const Camera& camera : scene.cameras)  // read-only ref is fine
     {
@@ -149,6 +151,146 @@ void Subdivide( uint32_t nodeIdx )
     Subdivide( rightChildIdx );
 }
 
+void BuildAllMeshBVHs(const Scene& scene)
+{
+    meshBVHs.resize(scene.meshes.size());
+    
+    for (size_t i = 0; i < scene.meshes.size(); i++) {
+        BuildMeshBVH(scene, i);
+    }
+}
+
+void BuildMeshBVH(const Scene& scene, size_t meshIdx)
+{
+    const Mesh& mesh = scene.meshes[meshIdx];
+    MeshBVH& bvh = meshBVHs[meshIdx];
+    
+    // Make primitives array from mesh faces
+    MakeMeshPrimsArray(mesh, scene.vertex_data, bvh);
+    
+    uint32_t N = bvh.prims.size();
+    if (N == 0) return;  // Empty mesh
+    
+    // Initialize index array
+    for (uint32_t i = 0; i < N; i++) {
+        bvh.primIdx[i] = i;
+    }
+    
+    // Assign all prims to root node
+    BVHNode& root = bvh.nodes[bvh.rootNodeIdx];
+    root.leftNodeIdx = 0;
+    root.firstPrimIdx = 0;
+    root.primCount = N;
+    
+    UpdateMeshNodeBounds(bvh, bvh.rootNodeIdx);
+    SubdivideMesh(bvh, bvh.rootNodeIdx);
+}
+
+void MakeMeshPrimsArray(const Mesh& mesh, const vector<Vertex>& vertex_data, MeshBVH& bvh)
+{
+    bvh.prims.clear();
+    bvh.prims.reserve(mesh.faces.size());
+    
+    for (size_t i = 0; i < mesh.faces.size(); i++) {
+        const Face& face = mesh.faces[i];
+        
+        // Get triangle vertices
+        const Vec3f& v0 = vertex_data[face.i0 - 1].pos;
+        const Vec3f& v1 = vertex_data[face.i1 - 1].pos;
+        const Vec3f& v2 = vertex_data[face.i2 - 1].pos;
+        
+        // Compute triangle AABB
+        AABB box;
+        box.reset();
+        box.expand(v0);
+        box.expand(v1);
+        box.expand(v2);
+        
+        // Compute centroid
+        Vec3f center = (v0 + v1 + v2) * (1.0f / 3.0f);
+        
+        bvh.prims.push_back(MeshPrim(i, box, center));
+    }
+}
+
+void UpdateMeshNodeBounds(MeshBVH& bvh, uint32_t nodeIdx)
+{
+    BVHNode& node = bvh.nodes[nodeIdx];
+    node.bounds.reset();
+    
+    for (uint32_t first = node.firstPrimIdx, i = 0; i < node.primCount; i++)
+    {
+        uint32_t leafPrimIdx = bvh.primIdx[first + i];
+        MeshPrim& leafPrim = bvh.prims[leafPrimIdx];
+        node.bounds.expand(leafPrim.bounds);
+    }
+}
+
+void SubdivideMesh(MeshBVH& bvh, uint32_t nodeIdx)
+{
+    // Terminate recursion
+    BVHNode& node = bvh.nodes[nodeIdx];
+    if (node.primCount <= 2) return;
+    
+    // Determine split axis and position
+    Vec3f extent = node.bounds.max - node.bounds.min;
+    int axis = 0;
+    if (extent.y > extent.x) axis = 1;
+    if (extent.z > extent[axis]) axis = 2;
+    float splitPos = node.bounds.min[axis] + extent[axis] * 0.5f;
+    
+    // In-place partition
+    int i = node.firstPrimIdx;
+    int j = i + node.primCount - 1;
+    while (i <= j)
+    {
+        if (bvh.prims[bvh.primIdx[i]].centroid[axis] < splitPos)
+            i++;
+        else
+            std::swap(bvh.primIdx[i], bvh.primIdx[j--]);
+    }
+    
+    // Abort split if one of the sides is empty
+    int leftCount = i - node.firstPrimIdx;
+    if (leftCount == 0 || leftCount == node.primCount) return;
+    
+    // Create child nodes
+    int leftChildIdx = bvh.nodesUsed++;
+    int rightChildIdx = bvh.nodesUsed++;
+    
+    bvh.nodes[leftChildIdx].firstPrimIdx = node.firstPrimIdx;
+    bvh.nodes[leftChildIdx].primCount = leftCount;
+    bvh.nodes[rightChildIdx].firstPrimIdx = i;
+    bvh.nodes[rightChildIdx].primCount = node.primCount - leftCount;
+    
+    node.leftNodeIdx = leftChildIdx;
+    node.primCount = 0;
+    
+    UpdateMeshNodeBounds(bvh, leftChildIdx);
+    UpdateMeshNodeBounds(bvh, rightChildIdx);
+    
+    // Recurse
+    SubdivideMesh(bvh, leftChildIdx);
+    SubdivideMesh(bvh, rightChildIdx);
+}
+
+void IntersectBVH( Ray& ray, const uint32_t nodeIdx, float minT )
+{
+    BVHNode& node = topBvhNodes[nodeIdx];
+    if (!IntersectAABB( ray, node.bounds, minT )) return;
+    if (node.isLeaf())
+    {
+        for (uint32_t i = 0; i < node.primCount; i++ )
+        {
+            // intersect prims according to their type
+        }
+    }
+    else
+    {
+        IntersectBVH( ray, node.leftNodeIdx, minT );
+        IntersectBVH( ray, node.leftNodeIdx + 1, minT );
+    }
+}
 
 Ray ComputeRay(const Scene& scene, const Camera& camera, int j, int i) noexcept
 {   
