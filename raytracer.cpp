@@ -91,7 +91,8 @@ int main(int argc, char* argv[])
 
     BuildAllMeshBVHs(scene);
     BuildTopLevelBVH(scene);
-
+    
+    /*
     BvhStats s;
     GatherStats(rootNodeIdx, 0, s);
     std::cout << "nodes=" << s.nodeCount
@@ -119,6 +120,7 @@ int main(int argc, char* argv[])
                 << "  avgLeafPrim = " << avgLeafPrims << "\n"
                 << "  maxLeafPrim = " << stats.maxLeafPrims << "\n\n";
     }
+    */
 
     for (const Camera& camera : scene.cameras)  // read-only ref is fine
     {
@@ -151,19 +153,24 @@ void BuildTopLevelBVH(const Scene& scene)
     MakeTopLevelPrimsArray(scene);
 
     uint32_t N = topPrims.size();
-    topPrimIdx.resize(2*N);
-    topBvhNodes.resize(2*N);
+    topPrimIdx.resize(N);
+    topBvhNodes.resize(N * 2);
 
-    for (int i = 0; i < N; i++) topPrimIdx[i] = i;  // these will get swapped around
+    for (int i = 0; i < N; i++) topPrimIdx[i] = i;
 
-    // assign all prims to root node
     BVHNode& root = topBvhNodes[rootNodeIdx];
     root.leftNodeIdx = 0;
     root.firstPrimIdx = 0;
     root.primCount = N;
 
-    UpdateNodeBounds( rootNodeIdx );
-    Subdivide( rootNodeIdx );
+    UpdateNodeBounds(rootNodeIdx);
+    
+    // DEBUG: Print root bounds
+    printf("ROOT NODE BOUNDS: min(%.2f,%.2f,%.2f) max(%.2f,%.2f,%.2f)\n",
+           root.bounds.min.x, root.bounds.min.y, root.bounds.min.z,
+           root.bounds.max.x, root.bounds.max.y, root.bounds.max.z);
+    
+    Subdivide(rootNodeIdx);
 }
 
 void MakeTopLevelPrimsArray(const Scene& scene)
@@ -690,7 +697,7 @@ float IntersectAABB(const Ray& ray, const AABB& box, float minT) noexcept
             return RAY_MISS_VALUE;
         }
     } 
-    else { // Ray is parallel to X slabs; origin must be inside the slab
+    else {
         if (ray.origin.x < box.min.x || ray.origin.x > box.max.x) {
             return RAY_MISS_VALUE;
         }
@@ -738,14 +745,14 @@ float IntersectAABB(const Ray& ray, const AABB& box, float minT) noexcept
     if (tMin > 0.0f) {
         tHit = tMin;
     } 
-    else { // We're starting inside the box or at its boundary
+    else {
         if (tMax <= 0.0f) {
             return RAY_MISS_VALUE;
         }
         tHit = tMax;
     }
     
-    if (tHit >= minT) {
+    if (tHit > minT) {
         return RAY_MISS_VALUE;
     }
 
@@ -1037,92 +1044,74 @@ float Fresnel_Conductor(float cosTheta, float refractionIndex, float absorptionI
 
 bool InShadow(const Vec3f& point, const PointLight& I, const Vec3f& n, float eps_shadow, const Scene& scene) noexcept
 {
-    Ray shadowRay;
-    shadowRay.origin = point + n * eps_shadow;
-
-    Vec3f toLight = I.position - shadowRay.origin;
+    Vec3f toLight = I.position - point;
     float distToLight = toLight.length();
     
-    shadowRay.direction = toLight / distToLight;  // NORMALIZE IT
+    Ray shadowRay;
+    shadowRay.origin = point + n * eps_shadow;
+    shadowRay.direction = toLight / distToLight;
     shadowRay.depth = 0;
 
-    float minT = distToLight;  // Use actual distance, not t=1
+    float minT = distToLight;
+    
+    static int callCount = 0;
+    callCount++;
+    bool shouldDebug = (callCount == 1);  // Debug first shadow ray only
+    
+    if (shouldDebug) {
+        printf("\n=== SHADOW RAY DEBUG ===\n");
+        printf("Origin: (%.2f, %.2f, %.2f)\n", shadowRay.origin.x, shadowRay.origin.y, shadowRay.origin.z);
+        printf("Direction: (%.2f, %.2f, %.2f)\n", shadowRay.direction.x, shadowRay.direction.y, shadowRay.direction.z);
+        printf("DistToLight: %.2f\n", distToLight);
 
-    // 1. Test planes first
-    for (size_t i = 0; i < scene.planes.size(); i++) {
-        const Plane& plane = scene.planes[i];
-        float t = IntersectsPlane(shadowRay, plane.n_unit, plane.plane_d, minT);
-        if (t < minT && t != RAY_MISS_VALUE) {
-            return true;
-        }
+        BVHNode& root = topBvhNodes[rootNodeIdx];
+        printf("ROOT NODE BOUNDS: min(%.2f,%.2f,%.2f) max(%.2f,%.2f,%.2f)\n",
+           root.bounds.min.x, root.bounds.min.y, root.bounds.min.z,
+           root.bounds.max.x, root.bounds.max.y, root.bounds.max.z);
     }
 
-    // 2. Traverse top-level BVH
+    // ... planes ...
+
     uint32_t stack[64];
     uint32_t stackPtr = 0;
     stack[stackPtr++] = rootNodeIdx;
+    
+    int nodesTested = 0;
+    int leafNodesReached = 0;
     
     while (stackPtr > 0)
     {
         uint32_t nodeIdx = stack[--stackPtr];
         BVHNode& node = topBvhNodes[nodeIdx];
-
-        int t_aabb = IntersectAABB(shadowRay, node.bounds, minT);
         
-        if (t_aabb == RAY_MISS_VALUE) {
+        nodesTested++;
+        
+        float aabbT = IntersectAABB(shadowRay, node.bounds, minT);
+        if (aabbT == RAY_MISS_VALUE) {
             continue;
         }
         
         if (node.primCount > 0)  // Leaf node
         {
+            leafNodesReached++;
+            
+            if (shouldDebug) {
+                printf("Leaf node: primCount=%d\n", node.primCount);
+            }
+            
             for (uint32_t i = 0; i < node.primCount; i++)
             {
                 uint32_t primIdx = topPrimIdx[node.firstPrimIdx + i];
                 TopPrim& prim = topPrims[primIdx];
                 
-                switch(prim.kind)
-                {
-                    case PrimKind::Mesh: {
-                        const Mesh& mesh = scene.meshes[prim.index];
-                        float temp_b, temp_g;
-                        Face tempFace;
-                        
-                        float t = IntersectMeshBVH(shadowRay, mesh, scene, prim.index, 
-                                                   minT, tempFace, temp_b, temp_g);
-                        
-                        if (t < minT && t != RAY_MISS_VALUE) {
-                            return true;
-                        }
-                        break;
-                    }
-                    
-                    case PrimKind::Sphere: {
-                        const Sphere& sphere = scene.spheres[prim.index];
-                        const Vertex& center = scene.vertex_data[sphere.center_vertex_id - 1];
-                        float t = IntersectSphere(shadowRay, center, sphere.radius, minT);
-                        
-                        if (t < minT && t != RAY_MISS_VALUE) {
-                            return true;
-                        }
-                        break;
-                    }
-                    
-                    case PrimKind::Triangle: {
-                        const Triangle& triangle = scene.triangles[prim.index];
-                        float dummy_b, dummy_g;
-                        float t = IntersectsTriangle_Bary(shadowRay, triangle.face, 
-                                                          scene.vertex_data, minT, 
-                                                          dummy_b, dummy_g);
-                        
-                        if (t < minT && t != RAY_MISS_VALUE) {
-                            return true;
-                        }
-                        break;
-                    }
+                if (shouldDebug) {
+                    printf("  Prim %d: kind=%d, index=%d\n", i, (int)prim.kind, prim.index);
                 }
+                
+                // ... rest of switch ...
             }
         }
-        else  // Interior node
+        else
         {
             uint32_t leftChild = node.leftNodeIdx;
             uint32_t rightChild = node.leftNodeIdx + 1;
@@ -1130,6 +1119,11 @@ bool InShadow(const Vec3f& point, const PointLight& I, const Vec3f& n, float eps
             stack[stackPtr++] = rightChild;
             stack[stackPtr++] = leftChild;
         }
+    }
+    
+    if (shouldDebug) {
+        printf("Nodes tested: %d, Leaf nodes: %d\n", nodesTested, leafNodesReached);
+        printf("======================\n\n");
     }
     
     return false;
