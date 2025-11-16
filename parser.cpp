@@ -3,16 +3,20 @@
 #include "parser.h"
 #include <cctype>
 #include <algorithm>
-
 #include <array>
 #include <string>
 #include <vector>
 #include <cstdint>
 #include <limits>
-
+#include <cmath>
 #include <iostream>
+
 using std::cout;
 using std::endl;
+
+#ifndef M_PI
+#define M_PI 3.14159265358979323846
+#endif
 
 // Helper function to trim whitespace from string
 static std::string trim(const std::string& str) {
@@ -22,8 +26,115 @@ static std::string trim(const std::string& str) {
     return str.substr(first, last - first + 1);
 }
 
-// TODO: use .value() for optional fields, use at().get() for expected fields (not [].get(), it returns null)
-// TODO: use .value() instead of parseFloat()
+// ============== TRANSFORMATION HELPER FUNCTIONS ==============
+
+Mat4f parser::MakeTranslation(const Vec3f& t) {
+    Mat4f m = Mat4f::identity();
+    m.m[0][3] = t.x;
+    m.m[1][3] = t.y;
+    m.m[2][3] = t.z;
+    return m;
+}
+
+Mat4f parser::MakeScaling(const Vec3f& s) {
+    Mat4f m = Mat4f::identity();
+    m.m[0][0] = s.x;
+    m.m[1][1] = s.y;
+    m.m[2][2] = s.z;
+    return m;
+}
+
+Mat4f parser::MakeRotation(float angleDegrees, const Vec3f& axis) {
+    float rad = angleDegrees * M_PI / 180.0f;
+    float c = cosf(rad);
+    float s = sinf(rad);
+    float t = 1.0f - c;
+    
+    Vec3f a = axis.normalize();
+    
+    Mat4f m = Mat4f::identity();
+    m.m[0][0] = t * a.x * a.x + c;
+    m.m[0][1] = t * a.x * a.y - s * a.z;
+    m.m[0][2] = t * a.x * a.z + s * a.y;
+    
+    m.m[1][0] = t * a.x * a.y + s * a.z;
+    m.m[1][1] = t * a.y * a.y + c;
+    m.m[1][2] = t * a.y * a.z - s * a.x;
+    
+    m.m[2][0] = t * a.x * a.z - s * a.y;
+    m.m[2][1] = t * a.y * a.z + s * a.x;
+    m.m[2][2] = t * a.z * a.z + c;
+    
+    return m;
+}
+
+Mat4f parser::ParseTransformations(const string& transformStr, const Scene& scene) {
+    if (transformStr.empty()) {
+        return Mat4f::identity();
+    }
+    
+    // Parse all transformations into a vector
+    vector<Mat4f> transforms;
+    std::istringstream iss(transformStr);
+    string token;
+    
+    while (iss >> token) {
+        char type = token[0];
+        int id = stoi(token.substr(1)) - 1;  // Convert to 0-indexed
+        
+        Mat4f transform;
+        
+        if (type == 't') {
+            transform = MakeTranslation(scene.translations[id].delta);
+        }
+        else if (type == 's') {
+            transform = MakeScaling(scene.scalings[id].scale);
+        }
+        else if (type == 'r') {
+            const Rotation& rot = scene.rotations[id];
+            transform = MakeRotation(rot.angle, rot.axis);
+        }
+        else if (type == 'c') {
+            transform = scene.composites[id].matrix;
+        }
+        
+        transforms.push_back(transform);
+    }
+    
+    // Multiply in REVERSE order: "t1 r2 s3" → M = S3 * R2 * T1
+    Mat4f result = Mat4f::identity();
+    for (int i = transforms.size() - 1; i >= 0; i--) {
+        result = transforms[i] * result;
+    }
+    
+    return result;
+}
+
+AABB parser::TransformAABB(const AABB& box, const Mat4f& transform) {
+    // Get all 8 corners of the box
+    Vec3f corners[8] = {
+        Vec3f(box.min.x, box.min.y, box.min.z),
+        Vec3f(box.max.x, box.min.y, box.min.z),
+        Vec3f(box.min.x, box.max.y, box.min.z),
+        Vec3f(box.max.x, box.max.y, box.min.z),
+        Vec3f(box.min.x, box.min.y, box.max.z),
+        Vec3f(box.max.x, box.min.y, box.max.z),
+        Vec3f(box.min.x, box.max.y, box.max.z),
+        Vec3f(box.max.x, box.max.y, box.max.z)
+    };
+    
+    // Transform all corners and recompute AABB
+    AABB result;
+    result.reset();
+    for (int i = 0; i < 8; i++) {
+        Vec3f transformed = transform.transformPoint(corners[i]);
+        result.expand(transformed);
+    }
+    
+    return result;
+}
+
+// ============== MAIN SCENE LOADER ==============
 
 Scene parser::loadFromJson(const string &filepath)
 {
@@ -39,7 +150,7 @@ Scene parser::loadFromJson(const string &filepath)
             s["BackgroundColor"].get<std::string>()
         );
     } else {
-        scene.background_color = {0, 0, 0};
+        scene.background_color = Vec3f(0, 0, 0);
     }
 
     // --- ShadowRayEpsilon ---
@@ -58,6 +169,87 @@ Scene parser::loadFromJson(const string &filepath)
         scene.max_recursion_depth = 6;
     }
 
+    // === PARSE TRANSFORMATIONS FIRST ===
+    if (s.contains("Transformations")) {
+        const auto& transNode = s["Transformations"];
+        
+        // Parse Translations
+        if (transNode.contains("Translation")) {
+            const auto& transList = transNode["Translation"];
+            auto parseOne = [&](const json& t) {
+                Translation trans;
+                trans.id = stoi(t.at("_id").get<string>());
+                trans.delta = parser::parseVec3f(t.at("_data").get<string>());
+                scene.translations.push_back(trans);
+            };
+            
+            if (transList.is_array()) {
+                for (const auto& t : transList) parseOne(t);
+            } else {
+                parseOne(transList);
+            }
+        }
+        
+        // Parse Scalings
+        if (transNode.contains("Scaling")) {
+            const auto& scaleList = transNode["Scaling"];
+            auto parseOne = [&](const json& s_json) {
+                Scaling scale;
+                scale.id = stoi(s_json.at("_id").get<string>());
+                scale.scale = parser::parseVec3f(s_json.at("_data").get<string>());
+                scene.scalings.push_back(scale);
+            };
+            
+            if (scaleList.is_array()) {
+                for (const auto& s_json : scaleList) parseOne(s_json);
+            } else {
+                parseOne(scaleList);
+            }
+        }
+        
+        // Parse Rotations
+        if (transNode.contains("Rotation")) {
+            const auto& rotList = transNode["Rotation"];
+            auto parseOne = [&](const json& r) {
+                Rotation rot;
+                rot.id = stoi(r.at("_id").get<string>());
+                string data = r.at("_data").get<string>();
+                std::istringstream iss(data);
+                iss >> rot.angle >> rot.axis.x >> rot.axis.y >> rot.axis.z;
+                scene.rotations.push_back(rot);
+            };
+            
+            if (rotList.is_array()) {
+                for (const auto& r : rotList) parseOne(r);
+            } else {
+                parseOne(rotList);
+            }
+        }
+        
+        // Parse Composites
+        if (transNode.contains("Composite")) {
+            const auto& compList = transNode["Composite"];
+            auto parseOne = [&](const json& c) {
+                Composite comp;
+                comp.id = stoi(c.at("_id").get<string>());
+                string data = c.at("_data").get<string>();
+                std::istringstream iss(data);
+                for (int i = 0; i < 4; i++) {
+                    for (int j = 0; j < 4; j++) {
+                        iss >> comp.matrix.m[i][j];
+                    }
+                }
+                scene.composites.push_back(comp);
+            };
+            
+            if (compList.is_array()) {
+                for (const auto& c : compList) parseOne(c);
+            } else {
+                parseOne(compList);
+            }
+        }
+    }
+
     // --- Lights ---
     if (s.contains("Lights"))
     {
@@ -70,7 +262,7 @@ Scene parser::loadFromJson(const string &filepath)
             );
         }
         else {
-            scene.ambient_light = {0.f, 0.f, 0.f};
+            scene.ambient_light = Vec3f(0.f, 0.f, 0.f);
         }
 
         // --- PointLights ---
@@ -81,6 +273,13 @@ Scene parser::loadFromJson(const string &filepath)
                 PointLight L;
                 L.position  = parser::parseVec3f(pl["Position"].get<std::string>());
                 L.intensity = parser::parseVec3f(pl["Intensity"].get<std::string>());
+                
+                // Apply transformations if present
+                if (pl.contains("Transformations")) {
+                    Mat4f transform = ParseTransformations(pl.at("Transformations").get<string>(), scene);
+                    L.position = transform.transformPoint(L.position);
+                }
+                
                 scene.point_lights.push_back(L);
             };
 
@@ -110,10 +309,27 @@ Scene parser::loadFromJson(const string &filepath)
                 cam.gaze = parser::parseVec3f(cj["Gaze"].get<std::string>());
             }
 
-            cam.w = -1 * cam.gaze.normalize();
+            cam.w = cam.gaze * -1;
+            cam.w = cam.w.normalize();
             Vec3f v_prime = cam.up.normalize();
             cam.u = v_prime.crossProduct(cam.w).normalize();
             cam.v = cam.w.crossProduct(cam.u);  // already normalized
+            
+            // Apply transformations if present (BEFORE computing near plane)
+            if (cj.contains("Transformations")) {
+                Mat4f camTransform = ParseTransformations(cj.at("Transformations").get<string>(), scene);
+                
+                cam.position = camTransform.transformPoint(cam.position);
+                cam.gaze = camTransform.transformVector(cam.gaze).normalize();
+                cam.up = camTransform.transformVector(cam.up).normalize();
+                
+                // Recompute u, v, w
+                cam.w = cam.gaze * -1;
+                cam.w = cam.w.normalize();
+                Vec3f v_prime2 = cam.up.normalize();
+                cam.u = v_prime2.crossProduct(cam.w).normalize();
+                cam.v = cam.w.crossProduct(cam.u);
+            }
             
             // ImageResolution
             std::stringstream ss(cj["ImageResolution"].get<std::string>());
@@ -135,9 +351,9 @@ Scene parser::loadFromJson(const string &filepath)
 
                 cam.near_plane = { l, r, b, t };
             } else {
-                std::stringstream ss(cj["NearPlane"].get<std::string>());
+                std::stringstream ss2(cj["NearPlane"].get<std::string>());
                 float l=0, r=0, b=0, t=0;
-                ss >> l >> r >> b >> t;
+                ss2 >> l >> r >> b >> t;
                 cam.near_plane = {l, r, b, t};
             }
 
@@ -194,13 +410,12 @@ Scene parser::loadFromJson(const string &filepath)
         if (vd.is_string()) {
             data = vd.get<std::string>();               
         } else if (vd.is_object()) {
-            data = vd.value("_data", "");  // Note: assuming no need to check _type == xyz
+            data = vd.value("_data", "");
         }
 
         std::stringstream ss(data);
         float x, y, z;
 
-        // TODO: check this is correct
         auto count_tokens = [](const std::string& s) -> size_t {
             size_t tokens = 0;
             bool in_token = false;
@@ -219,8 +434,8 @@ Scene parser::loadFromJson(const string &filepath)
         while (ss >> x >> y >> z)
         {
             Vertex v;
-            v.pos = {x, y, z};
-            v.normal = {0.f, 0.f, 0.f};
+            v.pos = Vec3f(x, y, z);
+            v.normal = Vec3f(0.f, 0.f, 0.f);
             scene.vertex_data.push_back(v);
         }
     }
@@ -230,17 +445,17 @@ Scene parser::loadFromJson(const string &filepath)
     {
         const auto& objects = s["Objects"];
 
-        // --- Meshes ---
+        // === MESHES ===
         if (objects.contains("Mesh")) {
             const auto& meshNode = objects["Mesh"];
 
             auto parseOneMesh = [&](const json& mj) {
-                Mesh mesh{};
+                Mesh mesh;
                 mesh.is_smooth = mj.value("_shadingMode", "flat") == "smooth";
                 mesh.material_id = std::stoi(mj.at("Material").get<std::string>());
 
                 std::string facesStr;
-                bool ply_has_normals = false;   // Track if PLY provided normals
+                bool ply_has_normals = false;
 
                 // Get all of the Vertex ids for Faces
                 if (mj.contains("Faces") && mj["Faces"].contains("_plyFile")) {
@@ -248,7 +463,6 @@ Scene parser::loadFromJson(const string &filepath)
                     std::string ply_path = join_with_json_dir(filepath, ply_rel);
                     auto ply = load_ply(ply_path);
 
-                    // append vertices and remember base
                     size_t base = scene.vertex_data.size();
                     scene.vertex_data.reserve(base + ply.verts.size());
                     
@@ -257,19 +471,16 @@ Scene parser::loadFromJson(const string &filepath)
                     for (size_t i = 0; i < ply.verts.size(); ++i) {
                         Vertex v;
                         v.pos = ply.verts[i];
-                        // Use normals from PLY if available, otherwise zero
-                        v.normal = ply_has_normals ? ply.normals[i] : Vec3f{0, 0, 0};
+                        v.normal = ply_has_normals ? ply.normals[i] : Vec3f(0, 0, 0);
                         scene.vertex_data.push_back(v);
                     }
 
-                    // convert faces to your 1-based global indexing with base offset
                     for (auto& f : ply.faces) {
                         f[0] += int(base);
                         f[1] += int(base);
                         f[2] += int(base);
                     }
                     facesStr = flatten_faces_to_string(ply.faces);
-
                 }
                 else if (mj.contains("Faces") && mj["Faces"].contains("_data")) 
                 {
@@ -278,7 +489,6 @@ Scene parser::loadFromJson(const string &filepath)
 
                 std::stringstream ss(facesStr);
 
-                // Track which vertex indices we touched so we normalize only those
                 std::vector<int> touched;
                 touched.reserve(256);
 
@@ -286,7 +496,6 @@ Scene parser::loadFromJson(const string &filepath)
                     if (touched.empty() || touched.back() != idx) touched.push_back(idx);
                 };
 
-                // Update Mesh Local Bound according to each new face
                 mesh.localBounds.reset();
 
                 int i0, i1, i2;
@@ -298,54 +507,49 @@ Scene parser::loadFromJson(const string &filepath)
                     const Vec3f& vb = scene.vertex_data[i1 - 1].pos;
                     const Vec3f& vc = scene.vertex_data[i2 - 1].pos;
 
-                    Vec3f n_area = (vb - va).crossProduct(vc - va);
-                    Vec3f n_unit = n_area.normalize();
-
-                    // Degenerate triangle, early exit
-                    if (n_area.x == 0.f && n_area.y == 0.f && n_area.z == 0.f)
-                    {
-                        continue;
-                    }
-                    
-                    f.n_unit = n_unit;
-                    f.plane_d = -n_unit.dotProduct(va);
-
                     mesh.localBounds.expand(va);
                     mesh.localBounds.expand(vb);
                     mesh.localBounds.expand(vc);
 
-                    mesh.faces.push_back(f);
+                    Vec3f faceNorm = (vb - va).crossProduct(vc - va);
+                    f.n_unit = faceNorm.normalize();
+                    f.plane_d = -(f.n_unit.dotProduct(va));
 
-                    // Only accumulate normals if smooth shading AND no PLY normals
-                    // If PLY provided normals, we keep them as-is
-                    if (mesh.is_smooth && !ply_has_normals)
-                    {
-                        // Area-weighted vertex normals: accumulate only from Mesh faces
-                        scene.vertex_data[i0 - 1].normal += n_area;
-                        scene.vertex_data[i1 - 1].normal += n_area;
-                        scene.vertex_data[i2 - 1].normal += n_area;
+                    // Accumulate normal for smooth shading (if PLY didn't provide normals)
+                    if (mesh.is_smooth && !ply_has_normals) {
+                        scene.vertex_data[i0 - 1].normal = scene.vertex_data[i0 - 1].normal + faceNorm;
+                        scene.vertex_data[i1 - 1].normal = scene.vertex_data[i1 - 1].normal + faceNorm;
+                        scene.vertex_data[i2 - 1].normal = scene.vertex_data[i2 - 1].normal + faceNorm;
 
                         mark_touched(i0);
                         mark_touched(i1);
                         mark_touched(i2);
                     }
+
+                    mesh.faces.push_back(f);
                 }
 
-                // Only normalize if we computed normals (smooth mode without PLY normals)
-                if (mesh.is_smooth && !ply_has_normals)
-                {
-                    // Normalize the affected vertex normals
-                    std::sort(touched.begin(), touched.end());
-                    touched.erase(std::unique(touched.begin(), touched.end()), touched.end());
-
-                    for (int vid : touched) {
-                        Vec3f& n = scene.vertex_data[vid - 1].normal;
-                        n = n.normalize();
+                // Normalize accumulated normals (if we computed them)
+                if (mesh.is_smooth && !ply_has_normals) {
+                    for (int idx : touched) {
+                        scene.vertex_data[idx - 1].normal = scene.vertex_data[idx - 1].normal.normalize();
                     }
                 }
 
+                // === PARSE TRANSFORMATIONS ===
+                if (mj.contains("Transformations")) {
+                    mesh.transformation = ParseTransformations(mj.at("Transformations").get<string>(), scene);
+                    mesh.invTransformation = mesh.transformation.inverse();
+                    mesh.hasTransform = true;
+                    mesh.worldBounds = TransformAABB(mesh.localBounds, mesh.transformation);
+                } else {
+                    mesh.transformation = Mat4f::identity();
+                    mesh.invTransformation = Mat4f::identity();
+                    mesh.hasTransform = false;
+                    mesh.worldBounds = mesh.localBounds;
+                }
+
                 scene.meshes.push_back(mesh);
-            
             };
 
             if (meshNode.is_array()) {
@@ -355,37 +559,110 @@ Scene parser::loadFromJson(const string &filepath)
             }
         }
 
-        // --- Triangles ---
-        if (objects.contains("Triangle"))
-        {
+        // === MESH INSTANCES ===
+        if (objects.contains("MeshInstance")) {
+            const auto& instanceNode = objects["MeshInstance"];
+            
+            auto parseOneInstance = [&](const json& inst) {
+                int baseMeshId = stoi(inst.at("_baseMeshId").get<string>()) - 1;  // 0-indexed
+                int materialId = stoi(inst.at("Material").get<string>());
+                
+                bool resetTransform = false;
+                if (inst.contains("_resetTransform")) {
+                    resetTransform = (inst.at("_resetTransform").get<string>() == "true");
+                }
+                
+                // Find the ORIGINAL mesh by following the chain
+                int currentId = baseMeshId;
+                while (currentId < (int)scene.meshes.size() && scene.meshes[currentId].isInstance) {
+                    currentId = scene.meshes[currentId].originalMeshId;
+                }
+                int originalMeshId = currentId;
+                
+                const Mesh& originalMesh = scene.meshes[originalMeshId];
+                const Mesh& baseMesh = scene.meshes[baseMeshId];
+                
+                // Compute transformation
+                Mat4f instanceTransform = Mat4f::identity();
+                if (inst.contains("Transformations")) {
+                    instanceTransform = ParseTransformations(inst.at("Transformations").get<string>(), scene);
+                }
+                
+                Mat4f finalTransform;
+                if (resetTransform) {
+                    finalTransform = instanceTransform;
+                } else {
+                    finalTransform = instanceTransform * baseMesh.transformation;
+                }
+                
+                // Create new mesh as an instance
+                Mesh newMesh;
+                newMesh.faces = originalMesh.faces;  // Share geometry
+                newMesh.is_smooth = originalMesh.is_smooth;
+                newMesh.material_id = materialId;
+                newMesh.transformation = finalTransform;
+                newMesh.invTransformation = finalTransform.inverse();
+                newMesh.hasTransform = true;
+                newMesh.isInstance = true;
+                newMesh.originalMeshId = originalMeshId;
+                newMesh.bvhIndex = -1;
+                newMesh.localBounds = originalMesh.localBounds;
+                newMesh.worldBounds = TransformAABB(originalMesh.localBounds, finalTransform);
+                
+                scene.meshes.push_back(newMesh);
+            };
+            
+            if (instanceNode.is_array()) {
+                for (const auto& inst : instanceNode) {
+                    parseOneInstance(inst);
+                }
+            } else {
+                parseOneInstance(instanceNode);
+            }
+        }
+
+        // === TRIANGLES ===
+        if (objects.contains("Triangle")) {
             const auto& triNode = objects["Triangle"];
 
             auto parseOneTriangle = [&](const json& tj) {
-                Triangle tri{};
+                Triangle tri;
                 tri.material_id = std::stoi(tj.at("Material").get<std::string>());
 
-                std::stringstream ss(tj.at("Indices").get<std::string>());
-                ss >> tri.face.i0 >> tri.face.i1 >> tri.face.i2;
+                std::string data = tj.at("Indices").get<std::string>();
+                std::stringstream ss(data);
+                int i0, i1, i2;
+                ss >> i0 >> i1 >> i2;
 
-                const Vec3f& tri_va = scene.vertex_data[tri.face.i0 - 1].pos;
-                const Vec3f& tri_vb = scene.vertex_data[tri.face.i1 - 1].pos;
-                const Vec3f& tri_vc = scene.vertex_data[tri.face.i2 - 1].pos;
+                Face f{};
+                f.i0 = i0; f.i1 = i1; f.i2 = i2;
 
-                Vec3f normal = (tri_vc - tri_vb).crossProduct(tri_va - tri_vb);
-                Vec3f n_unit = normal.normalize();
-
-                // Degenerate triangle, skip pushing
-                if (n_unit.x == 0.f && n_unit.y == 0.f && n_unit.z == 0.f) {
-                    return;
-                }
-
-                tri.face.n_unit  = n_unit;
-                tri.face.plane_d = -n_unit.dotProduct(tri_va);
+                const Vec3f& va = scene.vertex_data[i0 - 1].pos;
+                const Vec3f& vb = scene.vertex_data[i1 - 1].pos;
+                const Vec3f& vc = scene.vertex_data[i2 - 1].pos;
 
                 tri.localBounds.reset();
-                tri.localBounds.expand(tri_va);
-                tri.localBounds.expand(tri_vb);
-                tri.localBounds.expand(tri_vc);
+                tri.localBounds.expand(va);
+                tri.localBounds.expand(vb);
+                tri.localBounds.expand(vc);
+
+                Vec3f faceNorm = (vb - va).crossProduct(vc - va);
+                f.n_unit = faceNorm.normalize();
+                f.plane_d = -(f.n_unit.dotProduct(va));
+                tri.face = f;
+
+                // === PARSE TRANSFORMATIONS ===
+                if (tj.contains("Transformations")) {
+                    tri.transformation = ParseTransformations(tj.at("Transformations").get<string>(), scene);
+                    tri.invTransformation = tri.transformation.inverse();
+                    tri.hasTransform = true;
+                    tri.worldBounds = TransformAABB(tri.localBounds, tri.transformation);
+                } else {
+                    tri.transformation = Mat4f::identity();
+                    tri.invTransformation = Mat4f::identity();
+                    tri.hasTransform = false;
+                    tri.worldBounds = tri.localBounds;
+                }
 
                 scene.triangles.push_back(tri);
             };
@@ -397,20 +674,33 @@ Scene parser::loadFromJson(const string &filepath)
             }
         }
 
-        // --- Spheres ---
+        // === SPHERES ===
         if (objects.contains("Sphere")) {
             const auto& sphNode = objects["Sphere"];
 
             auto parseOneSphere = [&](const json& sj) {
-                Sphere sp{};
-                sp.material_id       = std::stoi(sj.at("Material").get<std::string>());
-                sp.center_vertex_id  = std::stoi(sj.at("Center").get<std::string>());
-                sp.radius            = parser::parseFloat(sj.at("Radius").get<std::string>());
+                Sphere sp;
+                sp.material_id = std::stoi(sj.at("Material").get<std::string>());
+                sp.center_vertex_id = std::stoi(sj.at("Center").get<std::string>());
+                sp.radius = parseFloat(sj.at("Radius").get<std::string>());
 
-                Vec3f rVec = {sp.radius, sp.radius, sp.radius};
                 Vec3f center = scene.vertex_data[sp.center_vertex_id - 1].pos;
+                Vec3f rVec = Vec3f(sp.radius, sp.radius, sp.radius);
                 sp.localBounds.min = center - rVec;
                 sp.localBounds.max = center + rVec;
+
+                // === PARSE TRANSFORMATIONS ===
+                if (sj.contains("Transformations")) {
+                    sp.transformation = ParseTransformations(sj.at("Transformations").get<string>(), scene);
+                    sp.invTransformation = sp.transformation.inverse();
+                    sp.hasTransform = true;
+                    sp.worldBounds = TransformAABB(sp.localBounds, sp.transformation);
+                } else {
+                    sp.transformation = Mat4f::identity();
+                    sp.invTransformation = Mat4f::identity();
+                    sp.hasTransform = false;
+                    sp.worldBounds = sp.localBounds;
+                }
 
                 scene.spheres.push_back(sp);
             };
@@ -422,32 +712,46 @@ Scene parser::loadFromJson(const string &filepath)
             }
         }
 
-        // --- Planes ---
+        // === PLANES ===
         if (objects.contains("Plane")) {
-            const auto& plNode = objects["Plane"];
+            const auto& planeNode = objects["Plane"];
 
             auto parseOnePlane = [&](const json& pj) {
-                Plane p{};
+                Plane plane;
+                plane.material_id = std::stoi(pj.at("Material").get<std::string>());
+                plane.vertex_id = std::stoi(pj.at("Point").get<std::string>());
 
-                p.material_id = std::stoi(pj.at("Material").get<std::string>());
-                p.vertex_id   = std::stoi(pj.at("Point").get<std::string>());
-                p.n_unit      = parser::parseVec3f(pj.at("Normal").get<std::string>()).normalize();
+                Vec3f normal = parseVec3f(pj.at("Normal").get<std::string>());
+                plane.n_unit = normal.normalize();
 
-                // Degenerate plane
-                if (p.n_unit.x == 0.f && p.n_unit.y == 0.f && p.n_unit.z == 0.f) {
-                    return;
+                Vec3f point = scene.vertex_data[plane.vertex_id - 1].pos;
+                plane.plane_d = -(plane.n_unit.dotProduct(point));
+
+                // === PARSE TRANSFORMATIONS ===
+                if (pj.contains("Transformations")) {
+                    plane.transformation = ParseTransformations(pj.at("Transformations").get<string>(), scene);
+                    plane.invTransformation = plane.transformation.inverse();
+                    plane.hasTransform = true;
+                    
+                    // Transform plane equation
+                    // Normal transforms with inverse transpose
+                    plane.n_unit = plane.invTransformation.transpose().transformVector(plane.n_unit).normalize();
+                    // Point on plane transforms normally
+                    point = plane.transformation.transformPoint(point);
+                    plane.plane_d = -(plane.n_unit.dotProduct(point));
+                } else {
+                    plane.transformation = Mat4f::identity();
+                    plane.invTransformation = Mat4f::identity();
+                    plane.hasTransform = false;
                 }
 
-                const Vertex& plane_vertex = scene.vertex_data[p.vertex_id - 1];
-                p.plane_d = -p.n_unit.dotProduct(plane_vertex.pos);
-
-                scene.planes.push_back(p);
+                scene.planes.push_back(plane);
             };
 
-            if (plNode.is_array()) {
-                for (const auto& pj : plNode) parseOnePlane(pj);
+            if (planeNode.is_array()) {
+                for (const auto& pj : planeNode) parseOnePlane(pj);
             } else {
-                parseOnePlane(plNode);
+                parseOnePlane(planeNode);
             }
         }
     }
@@ -455,12 +759,13 @@ Scene parser::loadFromJson(const string &filepath)
     return scene;
 }
 
-Vec3f parser::parseVec3f(const std::string& s)
-{
+// ============== HELPER FUNCTIONS ==============
+
+Vec3f parser::parseVec3f(const std::string& s) {
     std::stringstream ss(s);
     float x, y, z;
     ss >> x >> y >> z;
-    return { x, y, z };
+    return Vec3f(x, y, z);
 }
 
 float parser::parseFloat(const std::string& s)
@@ -476,7 +781,7 @@ std::string parser::join_with_json_dir(const std::string& scene_path, const std:
         || (rel_or_abs.size() > 1 && rel_or_abs[1] == ':')
 #endif
         )) return rel_or_abs;
-
+    
     // dir of scene_path
     size_t slash = scene_path.find_last_of("/\\");
     if (slash == std::string::npos) return rel_or_abs;
