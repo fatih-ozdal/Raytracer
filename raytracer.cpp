@@ -1042,6 +1042,108 @@ float Fresnel_Conductor(float cosTheta, float refractionIndex, float absorptionI
     return (R_S + R_P) * 0.5;
 }
 
+/*
+bool InShadow(const Vec3f& point, const PointLight& I, const Vec3f& n, float eps_shadow, const Scene& scene) noexcept
+{
+    Ray shadowRay;
+    shadowRay.origin = point + n * eps_shadow;
+
+    Vec3f toLight = I.position - shadowRay.origin;
+    float distToLight = toLight.length();
+    
+    shadowRay.direction = toLight / distToLight;  // NORMALIZE IT
+    shadowRay.depth = 0;
+
+    float minT = distToLight;  // Use actual distance, not t=1
+
+    // 1. Test planes first
+    for (size_t i = 0; i < scene.planes.size(); i++) {
+        const Plane& plane = scene.planes[i];
+        float t = IntersectsPlane(shadowRay, plane.n_unit, plane.plane_d, minT);
+        if (t < minT && t != RAY_MISS_VALUE) {
+            return true;
+        }
+    }
+
+    // 2. Traverse top-level BVH
+    uint32_t stack[64];
+    uint32_t stackPtr = 0;
+    stack[stackPtr++] = rootNodeIdx;
+    
+    while (stackPtr > 0)
+    {
+        uint32_t nodeIdx = stack[--stackPtr];
+        BVHNode& node = topBvhNodes[nodeIdx];
+
+        int t_aabb = IntersectAABB(shadowRay, node.bounds, minT);
+        
+        if (t_aabb == RAY_MISS_VALUE) {
+            continue;
+        }
+        
+        if (node.primCount > 0)  // Leaf node
+        {
+            for (uint32_t i = 0; i < node.primCount; i++)
+            {
+                uint32_t primIdx = topPrimIdx[node.firstPrimIdx + i];
+                TopPrim& prim = topPrims[primIdx];
+                
+                switch(prim.kind)
+                {
+                    case PrimKind::Mesh: {
+                        const Mesh& mesh = scene.meshes[prim.index];
+                        float temp_b, temp_g;
+                        Face tempFace;
+                        
+                        float t = IntersectMeshBVH(shadowRay, mesh, scene, prim.index, 
+                                                   minT, tempFace, temp_b, temp_g);
+                        
+                        if (t < minT && t != RAY_MISS_VALUE) {
+                            return true;
+                        }
+                        break;
+                    }
+                    
+                    case PrimKind::Sphere: {
+                        const Sphere& sphere = scene.spheres[prim.index];
+                        const Vertex& center = scene.vertex_data[sphere.center_vertex_id - 1];
+                        float t = IntersectSphere(shadowRay, center, sphere.radius, minT);
+                        
+                        if (t < minT && t != RAY_MISS_VALUE) {
+                            return true;
+                        }
+                        break;
+                    }
+                    
+                    case PrimKind::Triangle: {
+                        const Triangle& triangle = scene.triangles[prim.index];
+                        float dummy_b, dummy_g;
+                        float t = IntersectsTriangle_Bary(shadowRay, triangle.face, 
+                                                          scene.vertex_data, minT, 
+                                                          dummy_b, dummy_g);
+                        
+                        if (t < minT && t != RAY_MISS_VALUE) {
+                            return true;
+                        }
+                        break;
+                    }
+                }
+            }
+        }
+        else  // Interior node
+        {
+            uint32_t leftChild = node.leftNodeIdx;
+            uint32_t rightChild = node.leftNodeIdx + 1;
+            
+            stack[stackPtr++] = rightChild;
+            stack[stackPtr++] = leftChild;
+        }
+    }
+    
+    return false;
+}
+*/
+
 bool InShadow(const Vec3f& point, const PointLight& I, const Vec3f& n, float eps_shadow, const Scene& scene) noexcept
 {
     Vec3f toLight = I.position - point;
@@ -1070,7 +1172,14 @@ bool InShadow(const Vec3f& point, const PointLight& I, const Vec3f& n, float eps
            root.bounds.max.x, root.bounds.max.y, root.bounds.max.z);
     }
 
-    // ... planes ...
+    // 1. Test planes first
+    for (size_t i = 0; i < scene.planes.size(); i++) {
+        const Plane& plane = scene.planes[i];
+        float t = IntersectsPlane(shadowRay, plane.n_unit, plane.plane_d, minT);
+        if (t < minT && t != RAY_MISS_VALUE) {
+            return true;
+        }
+    }
 
     uint32_t stack[64];
     uint32_t stackPtr = 0;
@@ -1108,7 +1217,60 @@ bool InShadow(const Vec3f& point, const PointLight& I, const Vec3f& n, float eps
                     printf("  Prim %d: kind=%d, index=%d\n", i, (int)prim.kind, prim.index);
                 }
                 
-                // ... rest of switch ...
+                switch(prim.kind)
+                {
+                    case PrimKind::Mesh: {
+                        const Mesh& mesh = scene.meshes[prim.index];
+                        float temp_b, temp_g;
+                        Face tempFace;
+                        
+                        float t = IntersectMeshBVH(shadowRay, mesh, scene, prim.index, 
+                                                   minT, tempFace, temp_b, temp_g);
+                        
+                        if (t < minT && t != RAY_MISS_VALUE) {
+                            return true;
+                        }
+                        break;
+                    }
+                    
+                    case PrimKind::Sphere: {
+                        if(shouldDebug)
+                            printf("  -> SPHERE CASE REACHED! prim.index=%d\n", prim.index);
+                        
+                        const Sphere& sphere = scene.spheres[prim.index];
+                        const Vertex& center = scene.vertex_data[sphere.center_vertex_id - 1];
+                        
+                        if(shouldDebug)
+                            printf("     Sphere center=(%.2f,%.2f,%.2f) r=%.2f\n",
+                                center.pos.x, center.pos.y, center.pos.z, sphere.radius);
+                        
+                        float t = IntersectSphere(shadowRay, center, sphere.radius, minT);
+                        
+                        if(shouldDebug)
+                        {
+                            printf("     IntersectSphere returned t=%.2f (minT=%.2f)\n", t, minT);
+                        
+                            if (t < minT && t != RAY_MISS_VALUE) {
+                                printf("     -> SHADOW DETECTED!\n");
+                                return true;
+                            }
+                        }
+                        break;
+                    }
+                    
+                    case PrimKind::Triangle: {
+                        const Triangle& triangle = scene.triangles[prim.index];
+                        float dummy_b, dummy_g;
+                        float t = IntersectsTriangle_Bary(shadowRay, triangle.face, 
+                                                          scene.vertex_data, minT, 
+                                                          dummy_b, dummy_g);
+                        
+                        if (t < minT && t != RAY_MISS_VALUE) {
+                            return true;
+                        }
+                        break;
+                    }
+                }
             }
         }
         else
