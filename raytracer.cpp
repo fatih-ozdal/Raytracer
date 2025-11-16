@@ -50,6 +50,9 @@ void BuildTopLevelBVH(const Scene& scene)
     MakeTopLevelPrimsArray(scene);
 
     uint32_t N = topPrims.size();
+    topPrimIdx.resize(N);
+    topBvhNodes.resize(N);
+
     for (int i = 0; i < N; i++) topPrimIdx[i] = i;  // these will get swapped around
 
     // assign all prims to root node

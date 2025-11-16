@@ -6,11 +6,11 @@
       "type": "cppdbg",
       "request": "launch",
       "program": "${workspaceFolder}/raytracer",
-      "args": ["${workspaceFolder}/../inputs/simple.json"],
+      "args": ["${workspaceFolder}/blog/hw1/inputs/simple.json"],
       "cwd": "${workspaceFolder}",
       "MIMode": "gdb",
       "stopAtEntry": false,
-      "externalConsole": true,
+      "externalConsole": false,
       "setupCommands": [
         { "text": "-enable-pretty-printing" }
       ],
