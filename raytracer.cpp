@@ -205,6 +205,88 @@ bool FindClosestHit(const Ray& ray, const Scene& scene, const Camera& camera, /*
     return true;
 }
 
+float IntersectAABB(const Ray& ray, const AABB& box, float minT) noexcept
+{
+    float tMin = 0.0f;
+    float tMax = minT;
+
+    // --- X axis ---
+    if (ray.direction.x != 0.0f) {
+        float invD = 1.0f / ray.direction.x;
+        float t0 = (box.min.x - ray.origin.x) * invD;
+        float t1 = (box.max.x - ray.origin.x) * invD;
+        if (t1 < t0) std::swap(t0, t1);
+
+        tMin = std::max(tMin, t0);
+        tMax = std::min(tMax, t1);
+
+        if (tMax < tMin) {
+            return RAY_MISS_VALUE;
+        }
+    } 
+    else { // Ray is parallel to X slabs; origin must be inside the slab
+        if (ray.origin.x < box.min.x || ray.origin.x > box.max.x) {
+            return RAY_MISS_VALUE;
+        }
+    }
+
+    // --- Y axis ---
+    if (ray.direction.y != 0.0f) {
+        float invD = 1.0f / ray.direction.y;
+        float t0 = (box.min.y - ray.origin.y) * invD;
+        float t1 = (box.max.y - ray.origin.y) * invD;
+        if (t1 < t0) std::swap(t0, t1);
+
+        tMin = std::max(tMin, t0);
+        tMax = std::min(tMax, t1);
+        if (tMax < tMin) {
+            return RAY_MISS_VALUE;
+        }
+    } 
+    else {
+        if (ray.origin.y < box.min.y || ray.origin.y > box.max.y) {
+            return RAY_MISS_VALUE;
+        }
+    }
+
+    // --- Z axis ---
+    if (ray.direction.z != 0.0f) {
+        float invD = 1.0f / ray.direction.z;
+        float t0 = (box.min.z - ray.origin.z) * invD;
+        float t1 = (box.max.z - ray.origin.z) * invD;
+        if (t1 < t0) std::swap(t0, t1);
+
+        tMin = std::max(tMin, t0);
+        tMax = std::min(tMax, t1);
+        if (tMax < tMin) {
+            return RAY_MISS_VALUE;
+        }
+    } 
+    else {
+        if (ray.origin.z < box.min.z || ray.origin.z > box.max.z) {
+            return RAY_MISS_VALUE;
+        }
+    }
+
+    float tHit;
+    if (tMin > 0.0f) {
+        tHit = tMin;
+    } 
+    else { // We're starting inside the box or at its boundary
+        if (tMax <= 0.0f) {
+            return RAY_MISS_VALUE;
+        }
+        tHit = tMax;
+    }
+    
+    if (tHit >= minT) {
+        return RAY_MISS_VALUE;
+    }
+
+    return tHit;
+}
+
+
 float IntersectsMesh(const Ray& ray, const Mesh& mesh, const std::vector<Vertex>& vertex_data, float minT, /*out*/ Face& hitFace, /*out*/ float& beta_out, /*out*/ float& gamma_out) noexcept
 {
     float meshMinT = minT, t;
@@ -492,7 +574,7 @@ bool InShadow(const Vec3f& point, const PointLight& I, const Vec3f& n, float eps
 {
     Ray shadowRay;
     shadowRay.origin = point + n * eps_shadow;
-    shadowRay.direction = I.position - point;
+    shadowRay.direction = I.position - shadowRay.origin;
     shadowRay.depth = 0;
 
     Face hitTriFace;
