@@ -1,9 +1,82 @@
 #include "raytracer.h"
+#include <iostream>
 
 vector<TopPrim> topPrims;
 vector<uint32_t> topPrimIdx;
 vector<BVHNode> topBvhNodes; 
 uint32_t rootNodeIdx = 0, nodesUsed = 1;
+
+struct BvhStats {
+    int nodeCount = 0;
+    int leafCount = 0;
+    int interiorCount = 0;
+    int maxDepth = 0;
+    int totalLeafPrims = 0;
+    int maxLeafPrims = 0;
+};
+
+void GatherStats(uint32_t nodeIdx, int depth, BvhStats& stats)
+{
+    if (nodeIdx == UINT32_MAX) return;
+    const BVHNode& node = topBvhNodes[nodeIdx];
+
+    stats.nodeCount++;
+    stats.maxDepth = std::max(stats.maxDepth, depth);
+
+    if (node.primCount > 0) { // leaf
+        stats.leafCount++;
+        stats.totalLeafPrims += node.primCount;
+        stats.maxLeafPrims = std::max(stats.maxLeafPrims, (int)node.primCount);
+    } else { // interior
+        stats.interiorCount++;
+        uint32_t left = node.leftNodeIdx;
+        uint32_t right = node.leftNodeIdx + 1;
+        GatherStats(left, depth + 1, stats);
+        GatherStats(right, depth + 1, stats);
+    }
+}
+
+struct MeshBvhStats {
+    int nodeCount       = 0;
+    int leafCount       = 0;
+    int interiorCount   = 0;
+    int maxDepth        = 0;
+    int totalLeafPrims  = 0;
+    int maxLeafPrims    = 0;
+};
+
+void GatherMeshBvhStats(const MeshBVH& bvh, uint32_t nodeIdx, int depth, MeshBvhStats& stats)
+{
+    if (nodeIdx >= bvh.nodes.size())
+        return;
+
+    const BVHNode& node = bvh.nodes[nodeIdx];
+
+    // Skip unused nodes (primCount == 0 and no children set) if you want:
+    if (node.primCount == 0 && node.leftNodeIdx == 0 && nodeIdx != bvh.rootNodeIdx) {
+        return;
+    }
+
+    stats.nodeCount++;
+    if (depth > stats.maxDepth) stats.maxDepth = depth;
+
+    if (node.primCount > 0) {
+        // Leaf
+        stats.leafCount++;
+        stats.totalLeafPrims += node.primCount;
+        if (node.primCount > stats.maxLeafPrims)
+            stats.maxLeafPrims = node.primCount;
+    } else {
+        // Interior
+        stats.interiorCount++;
+
+        uint32_t leftChild  = node.leftNodeIdx;
+        uint32_t rightChild = node.leftNodeIdx + 1;
+
+        GatherMeshBvhStats(bvh, leftChild,  depth + 1, stats);
+        GatherMeshBvhStats(bvh, rightChild, depth + 1, stats);
+    }
+}
 
 int main(int argc, char* argv[])
 {
@@ -16,8 +89,36 @@ int main(int argc, char* argv[])
     string jsonFile = argv[1];
     Scene scene = p.loadFromJson(jsonFile);
 
-    BuildTopLevelBVH(scene);
     BuildAllMeshBVHs(scene);
+    BuildTopLevelBVH(scene);
+
+    BvhStats s;
+    GatherStats(rootNodeIdx, 0, s);
+    std::cout << "nodes=" << s.nodeCount
+            << " leaves=" << s.leafCount
+            << " interior=" << s.interiorCount
+            << " maxDepth=" << s.maxDepth
+            << " avgLeafPrims=" << (s.leafCount ? (float)s.totalLeafPrims / s.leafCount : 0)
+            << " maxLeafPrims=" << s.maxLeafPrims
+            << std::endl;
+
+    for (size_t m = 0; m < meshBVHs.size(); ++m) {
+        const MeshBVH& bvh = meshBVHs[m];
+        MeshBvhStats stats;
+
+        GatherMeshBvhStats(bvh, bvh.rootNodeIdx, 0, stats);
+
+        float avgLeafPrims = stats.leafCount ? 
+            (float)stats.totalLeafPrims / (float)stats.leafCount : 0.0f;
+
+        std::cout << "Mesh " << m << " BVH stats:\n"
+                << "  nodes       = " << stats.nodeCount << "\n"
+                << "  leaves      = " << stats.leafCount << "\n"
+                << "  interior    = " << stats.interiorCount << "\n"
+                << "  maxDepth    = " << stats.maxDepth << "\n"
+                << "  avgLeafPrim = " << avgLeafPrims << "\n"
+                << "  maxLeafPrim = " << stats.maxLeafPrims << "\n\n";
+    }
 
     for (const Camera& camera : scene.cameras)  // read-only ref is fine
     {
@@ -50,8 +151,8 @@ void BuildTopLevelBVH(const Scene& scene)
     MakeTopLevelPrimsArray(scene);
 
     uint32_t N = topPrims.size();
-    topPrimIdx.resize(N);
-    topBvhNodes.resize(N);
+    topPrimIdx.resize(2*N);
+    topBvhNodes.resize(2*N);
 
     for (int i = 0; i < N; i++) topPrimIdx[i] = i;  // these will get swapped around
 
@@ -112,20 +213,21 @@ void UpdateNodeBounds( uint32_t nodeIdx )
 
 void Subdivide( uint32_t nodeIdx )
 {
+    // DON'T hold a reference - access by index instead
+    
     // terminate recursion
-    BVHNode& node = topBvhNodes[nodeIdx];
-    if (node.primCount <= 2) return;
+    if (topBvhNodes[nodeIdx].primCount <= 2) return;
 
     // determine split axis and position
-    Vec3f extent = node.bounds.max - node.bounds.min;
+    Vec3f extent = topBvhNodes[nodeIdx].bounds.max - topBvhNodes[nodeIdx].bounds.min;
     int axis = 0;
     if (extent.y > extent.x) axis = 1;
     if (extent.z > extent[axis]) axis = 2;
-    float splitPos = node.bounds.min[axis] + extent[axis] * 0.5f;
+    float splitPos = topBvhNodes[nodeIdx].bounds.min[axis] + extent[axis] * 0.5f;
 
     // in-place partition
-    int i = node.firstPrimIdx;
-    int j = i + node.primCount - 1;
+    int i = topBvhNodes[nodeIdx].firstPrimIdx;
+    int j = i + topBvhNodes[nodeIdx].primCount - 1;
     while (i <= j)
     {
         if (topPrims[topPrimIdx[i]].centroid[axis] < splitPos) i++;
@@ -133,18 +235,24 @@ void Subdivide( uint32_t nodeIdx )
     }
 
     // abort split if one of the sides is empty
-    int leftCount = i - node.firstPrimIdx;
-    if (leftCount == 0 || leftCount == node.primCount) return;
+    int leftCount = i - topBvhNodes[nodeIdx].firstPrimIdx;
+    if (leftCount == 0 || leftCount == topBvhNodes[nodeIdx].primCount) return;
+
+    // RESIZE IF NEEDED
+    if (nodesUsed + 2 >= topBvhNodes.size()) {
+        topBvhNodes.resize(topBvhNodes.size() * 2);
+    }
 
     // create child nodes
     int leftChildIdx = nodesUsed++;
     int rightChildIdx = nodesUsed++;
-    topBvhNodes[leftChildIdx].firstPrimIdx = node.firstPrimIdx;
+    
+    topBvhNodes[leftChildIdx].firstPrimIdx = topBvhNodes[nodeIdx].firstPrimIdx;
     topBvhNodes[leftChildIdx].primCount = leftCount;
     topBvhNodes[rightChildIdx].firstPrimIdx = i;
-    topBvhNodes[rightChildIdx].primCount = node.primCount - leftCount;
-    node.leftNodeIdx = leftChildIdx;
-    node.primCount = 0;
+    topBvhNodes[rightChildIdx].primCount = topBvhNodes[nodeIdx].primCount - leftCount;
+    topBvhNodes[nodeIdx].leftNodeIdx = leftChildIdx;
+    topBvhNodes[nodeIdx].primCount = 0;
 
     UpdateNodeBounds( leftChildIdx );
     UpdateNodeBounds( rightChildIdx );
@@ -173,6 +281,9 @@ void BuildMeshBVH(const Scene& scene, size_t meshIdx)
     
     uint32_t N = bvh.prims.size();
     if (N == 0) return;  // Empty mesh
+
+    bvh.nodes.resize(2*N);
+    bvh.primIdx.resize(2*N);
     
     // Initialize index array
     for (uint32_t i = 0; i < N; i++) {
@@ -231,20 +342,21 @@ void UpdateMeshNodeBounds(MeshBVH& bvh, uint32_t nodeIdx)
 
 void SubdivideMesh(MeshBVH& bvh, uint32_t nodeIdx)
 {
+    // DON'T hold a reference at the top - it becomes invalid after resize!
+    
     // Terminate recursion
-    BVHNode& node = bvh.nodes[nodeIdx];
-    if (node.primCount <= 2) return;
+    if (bvh.nodes[nodeIdx].primCount <= 2) return;
     
     // Determine split axis and position
-    Vec3f extent = node.bounds.max - node.bounds.min;
+    Vec3f extent = bvh.nodes[nodeIdx].bounds.max - bvh.nodes[nodeIdx].bounds.min;
     int axis = 0;
     if (extent.y > extent.x) axis = 1;
     if (extent.z > extent[axis]) axis = 2;
-    float splitPos = node.bounds.min[axis] + extent[axis] * 0.5f;
+    float splitPos = bvh.nodes[nodeIdx].bounds.min[axis] + extent[axis] * 0.5f;
     
     // In-place partition
-    int i = node.firstPrimIdx;
-    int j = i + node.primCount - 1;
+    int i = bvh.nodes[nodeIdx].firstPrimIdx;
+    int j = i + bvh.nodes[nodeIdx].primCount - 1;
     while (i <= j)
     {
         if (bvh.prims[bvh.primIdx[i]].centroid[axis] < splitPos)
@@ -254,20 +366,25 @@ void SubdivideMesh(MeshBVH& bvh, uint32_t nodeIdx)
     }
     
     // Abort split if one of the sides is empty
-    int leftCount = i - node.firstPrimIdx;
-    if (leftCount == 0 || leftCount == node.primCount) return;
+    int leftCount = i - bvh.nodes[nodeIdx].firstPrimIdx;
+    if (leftCount == 0 || leftCount == bvh.nodes[nodeIdx].primCount) return;
     
-    // Create child nodes
+    // Create child nodes - RESIZE IF NEEDED
+    if (bvh.nodesUsed + 2 >= bvh.nodes.size()) {
+        bvh.nodes.resize(bvh.nodes.size() * 2);  // This invalidates references!
+    }
+    
     int leftChildIdx = bvh.nodesUsed++;
     int rightChildIdx = bvh.nodesUsed++;
     
-    bvh.nodes[leftChildIdx].firstPrimIdx = node.firstPrimIdx;
+    // Now it's safe to access and modify
+    bvh.nodes[leftChildIdx].firstPrimIdx = bvh.nodes[nodeIdx].firstPrimIdx;
     bvh.nodes[leftChildIdx].primCount = leftCount;
     bvh.nodes[rightChildIdx].firstPrimIdx = i;
-    bvh.nodes[rightChildIdx].primCount = node.primCount - leftCount;
+    bvh.nodes[rightChildIdx].primCount = bvh.nodes[nodeIdx].primCount - leftCount;
     
-    node.leftNodeIdx = leftChildIdx;
-    node.primCount = 0;
+    bvh.nodes[nodeIdx].leftNodeIdx = leftChildIdx;
+    bvh.nodes[nodeIdx].primCount = 0;
     
     UpdateMeshNodeBounds(bvh, leftChildIdx);
     UpdateMeshNodeBounds(bvh, rightChildIdx);
