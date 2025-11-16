@@ -1039,16 +1039,20 @@ bool InShadow(const Vec3f& point, const PointLight& I, const Vec3f& n, float eps
 {
     Ray shadowRay;
     shadowRay.origin = point + n * eps_shadow;
-    shadowRay.direction = I.position - shadowRay.origin;  // Unnormalized
+
+    Vec3f toLight = I.position - shadowRay.origin;
+    float distToLight = toLight.length();
+    
+    shadowRay.direction = toLight / distToLight;  // NORMALIZE IT
     shadowRay.depth = 0;
 
-    float minT = 1.0f;  // At t=1 we're at the light
+    float minT = distToLight;  // Use actual distance, not t=1
 
     // 1. Test planes first
     for (size_t i = 0; i < scene.planes.size(); i++) {
         const Plane& plane = scene.planes[i];
         float t = IntersectsPlane(shadowRay, plane.n_unit, plane.plane_d, minT);
-        if (t < minT && t != RAY_MISS_VALUE) {  // REMOVED t > 0 check
+        if (t < minT && t != RAY_MISS_VALUE) {
             return true;
         }
     }
@@ -1062,8 +1066,10 @@ bool InShadow(const Vec3f& point, const PointLight& I, const Vec3f& n, float eps
     {
         uint32_t nodeIdx = stack[--stackPtr];
         BVHNode& node = topBvhNodes[nodeIdx];
+
+        int t_aabb = IntersectAABB(shadowRay, node.bounds, minT);
         
-        if (IntersectAABB(shadowRay, node.bounds, minT) == RAY_MISS_VALUE) {
+        if (t_aabb == RAY_MISS_VALUE) {
             continue;
         }
         
@@ -1084,7 +1090,7 @@ bool InShadow(const Vec3f& point, const PointLight& I, const Vec3f& n, float eps
                         float t = IntersectMeshBVH(shadowRay, mesh, scene, prim.index, 
                                                    minT, tempFace, temp_b, temp_g);
                         
-                        if (t < minT && t != RAY_MISS_VALUE) {  // REMOVED t > 0
+                        if (t < minT && t != RAY_MISS_VALUE) {
                             return true;
                         }
                         break;
@@ -1095,7 +1101,7 @@ bool InShadow(const Vec3f& point, const PointLight& I, const Vec3f& n, float eps
                         const Vertex& center = scene.vertex_data[sphere.center_vertex_id - 1];
                         float t = IntersectSphere(shadowRay, center, sphere.radius, minT);
                         
-                        if (t < minT && t != RAY_MISS_VALUE) {  // REMOVED t > 0
+                        if (t < minT && t != RAY_MISS_VALUE) {
                             return true;
                         }
                         break;
@@ -1108,7 +1114,7 @@ bool InShadow(const Vec3f& point, const PointLight& I, const Vec3f& n, float eps
                                                           scene.vertex_data, minT, 
                                                           dummy_b, dummy_g);
                         
-                        if (t < minT && t != RAY_MISS_VALUE) {  // REMOVED t > 0
+                        if (t < minT && t != RAY_MISS_VALUE) {
                             return true;
                         }
                         break;
