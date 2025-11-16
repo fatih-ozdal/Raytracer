@@ -245,11 +245,11 @@ After establishing these basics, I added a second layer of effects for more real
 
 | Ambient + Diffuse  + Specular  | Also Reflection + Refraction |
 |-----------------|--------------------------|
-| ![cornellbox](my-outputs/cornellbox.png)   | ![cornellbox_recursice](my-outputs/cornellbox_recursive.png) |
+| ![cornellbox](my_outputs/cornellbox.png)   | ![cornellbox_recursice](my_outputs/cornellbox_recursive.png) |
 
 | Without Smooth Shading | With Smooth Shading |
 |-------------------------|---------------------|
-| ![no-smooth](my-outputs/berserker.png)     | ![smooth](my-outputs/berserker_smooth.png)     |
+| ![no-smooth](my_outputs/berserker.png)     | ![smooth](my_outputs/berserker_smooth.png)     |
 
 ## 🖼️ Writing the Output as PNG
 
@@ -311,14 +311,14 @@ This was the hardest image to get it right for me. Because the refraction of the
 
 The left sphere looks tinted because it is a conductor not a mirror. It absorbs some of the light.
 
-![cornell_rec_](my-outputs/cornellbox_recursive.png)
+![cornell_rec_](my_outputs/cornellbox_recursive.png)
 ---
 
 ### 2) Spheres - With Reflection  
 **Render Time:** 0.147s  
 My program had max recursion depth equal to 6 mostly. I wonder what would happen if I set it to like 30 on a better image. I will maybe test it after implementing an acceleration structure.
 
-![spheres-mirror](my-outputs/spheres_mirror.png)
+![spheres-mirror](my_outputs/spheres_mirror.png)
 
 ---
 
@@ -326,7 +326,7 @@ My program had max recursion depth equal to 6 mostly. I wonder what would happen
 **Render Time:** 38m 24.941s  
 This image was given as 1024x1024 originally. But rendering it would take like 4.5 hours for my program. So i rendered the 256x256 version. I belive when I implement a acceleration structure we will be able to see the 1024x1024 version in minutes.
 
-![lobster](my-outputs/lobster.png)
+![lobster](my_outputs/lobster.png)
 
 ---
 
@@ -334,7 +334,7 @@ This image was given as 1024x1024 originally. But rendering it would take like 4
 **Render Time:** 6m 53.235s  
 I don't know who this guy is but he is definitely someone.
 
-![david](my-outputs/David.png)
+![david](my_outputs/David.png)
 
 ---
 
@@ -342,7 +342,7 @@ I don't know who this guy is but he is definitely someone.
 **Render Time:** 5.600s   
 Someone with an axe
 
-![berserker](my-outputs/berserker_smooth.png)
+![berserker](my_outputs/berserker_smooth.png)
 
 ---
 
@@ -352,7 +352,7 @@ If you zoom in you can see there are black dots on the dragon. They are called s
 
 I used *shadow_ray_epsilon* to shift the origin of my shadow rays to avoid this, but unfortunately it didn't work here. I will try to fix this bug until the end of my next assignment.
 
-![chinese-dragon](my-outputs/chinese_dragon.png)
+![chinese-dragon](my_outputs/chinese_dragon.png)
 
 ---
 
@@ -360,7 +360,7 @@ I used *shadow_ray_epsilon* to shift the origin of my shadow rays to avoid this,
 **Render Time:** 141m 7.433s    
 Golden Legendary. Wasn't worth waiting 2 hours though
 
-![other-dragon](my-outputs/other_dragon.png)
+![other-dragon](my_outputs/other_dragon.png)
 
 ---
 
@@ -368,7 +368,7 @@ Golden Legendary. Wasn't worth waiting 2 hours though
 **Render Time:** 16.713s    
 The plane under the rabbit is supposed to show a reflection. Reflections don't work for my planes. I couldn't figure out why.
 
-![bunny-with-plane](my-outputs/bunny_with_plane.png)
+![bunny-with-plane](my_outputs/bunny_with_plane.png)
 
 ---
 
@@ -376,7 +376,7 @@ The plane under the rabbit is supposed to show a reflection. Reflections don't w
 **Render Time:** 24m 29.455s   
 This image was 1024x1024 too. Also shadow acnes are here as well
 
-![trex](my-outputs/trex_smooth.png)
+![trex](my_outputs/trex_smooth.png)
 
 ---
 
@@ -384,21 +384,21 @@ This image was 1024x1024 too. Also shadow acnes are here as well
 **Render Time:** 5m 53.131s  
 Why is he smiling
 
-![roosendaal](my-outputs/ton_Roosendaal_smooth.png)
+![roosendaal](my_outputs/ton_Roosendaal_smooth.png)
 
 ---
 
 ### 11) Science Tree - Glass Version
 **Render Time:** 13.251s  
 
-![science-tree-glass](my-outputs/scienceTree_glass.png)
+![science-tree-glass](my_outputs/scienceTree_glass.png)
 
 ---
 
 ### 12) METU Teapots
 **Render Time:** 2m 21.160s  
 
-![teapot](my-outputs/UtahTeapotMugCENG.png)
+![teapot](my_outputs/UtahTeapotMugCENG.png)
 
 ---
 
@@ -406,21 +406,21 @@ Why is he smiling
 **Render Time:** 16.001s   
 [Song: The Windmills of Your Mind](https://www.youtube.com/watch?v=WEhS9Y9HYjU)
 
-![windmill](my-outputs/windmill_smooth.png)
+![windmill](my_outputs/windmill_smooth.png)
 
 ---
 
 ### 14) Tower - Smooth
 **Render Time:** 13.251s  
 
-![tower](my-outputs/tower_smooth.png)
+![tower](my_outputs/tower_smooth.png)
 
 ---
 
 ### 15) Mountain - Smooth
 **Render Time:** 22.948  
 
-![poly](my-outputs/low_poly_scene_smooth.png)
+![poly](my_outputs/low_poly_scene_smooth.png)
 
 ---
 
@@ -428,7 +428,7 @@ Why is he smiling
 **Render Time:** 11.722   
 Raven
 
-![raven](my-outputs/raven.png)
+![raven](my_outputs/raven.png)
 
 ---
 
