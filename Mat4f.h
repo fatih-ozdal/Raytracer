@@ -47,8 +47,79 @@ struct Mat4f {
         return result;
     }
     
-    Mat4f inverse() const;  // Implement matrix inversion
-    Mat4f transpose() const;  // Implement transpose
+    Mat4f transpose() const {
+        Mat4f result;
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 4; j++) {
+                result.m[i][j] = m[j][i];
+            }
+        }
+        return result;
+    }
+
+    Mat4f inverse() const {
+        // Using Gauss-Jordan elimination for 4x4 matrix inversion
+        float temp[4][8];
+        
+        // Initialize augmented matrix [M | I]
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 4; j++) {
+                temp[i][j] = m[i][j];
+                temp[i][j+4] = (i == j) ? 1.0f : 0.0f;
+            }
+        }
+        
+        // Forward elimination
+        for (int i = 0; i < 4; i++) {
+            // Find pivot
+            int pivot = i;
+            for (int j = i + 1; j < 4; j++) {
+                if (fabs(temp[j][i]) > fabs(temp[pivot][i])) {
+                    pivot = j;
+                }
+            }
+            
+            // Swap rows
+            if (pivot != i) {
+                for (int j = 0; j < 8; j++) {
+                    float t = temp[i][j];
+                    temp[i][j] = temp[pivot][j];
+                    temp[pivot][j] = t;
+                }
+            }
+            
+            // Scale pivot row
+            float scale = temp[i][i];
+            if (fabs(scale) < 1e-8f) {
+                // Matrix is singular, return identity
+                return Mat4f::identity();
+            }
+            
+            for (int j = 0; j < 8; j++) {
+                temp[i][j] /= scale;
+            }
+            
+            // Eliminate column
+            for (int j = 0; j < 4; j++) {
+                if (i != j) {
+                    float factor = temp[j][i];
+                    for (int k = 0; k < 8; k++) {
+                        temp[j][k] -= factor * temp[i][k];
+                    }
+                }
+            }
+        }
+        
+        // Extract result from right half of augmented matrix
+        Mat4f result;
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 4; j++) {
+                result.m[i][j] = temp[i][j+4];
+            }
+        }
+        
+        return result;
+    }
 };
 
 #endif // MATF4F_H
