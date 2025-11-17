@@ -104,7 +104,7 @@ Mat4f parser::ParseTransformations(const string& transformStr, const Scene& scen
     // Multiply in REVERSE order: "t1 r2 s3" → M = S3 * R2 * T1
     Mat4f result = Mat4f::identity();
     for (int i = transforms.size() - 1; i >= 0; i--) {
-        result = transforms[i] * result;
+        result = result * transforms[i];
     }
     
     return result;
