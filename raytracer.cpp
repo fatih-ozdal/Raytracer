@@ -466,7 +466,7 @@ bool FindClosestHit(const Ray& ray, const Scene& scene, const Camera& camera, Hi
     
     switch(closestType) {
         case PrimKind::Mesh: {
-            // Compute normal in object space
+            // Step 1: Compute normal in object space
             Vec3f objNormal;
             if (closest_is_smooth) {
                 const Vec3f& nA = scene.vertex_data[hitTriFace.i0 - 1].normal;
@@ -474,23 +474,28 @@ bool FindClosestHit(const Ray& ray, const Scene& scene, const Camera& camera, Hi
                 const Vec3f& nC = scene.vertex_data[hitTriFace.i2 - 1].normal;
                 
                 float alpha = 1.f - bary_beta - bary_gamma;
-                objNormal = nA * alpha + nB * bary_beta + nC * bary_gamma;
+                objNormal = (nA * alpha + nB * bary_beta + nC * bary_gamma).normalize();
             }
             else {
                 objNormal = hitTriFace.n_unit;
             }
             
-            // Transform normal to world space if mesh has transformation
+            // Step 2: Flip if negative determinant (MOVED OUTSIDE if/else)
+            if (closestMesh.hasTransform && closestMesh.transformation.determinant3x3() < 0.0f) {
+                objNormal = objNormal * -1.0f;
+            }
+            
+            // Step 3: Transform to world space
             if (closestMesh.hasTransform) {
                 normal = closestMesh.invTransformation.transpose().transformVector(objNormal).normalize();
             } else {
-                normal = objNormal.normalize();
+                normal = objNormal;
             }
             break;
         }
         case PrimKind::Triangle: {
             Vec3f objNormal = hitTriFace.n_unit;
-            
+             
             if (closestTriangle.hasTransform) {
                 normal = closestTriangle.invTransformation.transpose().transformVector(objNormal).normalize();
             } else {

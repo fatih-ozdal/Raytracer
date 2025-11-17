@@ -120,6 +120,18 @@ struct Mat4f {
         
         return result;
     }
+
+    // Calculate determinant of upper-left 3x3 (for checking if transformation has reflection)
+    float determinant3x3() const {
+        return m[0][0] * (m[1][1] * m[2][2] - m[1][2] * m[2][1])
+            - m[0][1] * (m[1][0] * m[2][2] - m[1][2] * m[2][0])
+            + m[0][2] * (m[1][0] * m[2][1] - m[1][1] * m[2][0]);
+    }
+
+    // Check if this transformation includes a reflection (negative scale)
+    bool hasReflection() const {
+        return determinant3x3() < 0.0f;
+    }
 };
 
 #endif // MATF4F_H
