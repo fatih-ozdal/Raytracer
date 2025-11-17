@@ -565,7 +565,6 @@ Scene parser::loadFromJson(const string &filepath)
             
             auto parseOneInstance = [&](const json& inst) {
                 int baseMeshId = stoi(inst.at("_baseMeshId").get<string>()) - 1;  // 0-indexed
-                int materialId = stoi(inst.at("Material").get<string>());
                 
                 bool resetTransform = false;
                 if (inst.contains("_resetTransform")) {
@@ -581,7 +580,14 @@ Scene parser::loadFromJson(const string &filepath)
                 
                 const Mesh& originalMesh = scene.meshes[originalMeshId];
                 const Mesh& baseMesh = scene.meshes[baseMeshId];
-                
+
+                int materialId;
+                if (inst.contains("Material")) {
+                    materialId = stoi(inst.at("Material").get<string>());
+                } else {
+                    materialId = baseMesh.material_id;
+                }
+                            
                 // Compute transformation
                 Mat4f instanceTransform = Mat4f::identity();
                 if (inst.contains("Transformations")) {
