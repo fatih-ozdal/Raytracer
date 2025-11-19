@@ -1,6 +1,8 @@
 #include <chrono>
 #include <iostream>
 
+#include <string>
+
 class Timer {
     std::chrono::time_point<std::chrono::high_resolution_clock> start_time;
     
@@ -16,7 +18,7 @@ public:
         return std::chrono::duration<double, std::milli>(end_time - start_time).count();
     }
 
-    void printElapsed() const {
-        std::cout << "Elapsed: " << elapsed() << " ms" << std::endl;
+    void printElapsed(string message) const {
+        std::cout << message << " Elapsed: " << elapsed() << " ms" << std::endl;
     }
 };
