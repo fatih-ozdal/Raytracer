@@ -454,6 +454,10 @@ Scene parser::loadFromJson(const string &filepath)
                 mesh.is_smooth = mj.value("_shadingMode", "flat") == "smooth";
                 mesh.material_id = std::stoi(mj.at("Material").get<std::string>());
 
+                int jsonMeshId = std::stoi(mj.at("_id").get<std::string>());
+                int meshIndex = scene.meshes.size();
+                scene.meshIdToIndex[jsonMeshId] = meshIndex;
+
                 std::string facesStr;
                 bool ply_has_normals = false;
 
@@ -564,7 +568,8 @@ Scene parser::loadFromJson(const string &filepath)
             const auto& instanceNode = objects["MeshInstance"];
             
             auto parseOneInstance = [&](const json& inst) {
-                int baseMeshId = stoi(inst.at("_baseMeshId").get<string>()) - 1;  // 0-indexed
+                int baseMeshJsonId = stoi(inst.at("_baseMeshId").get<string>());
+                int baseMeshId = scene.meshIdToIndex.at(baseMeshJsonId); 
                 
                 bool resetTransform = false;
                 if (inst.contains("_resetTransform")) {

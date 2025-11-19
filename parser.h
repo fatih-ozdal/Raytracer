@@ -189,6 +189,7 @@ struct Scene
     vector<Triangle> triangles;
     vector<Sphere> spheres;
     vector<Plane> planes;
+    std::unordered_map<int, int> meshIdToIndex;
     
     // Transformations
     vector<Translation> translations;
