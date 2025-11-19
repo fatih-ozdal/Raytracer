@@ -3,6 +3,7 @@
 // For debugging
 #include "DebugBvh.h"
 #include "Timer.h"
+#include <sstream>
 
 vector<TopPrim> topPrims;
 vector<uint32_t> topPrimIdx;
@@ -24,7 +25,9 @@ int main(int argc, char* argv[])
     BuildAllMeshBVHs(scene);
     BuildTopLevelBVH(scene);
     
-    //PrintBvhStats(scene, topBvhNodes, rootNodeIdx);
+    PrintBvhStats(scene, topBvhNodes, rootNodeIdx);
+    Timer t;
+    int doneCycleCount = 0;
     
     for (const Camera& camera : scene.cameras)
     {
@@ -42,6 +45,15 @@ int main(int argc, char* argv[])
                 image[idx + 0] = (unsigned char)clampF(color.x, 0.0f, 255.0f);
                 image[idx + 1] = (unsigned char)clampF(color.y, 0.0f, 255.0f);
                 image[idx + 2] = (unsigned char)clampF(color.z, 0.0f, 255.0f);
+
+                if (idx % 1000 == 0)
+                {
+                    doneCycleCount++;
+                    std::stringstream message;
+                    message << "cycle " << idx / 1000 << " done. Cycles done: " << doneCycleCount;
+                    t.printElapsed(message.str());
+                    t.reset();
+                }
             }
         }
 
@@ -416,11 +428,13 @@ bool FindClosestHit(const Ray& ray, const Scene& scene, const Camera& camera, Hi
             } else {
                 normal = objNormal;
             }
+
+            if (closestTriangle.hasTransform && closestTriangle.transformation.determinant3x3() < 0.0f) {
+                normal = normal * -1.0f;
+            }
             break;
         }
         case PrimKind::Sphere: {
-            // For sphere, we need to transform the hit point to object space first
-            // then compute normal, then transform back
             if (closestSphere.hasTransform) {
                 Vec3f objHit = closestSphere.invTransformation.transformPoint(hit_x);
                 Vertex center = scene.vertex_data[closestSphere.center_vertex_id - 1];
@@ -429,6 +443,10 @@ bool FindClosestHit(const Ray& ray, const Scene& scene, const Camera& camera, Hi
             } else {
                 Vertex center = scene.vertex_data[closestSphere.center_vertex_id - 1];
                 normal = (hit_x - center.pos).normalize();
+            }
+
+            if (closestSphere.hasTransform && closestSphere.transformation.determinant3x3() < 0.0f) {
+                normal = normal * -1.0f;
             }
             break;
         }
