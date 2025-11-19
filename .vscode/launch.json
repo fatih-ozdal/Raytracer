@@ -6,7 +6,7 @@
       "type": "cppdbg",
       "request": "launch",
       "program": "${workspaceFolder}/raytracer",
-      "args": ["${workspaceFolder}/blog/hw1/inputs/simple.json"],
+      "args": ["${workspaceFolder}/blog/hw1/inputs/other_dragon.json"],
       "cwd": "${workspaceFolder}",
       "MIMode": "gdb",
       "stopAtEntry": false,
