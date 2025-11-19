@@ -378,7 +378,8 @@ bool FindClosestHit(const Ray& ray, const Scene& scene, const Camera& camera, Hi
     Plane closestPlane;
     Sphere closestSphere;
     Triangle closestTriangle;
-    Mesh closestMesh;
+
+    int closestMeshId;
     bool closest_is_smooth = false;
     
     // 1. Test all planes first (not in BVH - infinite primitives)
@@ -398,7 +399,7 @@ bool FindClosestHit(const Ray& ray, const Scene& scene, const Camera& camera, Hi
     
     // 2. Traverse top-level BVH
     IntersectTopBVH(ray, scene, minT, has_intersected, closestType, closestMatId, 
-                    index, hitTriFace, closestSphere, closestTriangle, closestMesh,
+                    index, hitTriFace, closestSphere, closestTriangle, closestMeshId,
                     closest_is_smooth, bary_beta, bary_gamma);
     
     if (!has_intersected) {
@@ -412,6 +413,7 @@ bool FindClosestHit(const Ray& ray, const Scene& scene, const Camera& camera, Hi
     switch(closestType) {
         case PrimKind::Mesh: {
             // Step 1: Compute normal in object space
+            const Mesh& closestMesh = scene.meshes[closestMeshId];
             Vec3f objNormal;
             if (closest_is_smooth) {
                 const Vec3f& nA = scene.vertex_data[hitTriFace.i0 - 1].normal;
@@ -482,7 +484,7 @@ bool FindClosestHit(const Ray& ray, const Scene& scene, const Camera& camera, Hi
 void IntersectTopBVH(const Ray& ray, const Scene& scene, float& minT, bool& has_intersected,
                      PrimKind& closestType, int& closestMatId, int& index,
                      Face& hitTriFace, Sphere& closestSphere, Triangle& closestTriangle,
-                     Mesh& closestMesh, bool& closest_is_smooth,
+                     int closestMeshId, bool& closest_is_smooth,
                      float& bary_beta, float& bary_gamma) noexcept
 {
     uint32_t stack[64];
@@ -541,7 +543,7 @@ void IntersectTopBVH(const Ray& ray, const Scene& scene, float& minT, bool& has_
                                 closestType = PrimKind::Mesh;
                                 hitTriFace = tempFace;
                                 closest_is_smooth = mesh.is_smooth;
-                                closestMesh = mesh;
+                                closestMeshId = prim.index;
                                 bary_beta = temp_b;
                                 bary_gamma = temp_g;
                                 index = prim.index;
