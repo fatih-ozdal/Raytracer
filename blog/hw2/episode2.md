@@ -270,6 +270,27 @@ Notice that `maxLeafPrim=210888` - there's a leaf node containing **210,888 tria
 
 ---
 
+### 14) Davids Camera Zoom
+**Render Time:** 1m 27.752s    
+The camera is supposed to zoom in on the Davids. I couldn't find why it doesn't. I tested that different JSON files correctly result in different composite camera matrices.
+
+![david_zoom](my_outputs/david_zoom.gif)
+
+---
+
+### 15) Davids Camera Spin
+**Render Time:** 1m 29.685s
+
+![david_spin](my_outputs/david_spin.gif)
+
+---
+
+### 16) Davids Lights Spin
+**Render Time:** 1m 20.845s
+
+![david_light](my_outputs/david_light.gif)
+
+---
 
 ## ✅ Closing & What's Next
 
