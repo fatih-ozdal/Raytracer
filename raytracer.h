@@ -24,7 +24,7 @@ void MakeTopLevelPrimsArray(const Scene& scene);
 void UpdateNodeBounds( uint32_t nodeIdx );
 void Subdivide( uint32_t nodeIdx );
 
-void BuildAllMeshBVHs(Scene& scene);
+void BuildAllMeshBVHs(const Scene& scene);
 void BuildMeshBVH(const Scene& scene, size_t meshIdx);
 void MakeMeshPrimsArray(const Mesh& mesh, const vector<Vertex>& vertex_data, MeshBVH& bvh);
 void UpdateMeshNodeBounds(MeshBVH& bvh, uint32_t nodeIdx);
@@ -37,12 +37,11 @@ bool FindClosestHit(const Ray& ray, const Scene& scene, const Camera& camera, Hi
 
 void IntersectTopBVH(const Ray& ray, const Scene& scene, float& minT, bool& has_intersected,
                      PrimKind& closestType, int& closestMatId, int& index,
-                     Face& hitTriFace, Sphere& closestSphere, Triangle& closestTriangle,
-                     Mesh& closestMesh, bool& closest_is_smooth,
+                     Face& hitTriFace, Sphere& closestSphere, bool& closest_is_smooth,
                      float& bary_beta, float& bary_gamma) noexcept;
 
 float IntersectMeshBVH(const Ray& ray, const Mesh& mesh, const Scene& scene, 
-                       int bvhIndex, float minT, Face& hitFace, 
+                       size_t meshIdx, float minT, Face& hitFace, 
                        float& beta_out, float& gamma_out) noexcept;
 
 float IntersectAABB(const Ray& ray, const AABB& box, float minT) noexcept;
