@@ -1,77 +1,13 @@
 #include "raytracer.h"
-#include <iostream>
+
+// For debugging
+#include "DebugBvh.h"
+#include "Timer.h"
 
 vector<TopPrim> topPrims;
 vector<uint32_t> topPrimIdx;
 vector<BVHNode> topBvhNodes; 
 uint32_t rootNodeIdx = 0, nodesUsed = 1;
-
-struct BvhStats {
-    int nodeCount = 0;
-    int leafCount = 0;
-    int interiorCount = 0;
-    int maxDepth = 0;
-    int totalLeafPrims = 0;
-    int maxLeafPrims = 0;
-};
-
-void GatherStats(uint32_t nodeIdx, int depth, BvhStats& stats)
-{
-    if (nodeIdx == UINT32_MAX) return;
-    const BVHNode& node = topBvhNodes[nodeIdx];
-
-    stats.nodeCount++;
-    stats.maxDepth = std::max(stats.maxDepth, depth);
-
-    if (node.primCount > 0) { // leaf
-        stats.leafCount++;
-        stats.totalLeafPrims += node.primCount;
-        stats.maxLeafPrims = std::max(stats.maxLeafPrims, (int)node.primCount);
-    } else { // interior
-        stats.interiorCount++;
-        uint32_t left = node.leftNodeIdx;
-        uint32_t right = node.leftNodeIdx + 1;
-        GatherStats(left, depth + 1, stats);
-        GatherStats(right, depth + 1, stats);
-    }
-}
-
-struct MeshBvhStats {
-    int nodeCount       = 0;
-    int leafCount       = 0;
-    int interiorCount   = 0;
-    int maxDepth        = 0;
-    int totalLeafPrims  = 0;
-    int maxLeafPrims    = 0;
-};
-
-void GatherMeshBvhStats(const MeshBVH& bvh, uint32_t nodeIdx, int depth, MeshBvhStats& stats)
-{
-    if (nodeIdx >= bvh.nodes.size())
-        return;
-
-    const BVHNode& node = bvh.nodes[nodeIdx];
-
-    if (node.primCount == 0 && node.leftNodeIdx == 0 && nodeIdx != bvh.rootNodeIdx) {
-        return;
-    }
-
-    stats.nodeCount++;
-    if (depth > stats.maxDepth) stats.maxDepth = depth;
-
-    if (node.primCount > 0) {
-        stats.leafCount++;
-        stats.totalLeafPrims += node.primCount;
-        if (node.primCount > stats.maxLeafPrims)
-            stats.maxLeafPrims = node.primCount;
-    } else {
-        stats.interiorCount++;
-        uint32_t leftChild  = node.leftNodeIdx;
-        uint32_t rightChild = node.leftNodeIdx + 1;
-        GatherMeshBvhStats(bvh, leftChild,  depth + 1, stats);
-        GatherMeshBvhStats(bvh, rightChild, depth + 1, stats);
-    }
-}
 
 int main(int argc, char* argv[])
 {
@@ -88,31 +24,8 @@ int main(int argc, char* argv[])
     BuildAllMeshBVHs(scene);
     BuildTopLevelBVH(scene);
     
-    // Print stats (optional)
-    /*
-    BvhStats s;
-    GatherStats(rootNodeIdx, 0, s);
-    std::cout << "Top-level BVH: nodes=" << s.nodeCount
-              << " leaves=" << s.leafCount
-              << " interior=" << s.interiorCount
-              << " maxDepth=" << s.maxDepth
-              << " avgLeafPrim=" << (s.leafCount > 0 ? float(s.totalLeafPrims)/s.leafCount : 0)
-              << " maxLeafPrim=" << s.maxLeafPrims << std::endl;
+    //PrintBvhStats(scene, topBvhNodes, rootNodeIdx);
     
-    for (size_t i = 0; i < meshBVHs.size(); i++) {
-        if (scene.meshes[i].isInstance) continue; // Skip instances
-        MeshBvhStats ms;
-        GatherMeshBvhStats(meshBVHs[i], meshBVHs[i].rootNodeIdx, 0, ms);
-        std::cout << "Mesh " << i << " BVH: nodes=" << ms.nodeCount
-                  << " leaves=" << ms.leafCount
-                  << " interior=" << ms.interiorCount
-                  << " maxDepth=" << ms.maxDepth
-                  << " avgLeafPrim=" << (ms.leafCount > 0 ? float(ms.totalLeafPrims)/ms.leafCount : 0)
-                  << " maxLeafPrim=" << ms.maxLeafPrims << std::endl;
-    }
-    */
-
-    // Render all cameras
     for (const Camera& camera : scene.cameras)
     {
         const int width  = camera.width;
