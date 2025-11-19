@@ -2,6 +2,7 @@
 #define MATF4F_H
 
 #include "Vec3f.h"
+#include <iostream>
 
 struct Mat4f {
     float m[4][4];
@@ -131,6 +132,12 @@ struct Mat4f {
     // Check if this transformation includes a reflection (negative scale)
     bool hasReflection() const {
         return determinant3x3() < 0.0f;
+    }
+
+    void print() const  {
+        std::cout << m[0][0] << " " << m[0][1] << " " << m[0][2] << std::endl
+                << m[1][0] << " " << m[1][1] << " " << m[1][2] << std::endl
+                << m[2][0] << " " << m[2][1] << " " << m[2][2] << std::endl;
     }
 };
 
