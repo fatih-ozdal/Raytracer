@@ -269,3 +269,14 @@ Notice that `maxLeafPrim=210888` - there's a leaf node containing **210,888 tria
 ![glaring_davids](my_outputs/glaring_davids.png)
 
 ---
+
+
+## ✅ Closing & What's Next
+
+This assignment transformed my ray tracer from a proof-of-concept into a genuinely usable tool. The BVH implementation alone provided speedups ranging from **8x to nearly 5000x** for complex scenes. What used to take hours now renders in seconds.
+
+Beyond raw speed, adding transformations and instancing opened up entirely new possibilities for scene composition. I can now efficiently render forests, architectural scenes with repeated elements, and complex compositions that would have been impractical before.
+
+The journey has been deeply rewarding. There's something satisfying about watching render times drop from 141 minutes to under 2 seconds while producing the exact same image. That's the power of good algorithms and data structures.
+
+**Next up:** Multisampling and Distribution Ray Tracing. Time to add anti-aliasing, depth of field, glossy reflections, and soft shadows. The images will get prettier, and the ray tracer will get even more sophisticated.
