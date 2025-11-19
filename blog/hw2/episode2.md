@@ -269,24 +269,3 @@ Notice that `maxLeafPrim=210888` - there's a leaf node containing **210,888 tria
 ![glaring_davids](my_outputs/glaring_davids.png)
 
 ---
-
-### 14) Davids Camera Zoom
-**Render Time:** 0.762s 
-
-![david_zoom](my_outputs/videos/david_zoom.gif)
-
----
-
-### 15) Davids Camera Spin
-**Render Time:** 0.762s 
-
-![david_spin](my_outputs/videos/david_spin.gif)
-
----
-
-### 16) Davids Lights Spin
-**Render Time:** 0.762s 
-
-![david_light](my_outputs/videos/david_light.gif)
-
----
