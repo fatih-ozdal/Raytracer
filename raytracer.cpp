@@ -9,9 +9,6 @@ vector<uint32_t> topPrimIdx;
 vector<BVHNode> topBvhNodes; 
 uint32_t rootNodeIdx = 0, nodesUsed = 1;
 
-Timer t;
-using std::cout;
-
 int main(int argc, char* argv[])
 {
     if (argc < 2) {
@@ -24,13 +21,8 @@ int main(int argc, char* argv[])
     Scene scene = p.loadFromJson(jsonFile);
 
     // Build BVHs - mesh BVHs first, then top-level
-    t.reset();
     BuildAllMeshBVHs(scene);
-    t.printElapsed("BuildAllMeshBVHs");
-
-    t.reset();
     BuildTopLevelBVH(scene);
-    t.printElapsed("BuildTopLevelBVH");
     
     //PrintBvhStats(scene, topBvhNodes, rootNodeIdx);
     
@@ -40,40 +32,16 @@ int main(int argc, char* argv[])
         const int height = camera.height;
         auto* image = new unsigned char[(size_t)width * height * 3];
 
-        t.reset();
-
-        Timer t2, t3;
-        bool is_first_loop = true;
-
         #pragma omp parallel for collapse(2) schedule(static)
         for (int i = 0; i < height; ++i) {
             for (int j = 0; j < width; ++j) {
                 Ray   ray   = ComputeRay(scene, camera, j, i);
-
-                if (is_first_loop) 
-                {
-                    t2.printElapsed("ComputeRay");
-                    t3.reset();
-                }
-
                 Vec3f color = ComputeColor(ray, scene, camera);
-
-                if (is_first_loop)
-                {
-                    t3.printElapsed("ComputeColor");
-                    is_first_loop = false;
-                }
 
                 const size_t idx = (static_cast<size_t>(i) * width + j) * 3;
                 image[idx + 0] = (unsigned char)clampF(color.x, 0.0f, 255.0f);
                 image[idx + 1] = (unsigned char)clampF(color.y, 0.0f, 255.0f);
                 image[idx + 2] = (unsigned char)clampF(color.z, 0.0f, 255.0f);
-
-                if (idx % 100 == 0)
-                {
-                    t.printElapsed("100 cycles passed.");
-                    t.reset();
-                }
             }
         }
 
