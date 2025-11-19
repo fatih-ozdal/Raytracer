@@ -1,0 +1,88 @@
+{
+  "Scene": {
+    "MaxRecursionDepth": "3",
+    "BackgroundColor": "0 0 0",
+    "Cameras": {
+      "Camera": {
+        "_id": "1",
+        "_type": "lookAt",
+        "Position": "300 -300 100",
+        "GazePoint": "0 0 -50",
+        "FovY": "45",
+        "Up": "-1 1 0",
+        "NearDistance": "1",
+        "ImageResolution": "1024 1024",
+        "ImageName": "lobster.png"
+      }
+    },
+    "Lights": {
+      "AmbientLight": "140 140 140",
+      "PointLight": [
+        {
+          "_id": "1",
+          "Position": "0 -150 120",
+          "Intensity": "3e6 3e6 3e6"
+        },
+        {
+          "_id": "2",
+          "Position": "0 150 120",
+          "Intensity": "3e6 3e6 3e6"
+        },
+        {
+          "_id": "3",
+          "Position": "-150 0 120",
+          "Intensity": "3e6 3e6 3e6"
+        },
+        {
+          "_id": "4",
+          "Position": "150 0 120",
+          "Intensity": "3e6 3e6 3e6"
+        }
+      ]
+    },
+    "Materials": {
+      "Material": [
+        {
+          "_id": "1",
+          "AmbientReflectance": "0.16 0.0345098 0.01882353",
+          "DiffuseReflectance": "0.64 0.13803922 0.07529412",
+          "SpecularReflectance": "0.16 0.0345098 0.01882353",
+          "PhongExponent": "3"
+        },
+        {
+          "_id": "2",
+          "_type": "mirror",
+          "AmbientReflectance": "0 0 0",
+          "DiffuseReflectance": "0.5 0.5 1.5",
+          "SpecularReflectance": "0 0 0",
+          "PhongExponent": "1",
+          "MirrorReflectance": "0.5 0.5 0.5"
+        }
+      ]
+    },
+    "VertexData": {
+      "_data": "-2000 3000 -69.81 2000 3000 -69.81 2000 -3000 -69.81 -2000 -3000 -69.81",
+      "_type": "xyz"
+    },
+    "Objects": {
+      "Mesh": [
+        {
+          "_id": "1",
+          "_shadingMode": "smooth",
+          "Material": "1",
+          "Faces": {
+            "_plyFile": "lobster.ply"
+          }
+        },
+        {
+          "_id": "2",
+          "Material": "2",
+          "Faces": {
+            "_data": "1 4 2 2 4 3",
+            "_type": "triangle"
+          }
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,103 @@
+{
+  "Scene": {
+    "BackgroundColor": "0 0 0",
+    "ShadowRayEpsilon": "1e-3",
+    "Cameras": {
+      "Camera": {
+        "_id": "1",
+        "Position": "-9.791776657104492 -9.965120315551758 0.5382071137428284",
+        "Gaze": "0.8325159549713135 0.5540010333061218 0.0",
+        "Up": "-2.9802322387695312e-08 1.4901161193847656e-08 1.0",
+        "NearPlane": "-1 1 -1.0 1.0",
+        "NearDistance": "3",
+        "ImageResolution": "1024 1024",
+        "ImageName": "trex_smooth.png"
+      }
+    },
+    "Lights": {
+      "AmbientLight": "0 0 0",
+      "PointLight": [
+        {
+          "_id": "1",
+          "Position": "-15.092065811157227 -1.8701146018429426e-06 13.919297218322754",
+          "Intensity": "50000.0 50000.0 50000.0"
+        },
+        {
+          "_id": "2",
+          "Position": "-12.655217170715332 -16.654685974121094 3.377622604370117",
+          "Intensity": "10000.0 10000.0 10000.0"
+        },
+        {
+          "_id": "3",
+          "Position": "14.531439781188965 -13.076754570007324 3.7574665546417236",
+          "Intensity": "10000.0 10000.0 10000.0"
+        }
+      ]
+    },
+    "Materials": {
+      "Material": [
+        {
+          "_id": "1",
+          "AmbientReflectance": "0 0 0",
+          "DiffuseReflectance": "0 0 0",
+          "SpecularReflectance": "0 0 0",
+          "PhongExponent": "1"
+        },
+        {
+          "_id": "2",
+          "AmbientReflectance": "0 0 0",
+          "DiffuseReflectance": "0 0 0",
+          "SpecularReflectance": "0 0 0",
+          "PhongExponent": "1"
+        },
+        {
+          "_id": "3",
+          "AmbientReflectance": "0 0 0",
+          "DiffuseReflectance": "0 0 0",
+          "SpecularReflectance": "0 0 0",
+          "PhongExponent": "1"
+        },
+        {
+          "_id": "4",
+          "AmbientReflectance": "1 1 1",
+          "DiffuseReflectance": "0.800000011920929 0.800000011920929 0.800000011920929",
+          "SpecularReflectance": "0.5 0.5 0.5",
+          "PhongExponent": "1"
+        }
+      ]
+    },
+    "VertexData": {
+      "_data": "0 0 0",
+      "_type": "xyz"
+    },
+    "TexCoordData": null,
+    "Objects": {
+      "Mesh": [
+        {
+          "_id": "1",
+          "_shadingMode": "smooth",
+          "Material": "4",
+          "Faces": {
+            "_plyFile": "trex_smooth_ply/mesh_1.ply"
+          }
+        },
+        {
+          "_id": "2",
+          "_shadingMode": "smooth",
+          "Material": "4",
+          "Faces": {
+            "_plyFile": "trex_smooth_ply/mesh_2.ply"
+          }
+        },
+        {
+          "_id": "3",
+          "_shadingMode": "smooth",
+          "Material": "4",
+          "Faces": {
+            "_plyFile": "trex_smooth_ply/mesh_3.ply"
+          }
+        }
+      ]
+    }
+  }
+}
