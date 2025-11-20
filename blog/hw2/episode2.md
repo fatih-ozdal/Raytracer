@@ -202,7 +202,7 @@ The dragon mesh has nearly 1 million BVH nodes, but it's built only once and sha
 
 ### 6) Dragon Metal
 **Render Time:** 3.137s   
-The circle isn't supposed to be there. It would be better if it was red. Then we would see the dragons better
+The circle isn't supposed to be there. If only it was a red circle. Then we would see the dragons more easily
 
 ![dragon_metal](my_outputs/dragon_metal.png)
 
@@ -210,7 +210,7 @@ The circle isn't supposed to be there. It would be better if it was red. Then we
 
 ### 7) Two Berserkers
 **Render Time:** 0.417s  
-The original berserker image is rendered correctly. I couldn't find why this one wasn't. Hopefully I will by the next post. Also I believe a some images below are wrong due to the same bug.
+The original berserker image is rendered correctly. I couldn't find why this one wasn't. Hopefully I will by the next post. Also I believe some images below are wrong due to the same bug.
 
 ![two_berserkers](my_outputs/two_berserkers.png)
 
@@ -272,7 +272,7 @@ Notice that `maxLeafPrim=210888` - there's a leaf node containing **210,888 tria
 
 ### 14) Davids Camera Zoom
 **Render Time:** 1m 27.752s    
-The camera is supposed to zoom in on the Davids. I couldn't find why it doesn't. I tested that different JSON files correctly result in different composite camera matrices.
+The camera is supposed to zoom in on the Davids. I couldn't find why it doesn't. I verified that different JSON files correctly result in different composite transform matrices for the camera.
 
 ![david_zoom](my_outputs/david_zoom.gif)
 
