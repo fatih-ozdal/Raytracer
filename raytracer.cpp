@@ -25,9 +25,7 @@ int main(int argc, char* argv[])
     BuildAllMeshBVHs(scene);
     BuildTopLevelBVH(scene);
     
-    PrintBvhStats(scene, topBvhNodes, rootNodeIdx);
-    Timer t;
-    int doneCycleCount = 0;
+    // PrintBvhStats(scene, topBvhNodes, rootNodeIdx);
     
     for (const Camera& camera : scene.cameras)
     {
@@ -45,15 +43,6 @@ int main(int argc, char* argv[])
                 image[idx + 0] = (unsigned char)clampF(color.x, 0.0f, 255.0f);
                 image[idx + 1] = (unsigned char)clampF(color.y, 0.0f, 255.0f);
                 image[idx + 2] = (unsigned char)clampF(color.z, 0.0f, 255.0f);
-
-                if (idx % 1000 == 0)
-                {
-                    doneCycleCount++;
-                    std::stringstream message;
-                    message << "cycle " << idx / 1000 << " done. Cycles done: " << doneCycleCount;
-                    t.printElapsed(message.str());
-                    t.reset();
-                }
             }
         }
 
