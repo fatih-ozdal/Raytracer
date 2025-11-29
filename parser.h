@@ -22,9 +22,13 @@ struct Camera
     Vec3f position;
     Vec3f gaze, up;
     Vec3f u, v, w;
+
     LRBT_vec near_plane;
     float near_distance;
-    int width, height;
+    Vec3f m, q;
+ 
+    int image_width, image_height;
+    float pixel_width, pixel_height;
     string image_name;
 };
 

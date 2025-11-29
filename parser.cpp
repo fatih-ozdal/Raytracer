@@ -333,7 +333,7 @@ Scene parser::loadFromJson(const string &filepath)
             
             // ImageResolution
             std::stringstream ss(cj["ImageResolution"].get<std::string>());
-            ss >> cam.width >> cam.height;
+            ss >> cam.image_width >> cam.image_height;
             
             // NearDistance
             cam.near_distance = parser::parseFloat(cj["NearDistance"].get<std::string>());
@@ -345,7 +345,7 @@ Scene parser::loadFromJson(const string &filepath)
                 float t = cam.near_distance * std::tan(thetaY * 0.5f);
                 float b = -t;
 
-                float aspect = (cam.height > 0) ? (float(cam.width) / float(cam.height)) : 1.0f;
+                float aspect = (cam.image_height > 0) ? (float(cam.image_width) / float(cam.image_height)) : 1.0f;
                 float r = aspect * t;
                 float l = -r;
 
@@ -356,6 +356,14 @@ Scene parser::loadFromJson(const string &filepath)
                 ss2 >> l >> r >> b >> t;
                 cam.near_plane = {l, r, b, t};
             }
+
+            // Pixel Width - Heigth
+            cam.pixel_width  = (cam.near_plane.r - cam.near_plane.l) / cam.image_width;
+            cam.pixel_height = (cam.near_plane.t - cam.near_plane.b) / cam.image_height;
+
+            // Near Plane's origin
+            cam.m = cam.position - cam.w * cam.near_distance;
+            cam.q = cam.m + cam.u * cam.near_plane.l + cam.v * cam.near_plane.t;
 
             cam.image_name = cj["ImageName"].get<std::string>();
             scene.cameras.push_back(cam);

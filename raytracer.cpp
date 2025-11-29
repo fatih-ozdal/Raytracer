@@ -29,8 +29,8 @@ int main(int argc, char* argv[])
     
     for (const Camera& camera : scene.cameras)
     {
-        const int width  = camera.width;
-        const int height = camera.height;
+        const int width  = camera.image_width;
+        const int height = camera.image_height;
         auto* image = new unsigned char[(size_t)width * height * 3];
 
         #pragma omp parallel for collapse(2) schedule(static)
@@ -294,13 +294,11 @@ void SubdivideMesh(MeshBVH& bvh, uint32_t nodeIdx)
 Ray ComputeRay(const Scene& scene, const Camera& camera, int j, int i) noexcept
 {   
     Vec3f e = camera.position;
-    Vec3f m = e - camera.w * camera.near_distance;
-    Vec3f q = m + camera.u * camera.near_plane.l + camera.v * camera.near_plane.t;
     
-    float su = (j + 0.5f) * (camera.near_plane.r - camera.near_plane.l) / camera.width;  
-    float sv = (i + 0.5f) * (camera.near_plane.t - camera.near_plane.b) / camera.height;  
+    float su = (j + 0.5f) * camera.pixel_width;  
+    float sv = (i + 0.5f) * camera.pixel_height;  
 
-    Vec3f s = q + camera.u * su - camera.v * sv;
+    Vec3f s = camera.q + su * camera.u - sv * camera.v;
 
     Ray ray;
     ray.origin = e;
