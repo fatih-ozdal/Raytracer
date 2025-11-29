@@ -505,15 +505,18 @@ Scene parser::loadFromJson(const string &filepath)
                     auto ply = load_ply(ply_path);
 
                     size_t base = scene.vertex_data.size();
-                    scene.vertex_data.reserve(base + ply.verts.size());
+                    scene.vertex_data.resize(base + ply.verts.size());
                     
                     ply_has_normals = !ply.normals.empty();
-                    
-                    for (size_t i = 0; i < ply.verts.size(); ++i) {
-                        Vertex v;
-                        v.pos = ply.verts[i];
-                        v.normal = ply_has_normals ? ply.normals[i] : Vec3f(0, 0, 0);
-                        scene.vertex_data.push_back(v);
+
+                    if (ply_has_normals) {
+                        for (size_t i = 0; i < ply.verts.size(); ++i) {
+                            scene.vertex_data[base + i] = {ply.verts[i], ply.normals[i]};
+                        }
+                    } else {
+                        for (size_t i = 0; i < ply.verts.size(); ++i) {
+                            scene.vertex_data[base + i] = {ply.verts[i], Vec3f(0, 0, 0)};
+                        }
                     }
 
                     for (auto& f : ply.faces) {
