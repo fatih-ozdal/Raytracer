@@ -157,27 +157,6 @@ struct Plane
     }
 };
 
-struct Translation {
-    int id;
-    Vec3f delta;
-};
-
-struct Scaling {
-    int id;
-    Vec3f scale;
-};
-
-struct Rotation {
-    int id;
-    float angle;  // degrees
-    Vec3f axis;
-};
-
-struct Composite {
-    int id;
-    Mat4f matrix;
-};
-
 struct Scene
 {
     // Data
@@ -196,10 +175,10 @@ struct Scene
     std::unordered_map<int, int> meshIdToIndex;
     
     // Transformations
-    vector<Translation> translations;
-    vector<Scaling> scalings;
-    vector<Rotation> rotations;
-    vector<Composite> composites;
+    vector<Mat4f> translations;
+    vector<Mat4f> scalings;
+    vector<Mat4f> rotations;
+    vector<Mat4f> composites;
 };
 
 struct PlyData {

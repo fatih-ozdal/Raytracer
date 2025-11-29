@@ -85,17 +85,16 @@ Mat4f parser::ParseTransformations(const string& transformStr, const Scene& scen
         Mat4f transform;
         
         if (type == 't') {
-            transform = MakeTranslation(scene.translations[id].delta);
+            transform = scene.translations[id];
         }
         else if (type == 's') {
-            transform = MakeScaling(scene.scalings[id].scale);
+            transform = scene.scalings[id];
         }
         else if (type == 'r') {
-            const Rotation& rot = scene.rotations[id];
-            transform = MakeRotation(rot.angle, rot.axis);
+            transform = scene.rotations[id];
         }
         else if (type == 'c') {
-            transform = scene.composites[id].matrix;
+            transform = scene.composites[id];
         }
         
         transforms.push_back(transform);
@@ -103,8 +102,8 @@ Mat4f parser::ParseTransformations(const string& transformStr, const Scene& scen
     
     // Multiply in REVERSE order: "t1 r2 s3" → M = S3 * R2 * T1
     Mat4f result = Mat4f::identity();
-    for (int i = transforms.size() - 1; i >= 0; i--) {
-        result = result * transforms[i];
+    for (int i = 0; i < transforms.size(); i++) {
+        result = transforms[i] * result;
     }
     
     return result;
@@ -177,10 +176,9 @@ Scene parser::loadFromJson(const string &filepath)
         if (transNode.contains("Translation")) {
             const auto& transList = transNode["Translation"];
             auto parseOne = [&](const json& t) {
-                Translation trans;
-                trans.id = stoi(t.at("_id").get<string>());
-                trans.delta = parser::parseVec3f(t.at("_data").get<string>());
-                scene.translations.push_back(trans);
+                Vec3f delta = parser::parseVec3f(t.at("_data").get<string>());
+                Mat4f translation_matrix = MakeTranslation(delta);
+                scene.translations.push_back(translation_matrix);
             };
             
             if (transList.is_array()) {
@@ -194,10 +192,9 @@ Scene parser::loadFromJson(const string &filepath)
         if (transNode.contains("Scaling")) {
             const auto& scaleList = transNode["Scaling"];
             auto parseOne = [&](const json& s_json) {
-                Scaling scale;
-                scale.id = stoi(s_json.at("_id").get<string>());
-                scale.scale = parser::parseVec3f(s_json.at("_data").get<string>());
-                scene.scalings.push_back(scale);
+                Vec3f scale_vec = parser::parseVec3f(s_json.at("_data").get<string>());
+                Mat4f scale_matrix = MakeScaling(scale_vec);
+                scene.scalings.push_back(scale_matrix);
             };
             
             if (scaleList.is_array()) {
@@ -211,12 +208,12 @@ Scene parser::loadFromJson(const string &filepath)
         if (transNode.contains("Rotation")) {
             const auto& rotList = transNode["Rotation"];
             auto parseOne = [&](const json& r) {
-                Rotation rot;
-                rot.id = stoi(r.at("_id").get<string>());
                 string data = r.at("_data").get<string>();
                 std::istringstream iss(data);
-                iss >> rot.angle >> rot.axis.x >> rot.axis.y >> rot.axis.z;
-                scene.rotations.push_back(rot);
+                float angle, axis_x, axis_y, axis_z;
+                iss >> angle >> axis_x >> axis_y >> axis_z;
+                Mat4f rot_matrix = MakeRotation(angle, Vec3f(axis_x, axis_y, axis_z));
+                scene.rotations.push_back(rot_matrix);
             };
             
             if (rotList.is_array()) {
@@ -230,16 +227,15 @@ Scene parser::loadFromJson(const string &filepath)
         if (transNode.contains("Composite")) {
             const auto& compList = transNode["Composite"];
             auto parseOne = [&](const json& c) {
-                Composite comp;
-                comp.id = stoi(c.at("_id").get<string>());
+                Mat4f comp_matrix;
                 string data = c.at("_data").get<string>();
                 std::istringstream iss(data);
                 for (int i = 0; i < 4; i++) {
                     for (int j = 0; j < 4; j++) {
-                        iss >> comp.matrix.m[i][j];
+                        iss >> comp_matrix.m[i][j];
                     }
                 }
-                scene.composites.push_back(comp);
+                scene.composites.push_back(comp_matrix);
             };
             
             if (compList.is_array()) {
