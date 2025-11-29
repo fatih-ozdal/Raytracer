@@ -174,39 +174,51 @@ Scene parser::loadFromJson(const string &filepath)
         
         // Parse Translations
         if (transNode.contains("Translation")) {
-            const auto& transList = transNode["Translation"];
+            const auto& translationNode = transNode["Translation"];
+
+            int translationCount = translationNode.is_array() ? translationNode.size() : 1;
+            scene.translations.reserve(translationCount);
+
             auto parseOne = [&](const json& t) {
                 Vec3f delta = parser::parseVec3f(t.at("_data").get<string>());
                 Mat4f translation_matrix = MakeTranslation(delta);
                 scene.translations.push_back(translation_matrix);
             };
             
-            if (transList.is_array()) {
-                for (const auto& t : transList) parseOne(t);
+            if (translationNode.is_array()) {
+                for (const auto& t : translationNode) parseOne(t);
             } else {
-                parseOne(transList);
+                parseOne(translationNode);
             }
         }
         
         // Parse Scalings
         if (transNode.contains("Scaling")) {
-            const auto& scaleList = transNode["Scaling"];
+            const auto& scaleNode = transNode["Scaling"];
+
+            int scaleCount = scaleNode.is_array() ? scaleNode.size() : 1;
+            scene.scalings.reserve(scaleCount);
+
             auto parseOne = [&](const json& s_json) {
                 Vec3f scale_vec = parser::parseVec3f(s_json.at("_data").get<string>());
                 Mat4f scale_matrix = MakeScaling(scale_vec);
                 scene.scalings.push_back(scale_matrix);
             };
             
-            if (scaleList.is_array()) {
-                for (const auto& s_json : scaleList) parseOne(s_json);
+            if (scaleNode.is_array()) {
+                for (const auto& s_json : scaleNode) parseOne(s_json);
             } else {
-                parseOne(scaleList);
+                parseOne(scaleNode);
             }
         }
         
         // Parse Rotations
         if (transNode.contains("Rotation")) {
-            const auto& rotList = transNode["Rotation"];
+            const auto& rotNode = transNode["Rotation"];
+
+            int rotCount = rotNode.is_array() ? rotNode.size() : 1;
+            scene.rotations.reserve(rotCount);
+
             auto parseOne = [&](const json& r) {
                 string data = r.at("_data").get<string>();
                 std::istringstream iss(data);
@@ -216,16 +228,20 @@ Scene parser::loadFromJson(const string &filepath)
                 scene.rotations.push_back(rot_matrix);
             };
             
-            if (rotList.is_array()) {
-                for (const auto& r : rotList) parseOne(r);
+            if (rotNode.is_array()) {
+                for (const auto& r : rotNode) parseOne(r);
             } else {
-                parseOne(rotList);
+                parseOne(rotNode);
             }
         }
         
         // Parse Composites
         if (transNode.contains("Composite")) {
-            const auto& compList = transNode["Composite"];
+            const auto& compNode = transNode["Composite"];
+
+            int compCount = compNode.is_array() ? compNode.size() : 1;
+            scene.composites.reserve(compCount);
+
             auto parseOne = [&](const json& c) {
                 Mat4f comp_matrix;
                 string data = c.at("_data").get<string>();
@@ -238,10 +254,10 @@ Scene parser::loadFromJson(const string &filepath)
                 scene.composites.push_back(comp_matrix);
             };
             
-            if (compList.is_array()) {
-                for (const auto& c : compList) parseOne(c);
+            if (compNode.is_array()) {
+                for (const auto& c : compNode) parseOne(c);
             } else {
-                parseOne(compList);
+                parseOne(compNode);
             }
         }
     }
@@ -263,7 +279,10 @@ Scene parser::loadFromJson(const string &filepath)
 
         // --- PointLights ---
         if (lights.contains("PointLight")) {
-            const auto& node = lights["PointLight"];
+            const auto& pLightNode = lights["PointLight"];
+
+            int pLightCount = pLightNode.is_array() ? pLightNode.size() : 1;
+            scene.point_lights.reserve(pLightCount);
 
             auto parseOnePointLight = [&](const json& pl) {
                 PointLight L;
@@ -279,17 +298,20 @@ Scene parser::loadFromJson(const string &filepath)
                 scene.point_lights.push_back(L);
             };
 
-            if (node.is_array()) {
-                for (const auto& pl : node) parseOnePointLight(pl);
+            if (pLightNode.is_array()) {
+                for (const auto& pl : pLightNode) parseOnePointLight(pl);
             } else {
-                parseOnePointLight(node);
+                parseOnePointLight(pLightNode);
             }
         }
     }
 
     // --- Cameras ---
     if (s.contains("Cameras") && s["Cameras"].contains("Camera")) {
-        const auto& node = s["Cameras"]["Camera"];
+        const auto& cameraNode = s["Cameras"]["Camera"];
+
+        int cameraCount = cameraNode.is_array() ? cameraNode.size() : 1;
+        scene.cameras.reserve(cameraCount);
 
         auto parseOneCamera = [&](const json& cj) {
             Camera cam;
@@ -365,16 +387,19 @@ Scene parser::loadFromJson(const string &filepath)
             scene.cameras.push_back(cam);
         };
 
-        if (node.is_array()) {
-            for (const auto& cj : node) parseOneCamera(cj);
+        if (cameraNode.is_array()) {
+            for (const auto& cj : cameraNode) parseOneCamera(cj);
         } else {
-            parseOneCamera(node);
+            parseOneCamera(cameraNode);
         }
     }
 
     // --- Materials ---
     if (s.contains("Materials") && s["Materials"].contains("Material")) {
-        const auto& node = s["Materials"]["Material"];
+        const auto& materialNode = s["Materials"]["Material"];
+
+        int materialCount = materialNode.is_array() ? materialNode.size() : 1;
+        scene.materials.reserve(materialCount);
 
         auto parseOneMaterial = [&](const json& mj) {
             Material mat{};
@@ -398,10 +423,10 @@ Scene parser::loadFromJson(const string &filepath)
             scene.materials.push_back(mat);
         };
 
-        if (node.is_array()) {
-            for (const auto& mj : node) parseOneMaterial(mj);
+        if (materialNode.is_array()) {
+            for (const auto& mj : materialNode) parseOneMaterial(mj);
         } else {
-            parseOneMaterial(node);
+            parseOneMaterial(materialNode);
         }
     }
 
@@ -452,6 +477,14 @@ Scene parser::loadFromJson(const string &filepath)
         // === MESHES ===
         if (objects.contains("Mesh")) {
             const auto& meshNode = objects["Mesh"];
+
+            int meshCount = meshNode.is_array() ? meshNode.size() : 1;
+            if (objects.contains("MeshInstance")) {
+                const auto& instanceNode = objects["MeshInstance"];
+                int meshInstanceCount = instanceNode.is_array() ? instanceNode.size() : 1;
+                meshCount += meshInstanceCount;
+            }
+            scene.meshes.reserve(meshCount);
 
             auto parseOneMesh = [&](const json& mj) {
                 Mesh mesh;
@@ -644,6 +677,9 @@ Scene parser::loadFromJson(const string &filepath)
         if (objects.contains("Triangle")) {
             const auto& triNode = objects["Triangle"];
 
+            int triCount = triNode.is_array() ? triNode.size() : 1;
+            scene.triangles.reserve(triCount);
+
             auto parseOneTriangle = [&](const json& tj) {
                 Triangle tri;
                 tri.material_id = std::stoi(tj.at("Material").get<std::string>());
@@ -697,6 +733,9 @@ Scene parser::loadFromJson(const string &filepath)
         if (objects.contains("Sphere")) {
             const auto& sphNode = objects["Sphere"];
 
+            int sphCount = sphNode.is_array() ? sphNode.size() : 1;
+            scene.spheres.reserve(sphCount);
+
             auto parseOneSphere = [&](const json& sj) {
                 Sphere sp;
                 sp.material_id = std::stoi(sj.at("Material").get<std::string>());
@@ -734,6 +773,9 @@ Scene parser::loadFromJson(const string &filepath)
         // === PLANES ===
         if (objects.contains("Plane")) {
             const auto& planeNode = objects["Plane"];
+
+            int planeCount = planeNode.is_array() ? planeNode.size() : 1;
+            scene.planes.reserve(planeCount);
 
             auto parseOnePlane = [&](const json& pj) {
                 Plane plane;
