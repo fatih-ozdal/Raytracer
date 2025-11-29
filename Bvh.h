@@ -39,9 +39,11 @@ Vec3f getCentroid(const TopPrim& p, const Scene& scene) {
 struct BVHNode
 {
     AABB bounds;
-    int  leftNodeIdx;   // index into bvhNodes, right = left + 1 always
-    int firstPrimIdx;   // index into topPrims, valid only if leaf
-    int  primCount;  
+    union {
+        int leftNodeIdx;    // Interior node: left child index (right is always left + 1)
+        int firstPrimIdx;   // Leaf node: first primitive index
+    };
+    int primCount;  // >= 0 for leaf, -1 for interior  
 
     bool isLeaf() const noexcept { return primCount >= 0; }
 };
