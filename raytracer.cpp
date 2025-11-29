@@ -76,6 +76,9 @@ void BuildTopLevelBVH(const Scene& scene)
 
 void MakeTopLevelPrimsArray(const Scene& scene)
 {
+    int primCount = scene.meshes.size() + scene.spheres.size() + scene.triangles.size();
+    topPrims.reserve(primCount);
+
     // Add all meshes (including instances)
     for (size_t i = 0; i < scene.meshes.size(); i++)
     {
@@ -165,6 +168,12 @@ void Subdivide(uint32_t nodeIdx)
 void BuildAllMeshBVHs(Scene& scene)
 {
     meshBVHs.clear();
+    
+    int meshCount = 0;
+    for (const auto& mesh : scene.meshes) {
+        if (!mesh.isInstance) meshCount++;
+    }
+    meshBVHs.reserve(meshCount);
     
     for (size_t i = 0; i < scene.meshes.size(); i++) {
         Mesh& mesh = scene.meshes[i];
