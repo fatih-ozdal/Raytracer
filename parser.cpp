@@ -578,6 +578,10 @@ Scene parser::loadFromJson(const string &filepath)
             auto parseOneInstance = [&](const json& inst) {
                 int baseMeshJsonId = stoi(inst.at("_baseMeshId").get<string>());
                 int baseMeshId = scene.meshIdToIndex.at(baseMeshJsonId); 
+
+                int jsonMeshId = std::stoi(inst.at("_id").get<std::string>());
+                int meshIndex = scene.meshes.size();
+                scene.meshIdToIndex[jsonMeshId] = meshIndex;
                 
                 bool resetTransform = false;
                 if (inst.contains("_resetTransform")) {
