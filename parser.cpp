@@ -10,6 +10,7 @@
 #include <limits>
 #include <cmath>
 #include <iostream>
+#include <unordered_set>
 
 using std::cout;
 using std::endl;
@@ -486,6 +487,9 @@ Scene parser::loadFromJson(const string &filepath)
             }
             scene.meshes.reserve(meshCount);
 
+            std::vector<int> globally_touched_vertices;
+            std::unordered_set<int> touched_set;
+
             auto parseOneMesh = [&](const json& mj) {
                 Mesh mesh;
                 mesh.is_smooth = mj.value("_shadingMode", "flat") == "smooth";
@@ -533,11 +537,10 @@ Scene parser::loadFromJson(const string &filepath)
 
                 std::stringstream ss(facesStr);
 
-                std::vector<int> touched;
-                touched.reserve(256);
-
                 auto mark_touched = [&](int idx) {
-                    if (touched.empty() || touched.back() != idx) touched.push_back(idx);
+                    if (touched_set.insert(idx).second) { // returns true if newly inserted
+                        globally_touched_vertices.push_back(idx);
+                    }
                 };
 
                 mesh.localBounds.reset();
@@ -573,13 +576,6 @@ Scene parser::loadFromJson(const string &filepath)
                     mesh.faces.push_back(f);
                 }
 
-                // Normalize accumulated normals (if we computed them)
-                if (mesh.is_smooth && !ply_has_normals) {
-                    for (int idx : touched) {
-                        scene.vertex_data[idx - 1].normal = scene.vertex_data[idx - 1].normal.normalize();
-                    }
-                }
-
                 // === PARSE TRANSFORMATIONS ===
                 if (mj.contains("Transformations")) {
                     mesh.transformation = ParseTransformations(mj.at("Transformations").get<string>(), scene);
@@ -600,6 +596,11 @@ Scene parser::loadFromJson(const string &filepath)
                 for (const auto& mj : meshNode) parseOneMesh(mj);
             } else {
                 parseOneMesh(meshNode);
+            }
+
+            // Normalize accumulated normals
+            for (int idx : globally_touched_vertices) {
+                scene.vertex_data[idx - 1].normal = scene.vertex_data[idx - 1].normal.normalize();
             }
         }
 
