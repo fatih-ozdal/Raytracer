@@ -12,6 +12,16 @@ enum class PrimKind : uint32_t
     Plane,
 };
 
+std::ostream& operator<<(std::ostream& os, PrimKind type) {
+    switch (type) {
+        case PrimKind::Mesh:     return os << "Mesh";
+        case PrimKind::Triangle: return os << "Triangle";
+        case PrimKind::Sphere:   return os << "Sphere";
+        case PrimKind::Plane:    return os << "Plane";
+        default:                 return os << "Unknown";
+    }
+}
+
 struct HitRecord 
 {
     int materialId;

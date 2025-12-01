@@ -73,7 +73,14 @@ struct Vec3f
         assert(idx >= 0 && idx < 3);
         return (&x)[idx];
     }
+
+    friend std::ostream& operator<<(std::ostream& os, const Vec3f& v);
 };
+
+inline std::ostream& operator<<(std::ostream& os, const Vec3f& v) {
+    os << "(" << v.x << ", " << v.y << ", " << v.z << ")";
+    return os;
+}
 
 // compiler expands this to what det3x3() does
 inline float det3cols(const Vec3f& a, const Vec3f& b, const Vec3f& c) noexcept {
