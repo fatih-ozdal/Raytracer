@@ -337,7 +337,8 @@ Vec3f ComputeColor(const Ray& ray, const Scene& scene, const Camera& camera)
     else
     {
         return Vec3f(0, 0, 0);
-    } }
+    }
+}
 
 // ============== INTERSECTION ==============
 
