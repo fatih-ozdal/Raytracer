@@ -939,8 +939,14 @@ bool InShadow(const Vec3f& point, const PointLight& I, const Vec3f& n, float eps
                         float testMinT = minT;
                         
                         if (mesh.hasTransform) {
+                            // transform ray
                             testRay.origin = mesh.invTransformation.transformPoint(shadowRay.origin);
                             testRay.direction = mesh.invTransformation.transformVector(shadowRay.direction).normalize();
+                            // transform testMinT
+                            Vec3f worldDir = shadowRay.direction;
+                            Vec3f objDir = mesh.invTransformation.transformVector(worldDir);
+                            float scale = objDir.length();  // Transform'un scale etkisi
+                            testMinT = minT * scale;
                         }
                         
                         float temp_b, temp_g;
@@ -969,10 +975,16 @@ bool InShadow(const Vec3f& point, const PointLight& I, const Vec3f& n, float eps
                         
                         Ray testRay = shadowRay;
                         float testMinT = minT;
-                        
+
                         if (sphere.hasTransform) {
+                            // transform ray
                             testRay.origin = sphere.invTransformation.transformPoint(shadowRay.origin);
                             testRay.direction = sphere.invTransformation.transformVector(shadowRay.direction).normalize();
+                            // transform testMinT
+                            Vec3f worldDir = shadowRay.direction;
+                            Vec3f objDir = sphere.invTransformation.transformVector(worldDir);
+                            float scale = objDir.length();  // Transform'un scale etkisi
+                            testMinT = minT * scale;
                         }
                         
                         const Vertex& center = scene.vertex_data[sphere.center_vertex_id - 1];
@@ -1000,8 +1012,14 @@ bool InShadow(const Vec3f& point, const PointLight& I, const Vec3f& n, float eps
                         float testMinT = minT;
                         
                         if (triangle.hasTransform) {
+                            // transform ray
                             testRay.origin = triangle.invTransformation.transformPoint(shadowRay.origin);
                             testRay.direction = triangle.invTransformation.transformVector(shadowRay.direction).normalize();
+                            // transform testMinT
+                            Vec3f worldDir = shadowRay.direction;
+                            Vec3f objDir = triangle.invTransformation.transformVector(worldDir);
+                            float scale = objDir.length();  // Transform'un scale etkisi
+                            testMinT = minT * scale;
                         }
                         
                         float dummy_b, dummy_g;
