@@ -38,7 +38,7 @@ bool FindClosestHit(const Ray& ray, const Scene& scene, const Camera& camera, Hi
 void IntersectTopBVH(const Ray& ray, const Scene& scene, float& minT, bool& has_intersected,
                      PrimKind& closestType, int& closestMatId, int& index,
                      Face& hitTriFace, Sphere& closestSphere, Triangle& closestTriangle,
-                     int closestMeshId, bool& closest_is_smooth,
+                     int& closestMeshId, bool& closest_is_smooth,
                      float& bary_beta, float& bary_gamma) noexcept;
 
 float IntersectMeshBVH(const Ray& ray, const Mesh& mesh, const Scene& scene, 
