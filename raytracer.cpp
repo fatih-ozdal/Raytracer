@@ -1103,8 +1103,8 @@ Vec3f ApplyShading(const Ray& ray, const Scene& scene, const Camera& camera, con
         float cosTheta = w0.dotProduct(n_shading);
         float Fresnel_r = Fresnel_Conductor(cosTheta, mat.refraction_index, mat.absorption_index);
 
-        color = color + mat.mirror_refl * Fresnel_r;
-        color = color.elwiseMult(ComputeColor(reflectionRay, scene, camera));
+        Vec3f reflectColor = mat.mirror_refl.elwiseMult(ComputeColor(reflectionRay, scene, camera));
+        color = color + reflectColor * Fresnel_r;
     }
     else if (mat.type == MaterialType::Dielectric)
     {
