@@ -479,6 +479,8 @@ Scene parser::loadFromJson(const string &filepath)
             mat.absorption_index = parser::parseFloat(mj.value("AbsorptionIndex", "0"));
             mat.absorption_coef  = parser::parseVec3f(mj.value("AbsorptionCoefficient", "0 0 0"));
 
+            mat.roughness = parser::parseFloat(mj.value("Roughness", "0"));
+
             scene.materials.push_back(mat);
         };
 

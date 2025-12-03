@@ -73,6 +73,7 @@ struct Material
     float refraction_index;     // for conductor and dielectric (Fresnel)
     float absorption_index;     // for conductor and dielectric (Fresnel)
     Vec3f absorption_coef;      // for dielectric
+    float roughness;
 };
 
 struct Vertex 
