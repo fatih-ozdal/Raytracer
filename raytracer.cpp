@@ -521,16 +521,32 @@ void IntersectTopBVH(const Ray& ray, const Scene& scene, float& minT, bool& has_
                         // Transform ray to object space if needed
                         Ray testRay = ray;
                         float testMinT = minT;
-                        
+
                         if (mesh.hasTransform) {
-                            // transform ray
-                            testRay.origin = mesh.invTransformation.transformPoint(ray.origin);
-                            testRay.direction = mesh.invTransformation.transformVector(ray.direction).normalize();
-                            // transform testMinT
+                            Vec3f rayOrigin = ray.origin;
+                            Vec3f rayDirection = ray.direction;
+                            
+                            // Apply motion blur offset in world space BEFORE inverse transform
+                            if (mesh.has_motion_blur) {
+                                rayOrigin = rayOrigin - mesh.motion_blur * ray.time;
+                            }
+                            
+                            // Now transform ray to object space
+                            testRay.origin = mesh.invTransformation.transformPoint(rayOrigin);
+                            testRay.direction = mesh.invTransformation.transformVector(rayDirection).normalize();
+                            testRay.time = ray.time;  // Keep time for secondary rays
+                            
+                            // Transform testMinT
                             Vec3f worldDir = ray.direction;
                             Vec3f objDir = mesh.invTransformation.transformVector(worldDir);
-                            float scale = objDir.length();  // Transform'un scale etkisi
+                            float scale = objDir.length();
                             testMinT = minT * scale;
+                        }
+                        else if (mesh.has_motion_blur) { //  && !mesh.hasTransform
+                            // Ray is already in world space
+                            testRay.origin = ray.origin - mesh.motion_blur * ray.time;
+                            testRay.direction = ray.direction;
+                            testRay.time = ray.time;
                         }
                         
                         float temp_b, temp_g;
@@ -546,6 +562,9 @@ void IntersectTopBVH(const Ray& ray, const Scene& scene, float& minT, bool& has_
                             if (mesh.hasTransform) {
                                 Vec3f objHit = testRay.origin + testRay.direction * t;
                                 Vec3f worldHit = mesh.transformation.transformPoint(objHit);
+                                if (mesh.has_motion_blur) {
+                                    worldHit = worldHit + mesh.motion_blur * ray.time;
+                                }
                                 worldT = (worldHit - ray.origin).length();
                             }
                             
@@ -572,14 +591,30 @@ void IntersectTopBVH(const Ray& ray, const Scene& scene, float& minT, bool& has_
                         float testMinT = minT;
 
                         if (sphere.hasTransform) {
-                            // transform ray
-                            testRay.origin = sphere.invTransformation.transformPoint(ray.origin);
-                            testRay.direction = sphere.invTransformation.transformVector(ray.direction).normalize();
-                            // transform testMinT
+                            Vec3f rayOrigin = ray.origin;
+                            Vec3f rayDirection = ray.direction;
+                            
+                            // Apply motion blur offset in world space BEFORE inverse transform
+                            if (sphere.has_motion_blur) {
+                                rayOrigin = rayOrigin - sphere.motion_blur * ray.time;
+                            }
+                            
+                            // Now transform ray to object space
+                            testRay.origin = sphere.invTransformation.transformPoint(rayOrigin);
+                            testRay.direction = sphere.invTransformation.transformVector(rayDirection).normalize();
+                            testRay.time = ray.time;  // Keep time for secondary rays
+                            
+                            // Transform testMinT
                             Vec3f worldDir = ray.direction;
                             Vec3f objDir = sphere.invTransformation.transformVector(worldDir);
-                            float scale = objDir.length();  // Transform'un scale etkisi
+                            float scale = objDir.length();
                             testMinT = minT * scale;
+                        }
+                        else if (sphere.has_motion_blur) { //  && !sphere.hasTransform
+                            // Ray is already in world space
+                            testRay.origin = ray.origin - sphere.motion_blur * ray.time;
+                            testRay.direction = ray.direction;
+                            testRay.time = ray.time;
                         }
                         
                         const Vertex& center = scene.vertex_data[sphere.center_vertex_id - 1];
@@ -590,6 +625,9 @@ void IntersectTopBVH(const Ray& ray, const Scene& scene, float& minT, bool& has_
                             if (sphere.hasTransform) {
                                 Vec3f objHit = testRay.origin + testRay.direction * t;
                                 Vec3f worldHit = sphere.transformation.transformPoint(objHit);
+                                if (sphere.has_motion_blur) {
+                                    worldHit = worldHit + sphere.motion_blur * ray.time;
+                                }
                                 worldT = (worldHit - ray.origin).length();
                             }
                             
@@ -612,14 +650,30 @@ void IntersectTopBVH(const Ray& ray, const Scene& scene, float& minT, bool& has_
                         float testMinT = minT;
                         
                         if (triangle.hasTransform) {
-                            // transform ray
-                            testRay.origin = triangle.invTransformation.transformPoint(ray.origin);
-                            testRay.direction = triangle.invTransformation.transformVector(ray.direction).normalize();
-                            // transform testMinT
+                            Vec3f rayOrigin = ray.origin;
+                            Vec3f rayDirection = ray.direction;
+                            
+                            // Apply motion blur offset in world space BEFORE inverse transform
+                            if (triangle.has_motion_blur) {
+                                rayOrigin = rayOrigin - triangle.motion_blur * ray.time;
+                            }
+                            
+                            // Now transform ray to object space
+                            testRay.origin = triangle.invTransformation.transformPoint(rayOrigin);
+                            testRay.direction = triangle.invTransformation.transformVector(rayDirection).normalize();
+                            testRay.time = ray.time;  // Keep time for secondary rays
+                            
+                            // Transform testMinT
                             Vec3f worldDir = ray.direction;
                             Vec3f objDir = triangle.invTransformation.transformVector(worldDir);
-                            float scale = objDir.length();  // Transform'un scale etkisi
+                            float scale = objDir.length();
                             testMinT = minT * scale;
+                        }
+                        else if (triangle.has_motion_blur) { //  && !triangle.hasTransform
+                            // Ray is already in world space
+                            testRay.origin = ray.origin - triangle.motion_blur * ray.time;
+                            testRay.direction = ray.direction;
+                            testRay.time = ray.time;
                         }
                         
                         float dummy_b, dummy_g;
@@ -632,6 +686,9 @@ void IntersectTopBVH(const Ray& ray, const Scene& scene, float& minT, bool& has_
                             if (triangle.hasTransform) {
                                 Vec3f objHit = testRay.origin + testRay.direction * t;
                                 Vec3f worldHit = triangle.transformation.transformPoint(objHit);
+                                if (triangle.has_motion_blur) {
+                                    worldHit = worldHit + triangle.motion_blur * ray.time;
+                                }
                                 worldT = (worldHit - ray.origin).length();
                             }
                             
@@ -972,6 +1029,33 @@ bool InShadow(const Vec3f& point, const PointLight& I, const Vec3f& n, float eps
                             float scale = objDir.length();  // Transform'un scale etkisi
                             testMinT = minT * scale;
                         }
+
+                        if (mesh.hasTransform) {
+                            Vec3f rayOrigin = shadowRay.origin;
+                            Vec3f rayDirection = shadowRay.direction;
+                            
+                            // Apply motion blur offset in world space BEFORE inverse transform
+                            if (mesh.has_motion_blur) {
+                                rayOrigin = rayOrigin - mesh.motion_blur * shadowRay.time;
+                            }
+                            
+                            // Now transform ray to object space
+                            testRay.origin = mesh.invTransformation.transformPoint(rayOrigin);
+                            testRay.direction = mesh.invTransformation.transformVector(rayDirection).normalize();
+                            testRay.time = shadowRay.time;  // Keep time for secondary rays
+                            
+                            // Transform testMinT
+                            Vec3f worldDir = shadowRay.direction;
+                            Vec3f objDir = mesh.invTransformation.transformVector(worldDir);
+                            float scale = objDir.length();
+                            testMinT = minT * scale;
+                        }
+                        else if (mesh.has_motion_blur) { //  && !mesh.hasTransform
+                            // Ray is already in world space
+                            testRay.origin = shadowRay.origin - mesh.motion_blur * shadowRay.time;
+                            testRay.direction = shadowRay.direction;
+                            testRay.time = shadowRay.time;
+                        }
                         
                         float temp_b, temp_g;
                         Face tempFace;
@@ -984,6 +1068,9 @@ bool InShadow(const Vec3f& point, const PointLight& I, const Vec3f& n, float eps
                             if (mesh.hasTransform) {
                                 Vec3f objHit = testRay.origin + testRay.direction * t;
                                 Vec3f worldHit = mesh.transformation.transformPoint(objHit);
+                                if (mesh.has_motion_blur) {
+                                    worldHit = worldHit + mesh.motion_blur * shadowRay.time;
+                                }
                                 worldT = (worldHit - shadowRay.origin).length();
                             }
                             
@@ -1001,14 +1088,30 @@ bool InShadow(const Vec3f& point, const PointLight& I, const Vec3f& n, float eps
                         float testMinT = minT;
 
                         if (sphere.hasTransform) {
-                            // transform ray
-                            testRay.origin = sphere.invTransformation.transformPoint(shadowRay.origin);
-                            testRay.direction = sphere.invTransformation.transformVector(shadowRay.direction).normalize();
-                            // transform testMinT
+                            Vec3f rayOrigin = shadowRay.origin;
+                            Vec3f rayDirection = shadowRay.direction;
+                            
+                            // Apply motion blur offset in world space BEFORE inverse transform
+                            if (sphere.has_motion_blur) {
+                                rayOrigin = rayOrigin - sphere.motion_blur * shadowRay.time;
+                            }
+                            
+                            // Now transform ray to object space
+                            testRay.origin = sphere.invTransformation.transformPoint(rayOrigin);
+                            testRay.direction = sphere.invTransformation.transformVector(rayDirection).normalize();
+                            testRay.time = shadowRay.time;  // Keep time for secondary rays
+                            
+                            // Transform testMinT
                             Vec3f worldDir = shadowRay.direction;
                             Vec3f objDir = sphere.invTransformation.transformVector(worldDir);
-                            float scale = objDir.length();  // Transform'un scale etkisi
+                            float scale = objDir.length();
                             testMinT = minT * scale;
+                        }
+                        else if (sphere.has_motion_blur) { //  && !sphere.hasTransform
+                            // Ray is already in world space
+                            testRay.origin = shadowRay.origin - sphere.motion_blur * shadowRay.time;
+                            testRay.direction = shadowRay.direction;
+                            testRay.time = shadowRay.time;
                         }
                         
                         const Vertex& center = scene.vertex_data[sphere.center_vertex_id - 1];
@@ -1019,6 +1122,9 @@ bool InShadow(const Vec3f& point, const PointLight& I, const Vec3f& n, float eps
                             if (sphere.hasTransform) {
                                 Vec3f objHit = testRay.origin + testRay.direction * t;
                                 Vec3f worldHit = sphere.transformation.transformPoint(objHit);
+                                if (sphere.has_motion_blur) {
+                                    worldHit = worldHit + sphere.motion_blur * shadowRay.time;
+                                }
                                 worldT = (worldHit - shadowRay.origin).length();
                             }
                             
@@ -1036,14 +1142,30 @@ bool InShadow(const Vec3f& point, const PointLight& I, const Vec3f& n, float eps
                         float testMinT = minT;
                         
                         if (triangle.hasTransform) {
-                            // transform ray
-                            testRay.origin = triangle.invTransformation.transformPoint(shadowRay.origin);
-                            testRay.direction = triangle.invTransformation.transformVector(shadowRay.direction).normalize();
-                            // transform testMinT
+                            Vec3f rayOrigin = shadowRay.origin;
+                            Vec3f rayDirection = shadowRay.direction;
+                            
+                            // Apply motion blur offset in world space BEFORE inverse transform
+                            if (triangle.has_motion_blur) {
+                                rayOrigin = rayOrigin - triangle.motion_blur * shadowRay.time;
+                            }
+                            
+                            // Now transform ray to object space
+                            testRay.origin = triangle.invTransformation.transformPoint(rayOrigin);
+                            testRay.direction = triangle.invTransformation.transformVector(rayDirection).normalize();
+                            testRay.time = shadowRay.time;  // Keep time for secondary rays
+                            
+                            // Transform testMinT
                             Vec3f worldDir = shadowRay.direction;
                             Vec3f objDir = triangle.invTransformation.transformVector(worldDir);
-                            float scale = objDir.length();  // Transform'un scale etkisi
+                            float scale = objDir.length();
                             testMinT = minT * scale;
+                        }
+                        else if (triangle.has_motion_blur) { //  && !triangle.hasTransform
+                            // Ray is already in world space
+                            testRay.origin = shadowRay.origin - triangle.motion_blur * shadowRay.time;
+                            testRay.direction = shadowRay.direction;
+                            testRay.time = shadowRay.time;
                         }
                         
                         float dummy_b, dummy_g;
@@ -1056,6 +1178,9 @@ bool InShadow(const Vec3f& point, const PointLight& I, const Vec3f& n, float eps
                             if (triangle.hasTransform) {
                                 Vec3f objHit = testRay.origin + testRay.direction * t;
                                 Vec3f worldHit = triangle.transformation.transformPoint(objHit);
+                                if (triangle.has_motion_blur) {
+                                    worldHit = worldHit + triangle.motion_blur * shadowRay.time;
+                                }
                                 worldT = (worldHit - shadowRay.origin).length();
                             }
                             
