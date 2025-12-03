@@ -47,6 +47,13 @@ struct PointLight
     PointLight() : position(0, 0, 0), intensity(0, 0, 0) {}
 };
 
+struct AreaLight {
+    Vec3f position;
+    Vec3f normal;
+    float size;
+    Vec3f radiance;
+};
+
 enum class MaterialType : uint32_t
 {
     None = 0,
@@ -190,6 +197,7 @@ struct Scene
     vector<Camera> cameras;
     Vec3f ambient_light;
     vector<PointLight> point_lights;
+    std::vector<AreaLight> area_lights;
     vector<Material> materials;
     vector<Vertex> vertex_data;
     vector<Mesh> meshes;

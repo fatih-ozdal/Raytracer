@@ -305,6 +305,32 @@ Scene parser::loadFromJson(const string &filepath)
                 parseOnePointLight(pLightNode);
             }
         }
+
+        // --- PointLights ---
+        if (lights.contains("AreaLight")) {
+            const auto& aLightNode = lights["AreaLight"];
+
+            int aLightCount = aLightNode.is_array() ? aLightNode.size() : 1;
+            scene.area_lights.reserve(aLightCount);
+
+            auto parseOnePointLight = [&](const json& al) {
+                AreaLight areaLight;
+
+                areaLight.position = parser::parseVec3f(al["Position"].get<std::string>());
+                areaLight.normal = parser::parseVec3f(al["Normal"].get<std::string>()).normalize();
+                areaLight.size = std::stof(al["Size"].get<std::string>());
+                areaLight.radiance = parser::parseVec3f(al["Radiance"].get<std::string>());
+                
+                scene.area_lights.push_back(areaLight);
+            };
+
+            if (aLightNode.is_array()) {
+                for (const auto& al : aLightNode) parseOnePointLight(al);
+            } else {
+                parseOnePointLight(aLightNode);
+            }
+        }
+
     }
 
     // --- Cameras ---
@@ -403,7 +429,7 @@ Scene parser::loadFromJson(const string &filepath)
             if (cj.contains("FocusDistance")) {
                 cam.focus_distance = std::stof(cj["FocusDistance"].get<std::string>());
             }
-            
+
             if (cam.aperture_size <= 0.0f) {
                 cam.has_depth_of_field = false;
             }
