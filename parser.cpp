@@ -381,7 +381,7 @@ Scene parser::loadFromJson(const string &filepath)
             cam.samples_per_side = 1;
 
             if (cj.contains("NumSamples")) {
-                cam.num_samples = cj["NumSamples"];
+                cam.num_samples = std::stoi(cj.at("NumSamples").get<std::string>());
                 cam.samples_per_side = (int) std::sqrt(cam.num_samples);
 
                 // sanity check
