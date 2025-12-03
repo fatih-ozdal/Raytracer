@@ -1317,7 +1317,9 @@ Vec3f ApplyShading(const Ray& ray, const Scene& scene, const Camera& camera, con
         float sin2ThetaT = eta * eta * sin2ThetaI;
         
         if (sin2ThetaT >= 1.0f) {
-            Vec3f wr = (normal * 2.0f * cosThetaI - w0_local).normalize();
+            Vec3f wr_perfect = (normal * 2.0f * cosThetaI - w0_local).normalize();
+            Vec3f wr = PerturbReflection(wr_perfect, mat.roughness, rng, dist);
+
             Ray reflectionRay;
             reflectionRay.origin = x + normal * eps_shift;
             reflectionRay.direction = wr;
@@ -1329,7 +1331,7 @@ Vec3f ApplyShading(const Ray& ray, const Scene& scene, const Camera& camera, con
             float cosThetaT = std::sqrt(1.0f - sin2ThetaT);
             float Fr = Fresnel_Dielectric(cosThetaI, cosThetaT, etaI, etaT);
             
-            Vec3f wr_perfect = (n_shading * 2 * (n_shading.dotProduct(w0)) - w0).normalize();
+            Vec3f wr_perfect = (normal * 2.0f * cosThetaI - w0_local).normalize();
             Vec3f wr = PerturbReflection(wr_perfect, mat.roughness, rng, dist);
 
             Ray reflectionRay;
@@ -1339,8 +1341,9 @@ Vec3f ApplyShading(const Ray& ray, const Scene& scene, const Camera& camera, con
             reflectionRay.time = ray.time;
             Vec3f reflectColor = mat.mirror_refl.elwiseMult(ComputeColor(reflectionRay, scene, camera, rng, dist));
             
-            Vec3f wt = ((w0_local * -1.0f) * eta + normal * (eta * cosThetaI - cosThetaT)).normalize();
-            
+            Vec3f wt_perfect = ((w0_local * -1.0f) * eta + normal * (eta * cosThetaI - cosThetaT)).normalize();
+            Vec3f wt = PerturbReflection(wt_perfect, mat.roughness, rng, dist);
+
             Ray refractionRay;
             refractionRay.origin = x - normal * eps_shift;
             refractionRay.direction = wt;
