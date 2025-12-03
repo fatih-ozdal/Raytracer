@@ -30,7 +30,7 @@ void MakeMeshPrimsArray(const Mesh& mesh, const vector<Vertex>& vertex_data, Mes
 void UpdateMeshNodeBounds(MeshBVH& bvh, uint32_t nodeIdx);
 void SubdivideMesh(MeshBVH& bvh, uint32_t nodeIdx);
 
-Ray ComputeRay(const Scene& scene, const Camera& camera, int j, int i) noexcept;
+Ray ComputeRay(const Scene& scene, const Camera& camera, int j, int i, float jitter_x, float jitter_y) noexcept;
 Vec3f ComputeColor(const Ray& ray, const Scene& scene, const Camera& camera);
 
 bool FindClosestHit(const Ray& ray, const Scene& scene, const Camera& camera, HitRecord& closestHit) noexcept;

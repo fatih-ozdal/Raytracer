@@ -31,13 +31,34 @@ int main(int argc, char* argv[])
     {
         const int width  = camera.image_width;
         const int height = camera.image_height;
-        auto* image = new unsigned char[(size_t)width * height * 3];
+        auto* image = new unsigned char[(size_t) width * height * 3];
+
+        const int num_samples = camera.num_samples;
+        const int samples_per_side = camera.samples_per_side;
+        const float inv_num_samples = 1.0f / num_samples;
 
         #pragma omp parallel for collapse(2) schedule(static)
-        for (int i = 0; i < height; ++i) {
-            for (int j = 0; j < width; ++j) {
-                Ray   ray   = ComputeRay(scene, camera, j, i);
-                Vec3f color = ComputeColor(ray, scene, camera);
+        for (int i = 0; i < height; i++) {
+            for (int j = 0; j < width; j++) {
+                std::mt19937 rng(i * width + j);
+                std::uniform_real_distribution<float> dist(0.0f, 1.0f);
+
+                Vec3f color_sum(0.0f, 0.0f, 0.0f);
+
+                for (int s = 0; s < num_samples; ++s) {
+                    int sx = s % samples_per_side;
+                    int sy = s / samples_per_side;
+                    
+                    float jitter_x = (sx + dist(rng)) / samples_per_side;
+                    float jitter_y = (sy + dist(rng)) / samples_per_side;
+                    
+                    Ray ray = ComputeRay(scene, camera, j, i, jitter_x, jitter_y);
+                    Vec3f sample_color = ComputeColor(ray, scene, camera);
+                    
+                    color_sum = color_sum + sample_color;
+                }
+                
+                Vec3f color = color_sum * inv_num_samples;
 
                 const size_t idx = (static_cast<size_t>(i) * width + j) * 3;
                 image[idx + 0] = (unsigned char)clampF(color.x, 0.0f, 255.0f);
@@ -300,12 +321,12 @@ void SubdivideMesh(MeshBVH& bvh, uint32_t nodeIdx)
 
 // ============== RAY GENERATION ==============
 
-Ray ComputeRay(const Scene& scene, const Camera& camera, int j, int i) noexcept
+Ray ComputeRay(const Scene& scene, const Camera& camera, int j, int i, float jitter_x, float jitter_y) noexcept
 {   
     Vec3f e = camera.position;
     
-    float su = (j + 0.5f) * camera.pixel_width;  
-    float sv = (i + 0.5f) * camera.pixel_height;  
+    float su = (j + jitter_x) * camera.pixel_width;  
+    float sv = (i + jitter_y) * camera.pixel_height;  
 
     Vec3f s = camera.q + su * camera.u - sv * camera.v;
 

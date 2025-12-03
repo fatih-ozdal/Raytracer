@@ -376,6 +376,20 @@ Scene parser::loadFromJson(const string &filepath)
                 cam.near_plane = {l, r, b, t};
             }
 
+            // Num Samples and Samples Per Side
+            cam.num_samples = 1;
+            cam.samples_per_side = 1;
+
+            if (cj.contains("NumSamples")) {
+                cam.num_samples = cj["NumSamples"];
+                cam.samples_per_side = (int) std::sqrt(cam.num_samples);
+
+                // sanity check
+                if (cam.samples_per_side * cam.samples_per_side != cam.num_samples) {
+                    std::cerr << "Warning: NumSamples is not a perfect square!" << std::endl;
+                }   
+            }
+
             // Pixel Width - Heigth
             cam.pixel_width  = (cam.near_plane.r - cam.near_plane.l) / cam.image_width;
             cam.pixel_height = (cam.near_plane.t - cam.near_plane.b) / cam.image_height;

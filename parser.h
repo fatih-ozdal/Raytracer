@@ -4,6 +4,7 @@
 #include <nlohmann/json.hpp>
 #include <vector>
 #include <string>
+#include <random>
 #include "Vec3f.h"
 #include "Aabb.h"
 #include "Mat4f.h"
@@ -26,6 +27,9 @@ struct Camera
     LRBT_vec near_plane;
     float near_distance;
     Vec3f m, q;
+
+    int num_samples;
+    int samples_per_side;
  
     int image_width, image_height;
     float pixel_width, pixel_height;
