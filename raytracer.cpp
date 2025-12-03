@@ -51,8 +51,9 @@ int main(int argc, char* argv[])
                     
                     float jitter_x = (sx + dist(rng)) / samples_per_side;
                     float jitter_y = (sy + dist(rng)) / samples_per_side;
+                    float time = dist(rng);
                     
-                    Ray ray = ComputeRay(scene, camera, j, i, jitter_x, jitter_y);
+                    Ray ray = ComputeRay(scene, camera, j, i, jitter_x, jitter_y, time);
                     Vec3f sample_color = ComputeColor(ray, scene, camera);
                     
                     color_sum = color_sum + sample_color;
@@ -321,7 +322,7 @@ void SubdivideMesh(MeshBVH& bvh, uint32_t nodeIdx)
 
 // ============== RAY GENERATION ==============
 
-Ray ComputeRay(const Scene& scene, const Camera& camera, int j, int i, float jitter_x, float jitter_y) noexcept
+Ray ComputeRay(const Scene& scene, const Camera& camera, int j, int i, float jitter_x, float jitter_y, float time) noexcept
 {   
     Vec3f e = camera.position;
     
@@ -334,6 +335,7 @@ Ray ComputeRay(const Scene& scene, const Camera& camera, int j, int i, float jit
     ray.origin = e;
     ray.direction = (s - e).normalize();
     ray.depth = 0;
+    ray.time = time;
 
     return ray;
 }
@@ -909,7 +911,7 @@ Vec3f FindNormal_Sphere(const Vertex& center, const Vec3f& point, float radius) 
 
 // ============== SHADOW RAYS ==============
 
-bool InShadow(const Vec3f& point, const PointLight& I, const Vec3f& n, float eps_shadow, const Scene& scene) noexcept
+bool InShadow(const Vec3f& point, const PointLight& I, const Vec3f& n, float eps_shadow, const Scene& scene, float time) noexcept
 {
     Vec3f toLight = I.position - point;
     float distToLight = toLight.length();
@@ -918,6 +920,7 @@ bool InShadow(const Vec3f& point, const PointLight& I, const Vec3f& n, float eps
     shadowRay.origin = point + n * eps_shadow;
     shadowRay.direction = toLight / distToLight;
     shadowRay.depth = 0;
+    shadowRay.time = time; 
 
     float minT = distToLight;
 
@@ -1111,6 +1114,7 @@ Vec3f ApplyShading(const Ray& ray, const Scene& scene, const Camera& camera, con
         reflectionRay.origin = x + n_shading * eps_shift;
         reflectionRay.direction = wr;
         reflectionRay.depth = ray.depth + 1;
+        reflectionRay.time = ray.time;
         color = color + mat.mirror_refl.elwiseMult(ComputeColor(reflectionRay, scene, camera));
     }
     else if (mat.type == MaterialType::Conductor)
@@ -1120,6 +1124,7 @@ Vec3f ApplyShading(const Ray& ray, const Scene& scene, const Camera& camera, con
         reflectionRay.origin = x + n_shading * eps_shift;
         reflectionRay.direction = wr;
         reflectionRay.depth = ray.depth + 1;
+        reflectionRay.time = ray.time;
 
         float cosTheta = w0.dotProduct(n_shading);
         float Fresnel_r = Fresnel_Conductor(cosTheta, mat.refraction_index, mat.absorption_index);
@@ -1151,6 +1156,7 @@ Vec3f ApplyShading(const Ray& ray, const Scene& scene, const Camera& camera, con
             reflectionRay.origin = x + normal * eps_shift;
             reflectionRay.direction = wr;
             reflectionRay.depth = ray.depth + 1;
+            reflectionRay.time = ray.time;
             color = color + mat.mirror_refl.elwiseMult(ComputeColor(reflectionRay, scene, camera));
         }
         else {
@@ -1162,6 +1168,7 @@ Vec3f ApplyShading(const Ray& ray, const Scene& scene, const Camera& camera, con
             reflectionRay.origin = x + normal * eps_shift;
             reflectionRay.direction = wr;
             reflectionRay.depth = ray.depth + 1;
+            reflectionRay.time = ray.time;
             Vec3f reflectColor = mat.mirror_refl.elwiseMult(ComputeColor(reflectionRay, scene, camera));
             
             Vec3f wt = ((w0_local * -1.0f) * eta + normal * (eta * cosThetaI - cosThetaT)).normalize();
@@ -1169,6 +1176,7 @@ Vec3f ApplyShading(const Ray& ray, const Scene& scene, const Camera& camera, con
             refractionRay.origin = x - normal * eps_shift;
             refractionRay.direction = wt;
             refractionRay.depth = ray.depth + 1;
+            refractionRay.time = ray.time;
             Vec3f refractColor = ComputeColor(refractionRay, scene, camera);
             
             if (!entering) {
@@ -1190,7 +1198,7 @@ Vec3f ApplyShading(const Ray& ray, const Scene& scene, const Camera& camera, con
 
     for (const auto& point_light: scene.point_lights)
     {
-        if (!InShadow(x, point_light, n_shading, eps_shift, scene))
+        if (!InShadow(x, point_light, n_shading, eps_shift, scene, ray.time))
         {
             color = color + ComputeDiffuseAndSpecular(ray.origin, mat, point_light, closestHit.intersectionPoint, n_shading, w0);
         }
