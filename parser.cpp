@@ -603,6 +603,15 @@ Scene parser::loadFromJson(const string &filepath)
                     mesh.worldBounds = mesh.localBounds;
                 }
 
+                // Motion Blur
+                mesh.has_motion_blur = false;
+                if (mj.contains("MotionBlur")) {
+                    std::string mb_str = mj["MotionBlur"];
+                    std::istringstream iss(mb_str);
+                    iss >> mesh.motion_blur.x >> mesh.motion_blur.y >> mesh.motion_blur.z;
+                    mesh.has_motion_blur = true;
+                }
+
                 scene.meshes.push_back(mesh);
             };
 
@@ -678,6 +687,15 @@ Scene parser::loadFromJson(const string &filepath)
                 newMesh.bvhIndex = -1;
                 newMesh.localBounds = originalMesh.localBounds;
                 newMesh.worldBounds = TransformAABB(originalMesh.localBounds, finalTransform);
+
+                // Motion Blur
+                newMesh.has_motion_blur = false;
+                if (inst.contains("MotionBlur")) {
+                    std::string mb_str = inst["MotionBlur"];
+                    std::istringstream iss(mb_str);
+                    iss >> newMesh.motion_blur.x >> newMesh.motion_blur.y >> newMesh.motion_blur.z;
+                    newMesh.has_motion_blur = true;
+                }
                 
                 scene.meshes.push_back(newMesh);
             };
@@ -736,6 +754,15 @@ Scene parser::loadFromJson(const string &filepath)
                     tri.hasTransform = false;
                     tri.worldBounds = tri.localBounds;
                 }
+                
+                // Motion Blur
+                tri.has_motion_blur = false;
+                if (tj.contains("MotionBlur")) {
+                    std::string mb_str = tj["MotionBlur"];
+                    std::istringstream iss(mb_str);
+                    iss >> tri.motion_blur.x >> tri.motion_blur.y >> tri.motion_blur.z;
+                    tri.has_motion_blur = true;
+                }
 
                 scene.triangles.push_back(tri);
             };
@@ -776,6 +803,15 @@ Scene parser::loadFromJson(const string &filepath)
                     sp.invTransformation = Mat4f::identity();
                     sp.hasTransform = false;
                     sp.worldBounds = sp.localBounds;
+                }
+
+                // Motion Blur
+                sp.has_motion_blur = false;
+                if (sj.contains("MotionBlur")) {
+                    std::string mb_str = sj["MotionBlur"];
+                    std::istringstream iss(mb_str);
+                    iss >> sp.motion_blur.x >> sp.motion_blur.y >> sp.motion_blur.z;
+                    sp.has_motion_blur = true;
                 }
 
                 scene.spheres.push_back(sp);
@@ -822,6 +858,15 @@ Scene parser::loadFromJson(const string &filepath)
                     plane.transformation = Mat4f::identity();
                     plane.invTransformation = Mat4f::identity();
                     plane.hasTransform = false;
+                }
+
+                // Motion Blur
+                plane.has_motion_blur = false;
+                if (pj.contains("MotionBlur")) {
+                    std::string mb_str = pj["MotionBlur"];
+                    std::istringstream iss(mb_str);
+                    iss >> plane.motion_blur.x >> plane.motion_blur.y >> plane.motion_blur.z;
+                    plane.has_motion_blur = true;
                 }
 
                 scene.planes.push_back(plane);

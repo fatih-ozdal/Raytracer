@@ -87,6 +87,10 @@ struct Mesh
     Mat4f transformation;
     Mat4f invTransformation;
     bool hasTransform;
+
+    // Motion Blur
+    Vec3f motion_blur;
+    bool has_motion_blur;
     
     // Instancing support
     bool isInstance;          // true if this is an instance of another mesh
@@ -113,6 +117,10 @@ struct Triangle
     Mat4f transformation;
     Mat4f invTransformation;
     bool hasTransform;
+
+    // Motion Blur
+    Vec3f motion_blur;
+    bool has_motion_blur;
     
     AABB localBounds;
     AABB worldBounds;
@@ -134,6 +142,10 @@ struct Sphere
     Mat4f invTransformation;
     bool hasTransform;
     
+    // Motion Blur
+    Vec3f motion_blur;
+    bool has_motion_blur;
+    
     AABB localBounds;
     AABB worldBounds;
     
@@ -154,6 +166,10 @@ struct Plane
     Mat4f transformation;
     Mat4f invTransformation;
     bool hasTransform;
+    
+    // Motion Blur
+    Vec3f motion_blur;
+    bool has_motion_blur;
     
     Plane() : material_id(-1), vertex_id(-1), n_unit(0, 0, 1), plane_d(0), hasTransform(false) {
         transformation = Mat4f::identity();
