@@ -1401,7 +1401,7 @@ Vec3f ApplyShading(const Ray& ray, const Scene& scene, const Camera& camera, con
         
         if (!in_shadow) {
             // Compute solid angle (from PDF: dw = A * (n_l · w_i) / d^2)
-            float cos_light = std::max(0.0f, area_light.normal.dotProduct(wi * -1.0f));
+            float cos_light = std::abs(area_light.normal.dotProduct(wi * -1.0f));
             float area = area_light.size * area_light.size;
             float solid_angle = (area * cos_light) / (dist_to_light * dist_to_light);
             
