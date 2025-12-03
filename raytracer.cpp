@@ -40,20 +40,38 @@ int main(int argc, char* argv[])
         #pragma omp parallel for collapse(2) schedule(static)
         for (int i = 0; i < height; i++) {
             for (int j = 0; j < width; j++) {
+
                 std::mt19937 rng(i * width + j);
                 std::uniform_real_distribution<float> dist(0.0f, 1.0f);
+
+                std::vector<int> shuffle_array(num_samples);
+                for (int idx = 0; idx < num_samples; ++idx) {
+                    shuffle_array[idx] = idx;
+                }
+                std::shuffle(shuffle_array.begin(), shuffle_array.end(), rng);
 
                 Vec3f color_sum(0.0f, 0.0f, 0.0f);
 
                 for (int s = 0; s < num_samples; ++s) {
                     int sx = s % samples_per_side;
                     int sy = s / samples_per_side;
-                    
+
                     float jitter_x = (sx + dist(rng)) / samples_per_side;
                     float jitter_y = (sy + dist(rng)) / samples_per_side;
+                    
+                    int aperture_idx = shuffle_array[s];
+                    int ax = aperture_idx % samples_per_side;
+                    int ay = aperture_idx / samples_per_side;
+                    float aperture_u = (ax + dist(rng)) / samples_per_side;  // [0, 1)
+                    float aperture_v = (ay + dist(rng)) / samples_per_side;  // [0, 1)
+                    
+                    // Time for motion blur
                     float time = dist(rng);
                     
-                    Ray ray = ComputeRay(scene, camera, j, i, jitter_x, jitter_y, time);
+                    Ray ray = ComputeRay(scene, camera, j, i, 
+                                    jitter_x, jitter_y, 
+                                    aperture_u, aperture_v, 
+                                    time);
                     Vec3f sample_color = ComputeColor(ray, scene, camera);
                     
                     color_sum = color_sum + sample_color;
@@ -322,20 +340,39 @@ void SubdivideMesh(MeshBVH& bvh, uint32_t nodeIdx)
 
 // ============== RAY GENERATION ==============
 
-Ray ComputeRay(const Scene& scene, const Camera& camera, int j, int i, float jitter_x, float jitter_y, float time) noexcept
+Ray ComputeRay(const Scene& scene, const Camera& camera, int j, int i, float jitter_x, float jitter_y, float aperture_u, float aperture_v,  float time) noexcept
 {   
-    Vec3f e = camera.position;
-    
     float su = (j + jitter_x) * camera.pixel_width;  
-    float sv = (i + jitter_y) * camera.pixel_height;  
-
-    Vec3f s = camera.q + su * camera.u - sv * camera.v;
+    float sv = (i + jitter_y) * camera.pixel_height;
+    Vec3f sample_point = camera.q + su * camera.u - sv * camera.v;
 
     Ray ray;
-    ray.origin = e;
-    ray.direction = (s - e).normalize();
     ray.depth = 0;
     ray.time = time;
+
+    if (!camera.has_depth_of_field) { // Pinhole camera (no DOF)
+        ray.origin = camera.position;
+        ray.direction = (sample_point - camera.position).normalize();
+    } 
+    else {
+        // 1. Compute direction through pixel center
+        Vec3f dir = (camera.position - sample_point).normalize();
+        
+        // 2. Find focal plane intersection point
+        // t = focusDistance / dot(dir, -w)
+        float t_focal = camera.focus_distance / dir.dotProduct(-1 * camera.w);
+        Vec3f focal_point = camera.position + dir * t_focal;
+        
+        // 3. Sample point on aperture (square lens)
+        // Map [0,1) x [0,1) to [-aperture_size/2, aperture_size/2]
+        float lens_u = (aperture_u - 0.5f) * camera.aperture_size;
+        float lens_v = (aperture_v - 0.5f) * camera.aperture_size;
+        Vec3f lens_sample = camera.position + lens_u * camera.u + lens_v * camera.v;
+        
+        // 4. Ray from lens sample to focal point
+        ray.origin = lens_sample;
+        ray.direction = (focal_point - lens_sample).normalize();
+    }
 
     return ray;
 }
