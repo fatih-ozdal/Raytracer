@@ -2,4 +2,5 @@ raytracer.exe
 raytracer
 *.pdf
 *.png
-/bozuk/
+bozuk/
+.vscode/settings.json
