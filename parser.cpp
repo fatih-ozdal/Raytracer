@@ -306,7 +306,7 @@ Scene parser::loadFromJson(const string &filepath)
             }
         }
 
-        // --- PointLights ---
+        // --- AreaLights ---
         if (lights.contains("AreaLight")) {
             const auto& aLightNode = lights["AreaLight"];
 
