@@ -55,6 +55,8 @@ float IntersectsPlane(const Ray& ray, const Vec3f& normal, float plane_d, float 
 Vec3f FindNormal_Sphere(const Vertex& center, const Vec3f& point, float radius) noexcept;
 
 Vec3f ApplyShading(const Ray& ray, const Scene& scene, const Camera& camera, const HitRecord& closestHit, std::mt19937& rng, std::uniform_real_distribution<float>& dist);
+Vec3f PerturbReflection(const Vec3f& perfect_reflection, float roughness,
+                        std::mt19937& rng, std::uniform_real_distribution<float>& dist);
 float Fresnel_Dielectric(float cosTheta, float cosPhi, float n1, float n2) noexcept;
 float Fresnel_Conductor(float cosTheta, float refractionIndex, float absorptionIndex) noexcept;
 bool InShadow(const Vec3f& point, const PointLight& I, const Vec3f& n, float eps_shadow, const Scene& scene, float time) noexcept;

@@ -1271,7 +1271,9 @@ Vec3f ApplyShading(const Ray& ray, const Scene& scene, const Camera& camera, con
 
     if (mat.type == MaterialType::Mirror)
     {
-        Vec3f wr = (n_shading * 2 * (n_shading.dotProduct(w0)) - w0).normalize();
+        Vec3f wr_perfect = (n_shading * 2 * (n_shading.dotProduct(w0)) - w0).normalize();
+        Vec3f wr = PerturbReflection(wr_perfect, mat.roughness, rng, dist);
+
         Ray reflectionRay;
         reflectionRay.origin = x + n_shading * eps_shift;
         reflectionRay.direction = wr;
@@ -1281,7 +1283,9 @@ Vec3f ApplyShading(const Ray& ray, const Scene& scene, const Camera& camera, con
     }
     else if (mat.type == MaterialType::Conductor)
     {
-        Vec3f wr = (n_shading * 2 * (n_shading.dotProduct(w0)) - w0).normalize();
+        Vec3f wr_perfect = (n_shading * 2 * (n_shading.dotProduct(w0)) - w0).normalize();
+        Vec3f wr = PerturbReflection(wr_perfect, mat.roughness, rng, dist);
+
         Ray reflectionRay;
         reflectionRay.origin = x + n_shading * eps_shift;
         reflectionRay.direction = wr;
@@ -1325,7 +1329,9 @@ Vec3f ApplyShading(const Ray& ray, const Scene& scene, const Camera& camera, con
             float cosThetaT = std::sqrt(1.0f - sin2ThetaT);
             float Fr = Fresnel_Dielectric(cosThetaI, cosThetaT, etaI, etaT);
             
-            Vec3f wr = (normal * 2.0f * cosThetaI - w0_local).normalize();
+            Vec3f wr_perfect = (n_shading * 2 * (n_shading.dotProduct(w0)) - w0).normalize();
+            Vec3f wr = PerturbReflection(wr_perfect, mat.roughness, rng, dist);
+
             Ray reflectionRay;
             reflectionRay.origin = x + normal * eps_shift;
             reflectionRay.direction = wr;
@@ -1334,6 +1340,7 @@ Vec3f ApplyShading(const Ray& ray, const Scene& scene, const Camera& camera, con
             Vec3f reflectColor = mat.mirror_refl.elwiseMult(ComputeColor(reflectionRay, scene, camera, rng, dist));
             
             Vec3f wt = ((w0_local * -1.0f) * eta + normal * (eta * cosThetaI - cosThetaT)).normalize();
+            
             Ray refractionRay;
             refractionRay.origin = x - normal * eps_shift;
             refractionRay.direction = wt;
@@ -1423,6 +1430,27 @@ Vec3f ApplyShading(const Ray& ray, const Scene& scene, const Camera& camera, con
     }
 
     return color;
+}
+
+Vec3f PerturbReflection(const Vec3f& perfect_reflection, float roughness,
+                        std::mt19937& rng, std::uniform_real_distribution<float>& dist)
+{
+    if (roughness <= 0.0f) {
+        return perfect_reflection;
+    }
+    
+    // Create orthonormal basis around perfect reflection
+    Vec3f r = perfect_reflection;
+    Vec3f u, v;
+    CreateOrthonormalBasis(r, u, v);
+    
+    // Generate two random numbers in [0, 1)
+    float xi1 = dist(rng);
+    float xi2 = dist(rng);
+    
+    // Center them to [-0.5, 0.5) and apply roughness
+    Vec3f r_real = r + u * (roughness * (xi1 - 0.5f)) + v * (roughness * (xi2 - 0.5f));
+    return r_real.normalize();
 }
 
 float Fresnel_Dielectric(float cosTheta, float cosPhi, float n1, float n2) noexcept
