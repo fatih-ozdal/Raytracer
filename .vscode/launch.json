@@ -1,0 +1,28 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug Ray Tracer",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/raytracer",
+      "args": ["${workspaceFolder}/blog/hw3/inputs/cornellbox_boxes_dynamic.json"],
+      "cwd": "${workspaceFolder}",
+      "MIMode": "gdb",
+      "stopAtEntry": false,
+      "externalConsole": false,
+      "setupCommands": [
+        { "text": "-enable-pretty-printing" }
+      ],
+
+      "linux": {
+        "miDebuggerPath": "/usr/bin/gdb",
+        "program": "${workspaceFolder}/raytracer"
+      },
+      "windows": {
+        "miDebuggerPath": "C:/msys64/mingw64/bin/gdb.exe",
+        "program": "${workspaceFolder}/raytracer.exe"
+      }
+    }
+  ]
+}
