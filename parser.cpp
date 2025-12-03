@@ -390,6 +390,24 @@ Scene parser::loadFromJson(const string &filepath)
                 }   
             }
 
+            // Aperture
+            cam.has_depth_of_field = false;
+            cam.aperture_size = 0.0f;
+            cam.focus_distance = 1.0f;  // Default
+
+            if (cj.contains("ApertureSize")) {
+                cam.aperture_size = std::stof(cj["ApertureSize"].get<std::string>());
+                cam.has_depth_of_field = true;
+            }
+
+            if (cj.contains("FocusDistance")) {
+                cam.focus_distance = std::stof(cj["FocusDistance"].get<std::string>());
+            }
+            
+            if (cam.aperture_size <= 0.0f) {
+                cam.has_depth_of_field = false;
+            }
+
             // Pixel Width - Heigth
             cam.pixel_width  = (cam.near_plane.r - cam.near_plane.l) / cam.image_width;
             cam.pixel_height = (cam.near_plane.t - cam.near_plane.b) / cam.image_height;

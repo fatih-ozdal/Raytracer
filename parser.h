@@ -30,6 +30,10 @@ struct Camera
 
     int num_samples;
     int samples_per_side;
+    
+    float aperture_size;      // Edge length of square aperture
+    float focus_distance;     // Distance to focal plane
+    bool has_depth_of_field;
  
     int image_width, image_height;
     float pixel_width, pixel_height;
