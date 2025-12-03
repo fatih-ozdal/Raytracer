@@ -32,7 +32,7 @@ void UpdateMeshNodeBounds(MeshBVH& bvh, uint32_t nodeIdx);
 void SubdivideMesh(MeshBVH& bvh, uint32_t nodeIdx);
 
 Ray ComputeRay(const Scene& scene, const Camera& camera, int j, int i, float jitter_x, float jitter_y, float aperture_u, float aperture_v, float time) noexcept;
-Vec3f ComputeColor(const Ray& ray, const Scene& scene, const Camera& camera);
+Vec3f ComputeColor(const Ray& ray, const Scene& scene, const Camera& camera, std::mt19937& rng, std::uniform_real_distribution<float>& dist);
 
 bool FindClosestHit(const Ray& ray, const Scene& scene, const Camera& camera, HitRecord& closestHit) noexcept;
 
@@ -54,11 +54,12 @@ float IntersectSphere(const Ray& ray, const Vertex& center, float radius, float 
 float IntersectsPlane(const Ray& ray, const Vec3f& normal, float plane_d, float minT) noexcept;
 Vec3f FindNormal_Sphere(const Vertex& center, const Vec3f& point, float radius) noexcept;
 
-Vec3f ApplyShading(const Ray& ray, const Scene& scene, const Camera& camera, const HitRecord& closestHit);
+Vec3f ApplyShading(const Ray& ray, const Scene& scene, const Camera& camera, const HitRecord& closestHit, std::mt19937& rng, std::uniform_real_distribution<float>& dist);
 float Fresnel_Dielectric(float cosTheta, float cosPhi, float n1, float n2) noexcept;
 float Fresnel_Conductor(float cosTheta, float refractionIndex, float absorptionIndex) noexcept;
 bool InShadow(const Vec3f& point, const PointLight& I, const Vec3f& n, float eps_shadow, const Scene& scene, float time) noexcept;
 Vec3f ComputeDiffuseAndSpecular(const Vec3f& origin, const Material& material, const PointLight& light, 
     const Vec3f& point, const Vec3f& normal, const Vec3f& w0) noexcept;
+void CreateOrthonormalBasis(const Vec3f& n, Vec3f& tangent, Vec3f& bitangent);
 
 #endif // RAYTRACER_H

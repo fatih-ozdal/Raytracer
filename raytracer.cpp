@@ -72,7 +72,7 @@ int main(int argc, char* argv[])
                                     jitter_x, jitter_y, 
                                     aperture_u, aperture_v, 
                                     time);
-                    Vec3f sample_color = ComputeColor(ray, scene, camera);
+                    Vec3f sample_color = ComputeColor(ray, scene, camera, rng, dist);
                     
                     color_sum = color_sum + sample_color;
                 }
@@ -379,7 +379,7 @@ Ray ComputeRay(const Scene& scene, const Camera& camera, int j, int i, float jit
 
 // ============== COLOR COMPUTATION ==============
 
-Vec3f ComputeColor(const Ray& ray, const Scene& scene, const Camera& camera) 
+Vec3f ComputeColor(const Ray& ray, const Scene& scene, const Camera& camera, std::mt19937& rng, std::uniform_real_distribution<float>& dist) 
 {
     if (ray.depth > scene.max_recursion_depth) {
         return Vec3f(0, 0, 0);
@@ -388,7 +388,7 @@ Vec3f ComputeColor(const Ray& ray, const Scene& scene, const Camera& camera)
     HitRecord closestHit;
     if (FindClosestHit(ray, scene, camera, closestHit))
     {
-        return ApplyShading(ray, scene, camera, closestHit);
+        return ApplyShading(ray, scene, camera, closestHit, rng, dist);
     }
     else if (ray.depth == 0)
     {
@@ -1245,7 +1245,7 @@ bool InShadow(const Vec3f& point, const PointLight& I, const Vec3f& n, float eps
 
 // ============== SHADING ==============
 
-Vec3f ApplyShading(const Ray& ray, const Scene& scene, const Camera& camera, const HitRecord& closestHit)
+Vec3f ApplyShading(const Ray& ray, const Scene& scene, const Camera& camera, const HitRecord& closestHit, std::mt19937& rng, std::uniform_real_distribution<float>& dist)
 {
     Material mat = scene.materials[closestHit.materialId - 1];
     Vec3f color = Vec3f(0, 0, 0);
@@ -1277,7 +1277,7 @@ Vec3f ApplyShading(const Ray& ray, const Scene& scene, const Camera& camera, con
         reflectionRay.direction = wr;
         reflectionRay.depth = ray.depth + 1;
         reflectionRay.time = ray.time;
-        color = color + mat.mirror_refl.elwiseMult(ComputeColor(reflectionRay, scene, camera));
+        color = color + mat.mirror_refl.elwiseMult(ComputeColor(reflectionRay, scene, camera, rng, dist));
     }
     else if (mat.type == MaterialType::Conductor)
     {
@@ -1291,7 +1291,7 @@ Vec3f ApplyShading(const Ray& ray, const Scene& scene, const Camera& camera, con
         float cosTheta = w0.dotProduct(n_shading);
         float Fresnel_r = Fresnel_Conductor(cosTheta, mat.refraction_index, mat.absorption_index);
 
-        Vec3f reflectColor = mat.mirror_refl.elwiseMult(ComputeColor(reflectionRay, scene, camera));
+        Vec3f reflectColor = mat.mirror_refl.elwiseMult(ComputeColor(reflectionRay, scene, camera, rng, dist));
         color = color + reflectColor * Fresnel_r;
     }
     else if (mat.type == MaterialType::Dielectric)
@@ -1319,7 +1319,7 @@ Vec3f ApplyShading(const Ray& ray, const Scene& scene, const Camera& camera, con
             reflectionRay.direction = wr;
             reflectionRay.depth = ray.depth + 1;
             reflectionRay.time = ray.time;
-            color = color + mat.mirror_refl.elwiseMult(ComputeColor(reflectionRay, scene, camera));
+            color = color + mat.mirror_refl.elwiseMult(ComputeColor(reflectionRay, scene, camera, rng, dist));
         }
         else {
             float cosThetaT = std::sqrt(1.0f - sin2ThetaT);
@@ -1331,7 +1331,7 @@ Vec3f ApplyShading(const Ray& ray, const Scene& scene, const Camera& camera, con
             reflectionRay.direction = wr;
             reflectionRay.depth = ray.depth + 1;
             reflectionRay.time = ray.time;
-            Vec3f reflectColor = mat.mirror_refl.elwiseMult(ComputeColor(reflectionRay, scene, camera));
+            Vec3f reflectColor = mat.mirror_refl.elwiseMult(ComputeColor(reflectionRay, scene, camera, rng, dist));
             
             Vec3f wt = ((w0_local * -1.0f) * eta + normal * (eta * cosThetaI - cosThetaT)).normalize();
             Ray refractionRay;
@@ -1339,7 +1339,7 @@ Vec3f ApplyShading(const Ray& ray, const Scene& scene, const Camera& camera, con
             refractionRay.direction = wt;
             refractionRay.depth = ray.depth + 1;
             refractionRay.time = ray.time;
-            Vec3f refractColor = ComputeColor(refractionRay, scene, camera);
+            Vec3f refractColor = ComputeColor(refractionRay, scene, camera, rng, dist);
             
             if (!entering) {
                 float d = (x - ray.origin).length();
@@ -1363,6 +1363,62 @@ Vec3f ApplyShading(const Ray& ray, const Scene& scene, const Camera& camera, con
         if (!InShadow(x, point_light, n_shading, eps_shift, scene, ray.time))
         {
             color = color + ComputeDiffuseAndSpecular(ray.origin, mat, point_light, closestHit.intersectionPoint, n_shading, w0);
+        }
+    }
+
+    for (const auto& area_light : scene.area_lights)
+    {
+        // Sample random point on area light square
+        float u = (dist(rng) - 0.5f) * area_light.size;  // [-size/2, size/2]
+        float v = (dist(rng) - 0.5f) * area_light.size;
+        
+        // Create orthonormal basis for area light
+        Vec3f n_light = area_light.normal;
+        Vec3f tangent, bitangent;
+        CreateOrthonormalBasis(n_light, tangent, bitangent);
+        
+        Vec3f light_sample_point = area_light.position + tangent * u + bitangent * v;
+        Vec3f to_light = light_sample_point - x;
+        float dist_to_light = to_light.length();
+        Vec3f wi = to_light / dist_to_light;  // Normalized direction to light
+        
+        // Check visibility with shadow ray
+        Ray shadow_ray;
+        shadow_ray.origin = x + n_shading * eps_shift;
+        shadow_ray.direction = wi;
+        shadow_ray.depth = 0;
+        shadow_ray.time = ray.time;
+        
+        // Check if shadow ray hits anything before reaching the light
+        HitRecord shadow_hit;
+        bool in_shadow = false;
+        if (FindClosestHit(shadow_ray, scene, camera, shadow_hit)) {
+            float dist_to_hit = (shadow_hit.intersectionPoint - shadow_ray.origin).length();
+            if (dist_to_hit < dist_to_light - eps_shift) {
+                in_shadow = true;
+            }
+        }
+        
+        if (!in_shadow) {
+            // Compute solid angle (from PDF: dω = A * (n_l · w_i) / d²)
+            float cos_light = std::max(0.0f, area_light.normal.dotProduct(wi * -1.0f));
+            float area = area_light.size * area_light.size;
+            float solid_angle = (area * cos_light) / (dist_to_light * dist_to_light);
+            
+            // Irradiance = Radiance × solid_angle
+            Vec3f irradiance = area_light.radiance * solid_angle;
+            
+            // Diffuse component
+            float cos_theta = std::max(0.0f, n_shading.dotProduct(wi));
+            Vec3f diffuse = mat.diffuse_refl.elwiseMult(irradiance) * cos_theta;
+            
+            // Specular component (Blinn-Phong)
+            Vec3f h = (wi + w0).normalize();
+            float cos_alpha = std::max(0.0f, n_shading.dotProduct(h));
+            float spec_factor = std::pow(cos_alpha, mat.phong_exponent);
+            Vec3f specular = mat.specular_refl.elwiseMult(irradiance) * spec_factor;
+            
+            color = color + diffuse + specular;
         }
     }
 
@@ -1430,4 +1486,21 @@ Vec3f ComputeDiffuseAndSpecular(const Vec3f& origin, const Material& material, c
     Vec3f specularTerm = (material.specular_refl * std::pow(cos_alpha, material.phong_exponent)).elwiseMult(irradiance);
 
     return diffuseTerm + specularTerm;
+}
+
+void CreateOrthonormalBasis(const Vec3f& n, Vec3f& tangent, Vec3f& bitangent)
+{
+    // Find the component with minimum absolute value
+    Vec3f helper;
+    if (std::abs(n.x) < std::abs(n.y) && std::abs(n.x) < std::abs(n.z)) {
+        helper = Vec3f(1.0f, 0.0f, 0.0f);
+    } else if (std::abs(n.y) < std::abs(n.z)) {
+        helper = Vec3f(0.0f, 1.0f, 0.0f);
+    } else {
+        helper = Vec3f(0.0f, 0.0f, 1.0f);
+    }
+    
+    // Create orthonormal basis
+    tangent = n.crossProduct(helper).normalize();
+    bitangent = n.crossProduct(tangent);  // Already normalized if n and tangent are normalized
 }
