@@ -426,8 +426,83 @@ for (const auto& area_light : scene.area_lights)
 |------------------|----------------------------|
 | ![no_dof](my_outputs/arealight_example/cornellbox_area_nostr.png) | ![with_dof](my_outputs/arealight_example/cornellbox_area.png) |
 
-## Glossy Reflections
-TODO
+## ✨ Glossy Reflections: Imperfect Mirrors
+
+Perfect mirrors don't exist in nature. Real metallic surfaces - brushed aluminum, steel, even polished metal - have microscopic imperfections that scatter reflected light slightly.
+
+This is **roughness**, and it's what separates a chrome ball from brushed metal.
+
+### The Concept
+
+Instead of reflecting rays in the perfect mirror direction, we perturb the reflection direction slightly based on a **roughness parameter**:
+
+For each sample, we add a random offset to the perfect reflection direction. More roughness = larger random offset. Averaging many samples creates the blurred reflection effect.
+
+### Implementation
+
+**Material Roughness:**
+```cpp
+struct Material {
+    // ... existing fields ...
+    float roughness;  // 0 = perfect, higher = rougher
+};
+```
+
+**Perturbing the Reflection:**
+```cpp
+Vec3f PerturbReflection(const Vec3f& perfect_reflection, float roughness,
+                        std::mt19937& rng, 
+                        std::uniform_real_distribution<float>& dist)
+{
+    if (roughness <= 0.0f) {
+        return perfect_reflection;  // No perturbation
+    }
+    
+    // Create orthonormal basis around perfect reflection
+    Vec3f r = perfect_reflection;
+    Vec3f u, v;
+    CreateOrthonormalBasis(r, u, v);
+    
+    // Generate random offsets centered at 0
+    float xi1 = dist(rng);  // [0, 1)
+    float xi2 = dist(rng);
+    
+    // Perturb: r' = normalize(r + roughness * ((ξ₁ - 0.5)*u + (ξ₂ - 0.5)*v))
+    Vec3f r_perturbed = r + u * (roughness * (xi1 - 0.5f)) 
+                          + v * (roughness * (xi2 - 0.5f));
+    
+    return r_perturbed.normalize();
+}
+```
+
+**Applying to Materials:**
+
+In shading code, whenever we compute a reflection (or refraction) ray:
+```cpp
+// Compute perfect reflection
+Vec3f wr_perfect = (normal * 2.0f * normal.dot(wo) - wo).normalize();
+
+// Apply roughness perturbation
+Vec3f wr = PerturbReflection(wr_perfect, material.roughness, rng, dist);
+
+// Trace reflection ray with perturbed direction
+Ray reflection_ray;
+reflection_ray.origin = intersection_point + normal * epsilon;
+reflection_ray.direction = wr;
+reflection_ray.depth = ray.depth + 1;
+reflection_ray.time = ray.time;  // Inherit time
+
+Vec3f reflection_color = ComputeColor(reflection_ray, scene, camera);
+```
+
+**Why it works:** Each sample perturbs the reflection slightly differently. Averaging them blurs the reflection, simulating light scattering from a rough surface.
+
+### Results
+
+| Before Glossy Reflections | After Glossy Reflections |
+|------------------|----------------------------|
+| ![no_gloss](my_outputs/roughness_example/cornellbox_no_roughness.png) | ![with_gloss](my_outputs/roughness_example/cornellbox_brushed_metal.png) |
+
 
 ## ⏱️ Render Times & Output Gallery
 
@@ -440,6 +515,7 @@ TODO
 
 ### 2) Cornell Box Dynamic
 **Render Time:** 24.041s
+
 I couldn't figure out whats the problem with this scene.
 
 ![cornellbox_boxes_dynamic](my_outputs/cornellbox_boxes_dynamic.png)
@@ -525,12 +601,18 @@ Broken dielectric #4. Darker glass.
 ---
 
 ### 12) Tap Water
-**Render Time:** 14.3 Billion Years
+**Render Time:** 71m 54.995s
 
-TODO
+Broken dielectric #5. Darker water.
+
+![tap_water](my_outputs/tap_water.gif)
 
 ---
 
-## Conclusion 
+## ✅ Conclusion
 
-TODO
+This homework taught me a counterintuitive lesson: **randomness creates realism**. Multiple rays with random jitter smooth edges. Random times blur motion. Random aperture positions create depth of field. Random light samples soften shadows. Random reflection/refraction directions roughen materials.
+
+The implementation was straightforward - add random number generation, send multiple samples, average the results. But the results? Transformative. My ray tracer went from producing clean but synthetic images to creating scenes that actually look *real*. There's still work to do (dielectrics render darker than expected), but the core goal is achieved: **Realism through randomness**. 🎲✨
+
+Next up: texture mapping. Time to add actual detail to surfaces instead of just solid colors.
