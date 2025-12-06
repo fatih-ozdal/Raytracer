@@ -28,6 +28,7 @@ Let's see how random numbers make realistic images.
 - **Depth of Field**: Aperture sampling for camera focus effects
 - **Area Lights**: Spatial sampling for soft shadows
 - **Glossy Reflections**: Perturbed reflections for rough surfaces
+- **Bug Fixes**: Resolve issues from previous homeworks
 
 ## 📐 Multisampling: The Foundation
 
@@ -503,6 +504,63 @@ Vec3f reflection_color = ComputeColor(reflection_ray, scene, camera);
 |------------------|----------------------------|
 | ![no_gloss](my_outputs/roughness_example/cornellbox_no_roughness.png) | ![with_gloss](my_outputs/roughness_example/cornellbox_brushed_metal.png) |
 
+## 🔧 Bug Fixes from Previous Homeworks
+While implementing these features, I also fixed a few lingering bugs from HW2 that were causing incorrect renders in certain scenes.
+
+### Bug 1: Shadow Ray Transform Issue
+
+**Problem:** In scenes with transformed meshes (berserker.json), shadows were appearing incorrectly. The issue was that when transforming a ray to object space, I was transforming the ray's origin and direction but **not** the `minT` parameter used for shadow ray intersection tests.
+
+**Root cause:** When a transformation includes scaling, the length of the transformed direction vector changes. A distance of `d` in world space becomes `d * scale` in object space. Shadow rays need to check if there's an occluder within a specific distance, so `minT` must be scaled accordingly.
+
+**Fix:**
+```cpp
+if (mesh.hasTransform) {
+    // Transform ray to object space
+    testRay.origin = mesh.invTransformation.transformPoint(ray.origin);
+    testRay.direction = mesh.invTransformation.transformVector(ray.direction).normalize();
+    
+    // Transform minT to object space as well
+    Vec3f worldDir = ray.direction;
+    Vec3f objDir = mesh.invTransformation.transformVector(worldDir);
+    float scale = objDir.length();  // Scale factor from transform
+    testMinT = minT * scale;
+}
+```
+| Before (Broken Shadows) | After (Fixed partly) |
+|-------------------------|---------------|
+| ![berserker_before](my_outputs/from_hw2/two_berserkers_(old).png) | ![berserker_after](my_outputs/from_hw2/two_berserkers.png) |
+
+**Note on two_berserkers.json:** You can still see some cracks/artifacts in their armor. Still investigating.
+
+### Bug 2: Missing Reference Parameter
+
+**Problem:** Multiple scenes (dragon_dynamic.json, plates.json, david.json) were rendering incorrectly - missing reflections, wrong materials applied, circular artifacts.
+
+**Root cause:** The `closestMeshId` parameter in `IntersectTopBVH` was passed by value instead of by reference. When the function found the closest mesh and updated `closestMeshId`, the change wasn't propagating back to the caller. This meant the shading code didn't know which mesh was actually hit. Which caused some undefined behaviour.
+
+**Fix:**
+```cpp
+void IntersectTopBVH(const Ray& ray, const Scene& scene, float& minT, bool& has_intersected,
+                     PrimKind& closestType, int& closestMatId, int& index,
+                     Face& hitTriFace, Sphere& closestSphere, Triangle& closestTriangle,
+                     int& closestMeshId,  // Added & here!
+                     float& bary_beta, float& bary_gamma) noexcept
+```
+
+One missing `&` symbol, three broken scenes:
+
+| Scene | Before (Broken) | After (Fixed) |
+|-------|-----------------|---------------|
+| dragon_metal | ![dragon_before](my_outputs/from_hw2/dragon_metal_(old).png) | ![dragon_after](my_outputs/from_hw2/dragon_metal.png) |
+| metal_glass_plates | ![plates_before](my_outputs/from_hw2/metal_glass_plates_(old).png) | ![plates_after](my_outputs/from_hw2/metal_glass_plates.png) |
+| glaring_davids | ![david_before](my_outputs/from_hw2/glaring_davids_(old).png) | ![david_after](my_outputs/from_hw2/glaring_davids.png) |
+
+Sometimes the smallest bugs cause the biggest headaches. 🐛
+
+**Note on metal_glass_plates.json:** The left plate still has a circular artifact. This plate is dielectric (glass), and as mentioned earlier, my dielectric implementation has some issues. This will be addressed in future work.
+
+---
 
 ## ⏱️ Render Times & Output Gallery
 
@@ -555,7 +613,7 @@ Broken dielectric #1. Darker dragon.
 ### 7) Metal Glass Plates
 **Render Time:** 22.865s
 
-Broken dielectric #2. Random ahh circle
+Broken dielectric #2. Random circle still there
 
 ![metal_glass_plates](my_outputs/metal_glass_plates.png)
 
