@@ -558,9 +558,9 @@ One missing `&` symbol, three broken scenes:
 
 Sometimes the smallest bugs cause the biggest headaches. 🐛
 
-**Note on metal_glass_plates.json:** The left plate still has a circular artifact. This plate is dielectric (glass), and as mentioned earlier, my dielectric implementation has some issues. This will be addressed in future work.
+**Note on metal_glass_plates:** The left plate still has a circular artifact. This plate is dielectric (glass), and as mentioned earlier, my dielectric implementation has some issues. This will be addressed in future work.
 
----
+**Note on davids_zoom and mirror_room:** These scenes still render incorrectly.
 
 ## ⏱️ Render Times & Output Gallery
 
