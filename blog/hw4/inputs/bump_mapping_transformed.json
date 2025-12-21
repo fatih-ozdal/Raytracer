@@ -1,0 +1,153 @@
+{
+  "Scene": {
+    "MaxRecursionDepth": "6",
+    "BackgroundColor": "0 0 0",
+    "Cameras": {
+      "Camera": {
+        "_id": "1",
+        "Position": "0 5 225",
+        "Gaze": "0 0 -1",
+        "Up": "0 1 0",
+        "NearPlane": "-1 1 -1 1",
+        "NearDistance": "10",
+        "ImageResolution": "800 800",
+        "NumSamples": "1",
+        "ImageName": "bump_mapping_transformed.png"
+      }
+    },
+    "Lights": {
+      "AmbientLight": "25 25 25",
+      "PointLight": [
+        {
+          "_id": "1",
+          "Position": "20 20 20",
+          "Intensity": "100000 100000 100000"
+        },
+        {
+          "_id": "2",
+          "Position": "-15 30 5",
+          "Intensity": "100000 100000 100000"
+        },
+        {
+          "_id": "3",
+          "Position": "-15 20 50",
+          "Intensity": "100000 100000 100000"
+        }
+      ]
+    },
+    "Materials": {
+      "Material": [
+        {
+          "_id": "1",
+          "AmbientReflectance": "1 1 1",
+          "DiffuseReflectance": "1 1 1",
+          "SpecularReflectance": "0 0 0",
+          "PhongExponent": "1"
+        },
+        {
+          "_id": "2",
+          "AmbientReflectance": "1 1 1",
+          "DiffuseReflectance": "1 0 0",
+          "SpecularReflectance": "1 1 1",
+          "PhongExponent": "100"
+        }
+      ]
+    },
+    "Textures": {
+      "Images": {
+        "Image": [
+          {
+            "_data": "textures/leather.jpg",
+            "_id": "1"
+          },
+          {
+            "_data": "textures/cobblestone.jpg",
+            "_id": "2"
+          }
+        ]
+      },
+      "TextureMap": [
+        {
+          "_id": "1",
+          "_type": "image",
+          "ImageId": "1",
+          "Interpolation": "bilinear",
+          "DecalMode": "replace_kd",
+          "Normalizer": "255"
+        },
+        {
+          "_id": "2",
+          "_type": "image",
+          "ImageId": "2",
+          "Interpolation": "bilinear",
+          "DecalMode": "replace_kd",
+          "Normalizer": "255"
+        },
+        {
+          "_id": "3",
+          "_type": "image",
+          "ImageId": "1",
+          "DecalMode": "bump_normal",
+          "BumpFactor": "1"
+        },
+        {
+          "_id": "4",
+          "_type": "image",
+          "ImageId": "2",
+          "DecalMode": "bump_normal",
+          "BumpFactor": "3"
+        }
+      ]
+    },
+    "Transformations": {
+      "Rotation": [
+        {
+          "_data": "45 1.0 0.0 0.0",
+          "_id": "1"
+        },
+        {
+          "_data": "90 1.0 0.0 0.0",
+          "_id": "2"
+        }
+      ],
+      "Scaling": [
+        {
+          "_data": "-0.05 0.05 0.05",
+          "_id": "1"
+        },
+        {
+          "_data": "-1.5 1 1",
+          "_id": "2"
+        }
+      ]
+    },
+    "VertexData": {
+      "_data": "-1000 0 1000 1000 0 1000 1000 0 -1000 -1000 0 -1000 0 10 0",
+      "_type": "xyz"
+    },
+    "TexCoordData": {
+      "_data": "0 1 1 1 1 0 0 0",
+      "_type": "uv"
+    },
+    "Objects": {
+      "Mesh": {
+        "_id": "1",
+        "Material": "1",
+        "Textures": "2 4",
+        "Transformations": "s1 r1",
+        "Faces": {
+          "_data": "3 1 2 1 3 4",
+          "_type": "triangle"
+        }
+      },
+      "Sphere": {
+        "_id": "1",
+        "Material": "2",
+        "Textures": "1 3",
+        "Transformations": "s2",
+        "Center": "5",
+        "Radius": "10"
+      }
+    }
+  }
+}
