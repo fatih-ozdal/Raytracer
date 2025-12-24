@@ -247,7 +247,7 @@ Note: I didn't implement trilinear interpolation yet so this is just bilinear.
 
 As you can see from the comparisons above, many of my renders have subtle (and not-so-subtle) differences from the expected outputs. The logic is there - I've implemented UV mapping, Perlin noise, bilinear interpolation, and the various decal modes - but something isn't clicking into place correctly.
 
-The frustrating part? The code *looks* right to me. I've gone through the formulas multiple times, compared them with the lecture slides, and yet the results don't match. This is the classic debugging nightmare: when your logic seems correct but the output says otherwise.
+The frustrating part? The code *looks* right to me. I've gone through the formulas multiple times, compared them with the lecture slides, and yet the results don't match - or worse, the textures simply don't render at all. This is the classic debugging nightmare: when your logic seems correct but the output says otherwise.
 
 **What I learned this stage:** Start early. Debugging visual artifacts in a ray tracer is time-consuming because you often can't find step through with a debugger - you need to render, compare, tweak and repeat. 
 
