@@ -1545,10 +1545,22 @@ Vec2f ComputeUV(const HitRecord& hit, const Scene& scene) {
     switch (hit.kind) {
         case PrimKind::Sphere: {
             const Sphere& sphere = scene.spheres[hit.primId];
-            Vec3f center = scene.vertex_data[sphere.center_vertex_id - 1].pos;
-            Vec3f local = hit.intersectionPoint - center;
             
-            float theta = acos(local.y / sphere.radius);
+            // Hit point'i object space'e transform et
+            Vec3f hitLocalSpace = hit.intersectionPoint;
+            
+            if (sphere.hasTransform) {
+                // World space → Object space
+                Vec3f pLocal = sphere.invTransformation.transformPoint(hitLocalSpace);
+                hitLocalSpace = Vec3f(pLocal.x, pLocal.y, pLocal.z);
+            }
+            
+            // Object space'de center ve local coordinates
+            Vec3f center = scene.vertex_data[sphere.center_vertex_id - 1].pos;
+            Vec3f local = (hitLocalSpace - center) / sphere.radius;  // Normalize
+            
+            // Parametric coordinates
+            float theta = acos(clampF(local.y, -1.0f, 1.0f));
             float phi = atan2(local.z, local.x);
             
             float u = (-phi + M_PI) / (2.0f * M_PI);
