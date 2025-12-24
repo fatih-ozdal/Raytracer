@@ -320,7 +320,7 @@ float PerlinNoiseMap::fadeWeight(float d) const {
 
 CheckerboardMap::CheckerboardMap(int id, DecalMode mode)
     : TextureMap(id, mode), offset(0.0f), scale(1.0f),
-      black_color(0, 0, 0), white_color(255, 255, 255) {}
+      black_color(0, 0, 0), white_color(1, 1, 1) {}
 
 Vec3f CheckerboardMap::getValuePos(const Vec3f& pos) const {
     // Apply offset and scale
