@@ -1,6 +1,6 @@
 CXX = g++
 
-CXXFLAGS = -std=c++14 -Iinclude -fno-trapping-math -fno-math-errno
+CXXFLAGS = -std=c++17 -Iinclude -fno-trapping-math -fno-math-errno
 SRC = $(wildcard *.cpp)
 TARGET = raytracer
 
@@ -10,7 +10,7 @@ $(TARGET): $(SRC)
 	$(CXX) $(CXXFLAGS) -fopenmp -O3 $(SRC) -o $(TARGET)
 
 debug: $(SRC)
-	$(CXX) $(CXXFLAGS) -g -O0 $(SRC) -o $(TARGET)
+	$(CXX) $(CXXFLAGS) -g -Og $(SRC) -o $(TARGET)
 
 clean:
 	rm -f $(TARGET) $(TARGET).exe
