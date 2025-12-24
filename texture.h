@@ -93,7 +93,7 @@ public:
     int image_id;
     InterpolationMode interpolation;
     float bump_factor;  // for DecalMode::BumpNormal
-    int normalizer;
+    float normalizer;
     
     ImageTextureMap(int id, DecalMode mode);
     

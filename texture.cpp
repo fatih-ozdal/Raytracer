@@ -165,7 +165,7 @@ Vec3f ImageData::getPixel(int x, int y) const {
 
 ImageTextureMap::ImageTextureMap(int id, DecalMode mode)
     : TextureMap(id, mode), image_id(-1), 
-      interpolation(InterpolationMode::Bilinear),
+      interpolation(InterpolationMode::Nearest),
       bump_factor(1.0f), normalizer(255) {}
 
 Vec3f ImageTextureMap::getValueUV(float u, float v, const std::vector<ImageData>& images) const 
