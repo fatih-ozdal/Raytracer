@@ -8,6 +8,7 @@
 #include "Vec3f.h"
 #include "Aabb.h"
 #include "Mat4f.h"
+#include "Vec2f.h"
 
 using json = nlohmann::json;
 using std::vector;
@@ -78,8 +79,9 @@ struct Material
 
 struct Vertex 
 {
-    Vec3f pos;          // position
-    Vec3f normal;       // per-vertex shading normal (optional)
+    Vec3f pos;          // 3D position
+    Vec3f normal;       // Per-vertex shading normal (optional)
+    Vec2f uv;           // Texture coordinates (optional)
 };
 
 struct Face
