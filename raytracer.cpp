@@ -539,6 +539,12 @@ bool FindClosestHit(const Ray& ray, const Scene& scene, const Camera& camera, Hi
     closestHit.intersectionPoint = hit_x;
     closestHit.normal = normal;
     closestHit.kind = closestType;
+
+    closestHit.beta = bary_beta;
+    closestHit.gamma = bary_gamma;
+    closestHit.hitFace = hitTriFace;
+    closestHit.meshId = closestMeshId;
+    closestHit.primId = index;
     
     return true;
 }
@@ -1266,8 +1272,57 @@ bool InShadow(const Vec3f& point, const PointLight& I, const Vec3f& n, float eps
 
 Vec3f ApplyShading(const Ray& ray, const Scene& scene, const Camera& camera, const HitRecord& closestHit, std::mt19937& rng, std::uniform_real_distribution<float>& dist)
 {
-    Material mat = scene.materials[closestHit.materialId - 1];
     Vec3f color = Vec3f(0, 0, 0);
+    Material mat = scene.materials[closestHit.materialId - 1];
+
+    // Check For Textures
+    Vec2f uv = ComputeUV(closestHit, scene);
+    const std::vector<int>* textureIds = GetTextureIds(closestHit, scene);
+
+    if (textureIds && !textureIds->empty()) {
+        for (int texId : *textureIds) {
+            if (texId < 0 || texId >= scene.texture_maps.size()) continue;
+            
+            TextureMap* tex = scene.texture_maps[texId].get();
+            Vec3f texValue;
+            
+            // Get texture value
+            if (tex->needsUV()) {
+                texValue = tex->getValueUV(uv.u, uv.v, scene.image_data);
+            } else {
+                texValue = tex->getValuePos(closestHit.intersectionPoint);
+            }
+            
+            // Apply based on decal mode
+            switch (tex->decal_mode) {
+                case DecalMode::ReplaceKd:
+                    mat.diffuse_refl = texValue;
+                    break;
+                    
+                case DecalMode::BlendKd:
+                    mat.diffuse_refl = (mat.diffuse_refl + texValue) * 0.5f;
+                    break;
+                    
+                case DecalMode::ReplaceKs:
+                    mat.specular_refl = texValue;
+                    break;
+                    
+                case DecalMode::ReplaceAll:
+                    // Early exit - no shading!
+                    // TODO: may return after MaterialType stuff
+                    return texValue;
+                    
+                case DecalMode::BumpNormal:
+                case DecalMode::ReplaceNormal:
+                    // TODO: Handle normal modification (later)
+                    break;
+                    
+                case DecalMode::ReplaceBackground:
+                    // Should not be on objects!
+                    break;
+            }
+        }
+    }
 
     Vec3f n_original = closestHit.normal;
     Vec3f d_inc = ray.direction;
@@ -1452,6 +1507,80 @@ Vec3f ApplyShading(const Ray& ray, const Scene& scene, const Camera& camera, con
     }
 
     return color;
+}
+
+Vec2f ComputeUV(const HitRecord& hit, const Scene& scene) {
+    switch (hit.kind) {
+        case PrimKind::Sphere: {
+            const Sphere& sphere = scene.spheres[hit.primId];
+            Vec3f center = scene.vertex_data[sphere.center_vertex_id - 1].pos;
+            Vec3f local = hit.intersectionPoint - center;
+            
+            float theta = acos(local.y / sphere.radius);
+            float phi = atan2(local.z, local.x);
+            
+            float u = (-phi + M_PI) / (2.0f * M_PI);
+            float v = theta / M_PI;
+            
+            return Vec2f(u, v);
+        }
+        
+        case PrimKind::Triangle: {
+            // Barycentric interpolation
+            const Triangle& tri = scene.triangles[hit.primId];
+            const Vertex& a = scene.vertex_data[tri.face.i0 - 1];
+            const Vertex& b = scene.vertex_data[tri.face.i1 - 1];
+            const Vertex& c = scene.vertex_data[tri.face.i2 - 1];
+            
+            float u = a.uv.u + hit.beta * (b.uv.u - a.uv.u)+ hit.gamma * (c.uv.u - a.uv.u);
+            float v = a.uv.v + hit.beta * (b.uv.v - a.uv.v)+ hit.gamma * (c.uv.v - a.uv.v);
+
+            return Vec2f(u, v);
+        }
+        
+        case PrimKind::Mesh: {
+            // Same as triangle but from mesh
+            const Mesh& mesh = scene.meshes[hit.meshId];
+            const Face& face = hit.hitFace;
+            
+            const Vertex& a = scene.vertex_data[face.i0 - 1];
+            const Vertex& b = scene.vertex_data[face.i1 - 1];
+            const Vertex& c = scene.vertex_data[face.i2 - 1];
+            
+            float u = a.uv.u + hit.beta * (b.uv.u - a.uv.u)+ hit.gamma * (c.uv.u - a.uv.u);
+            float v = a.uv.v + hit.beta * (b.uv.v - a.uv.v)+ hit.gamma * (c.uv.v - a.uv.v);
+
+            return Vec2f(u, v);
+        }
+        
+        default:
+            return Vec2f(0, 0);
+    }
+}
+
+const std::vector<int>* GetTextureIds(const HitRecord& hit, const Scene& scene) {
+    switch (hit.kind) {
+        case PrimKind::Sphere:
+            return &scene.spheres[hit.primId].texture_ids;
+            
+        case PrimKind::Triangle:
+            return &scene.triangles[hit.primId].texture_ids;
+            
+        case PrimKind::Mesh: {
+            const Mesh& mesh = scene.meshes[hit.meshId];
+            if (mesh.isInstance) {
+                int origIdx = scene.meshIdToIndex.at(mesh.originalMeshId);
+                return &scene.meshes[origIdx].texture_ids;
+            }
+            return &mesh.texture_ids;
+        }
+        
+        case PrimKind::Plane:
+            return &scene.planes[hit.primId].texture_ids;
+            
+        default:
+            return nullptr;
+    }
 }
 
 Vec3f PerturbReflection(const Vec3f& perfect_reflection, float roughness,

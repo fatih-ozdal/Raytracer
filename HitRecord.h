@@ -28,6 +28,11 @@ struct HitRecord
     Vec3f intersectionPoint;
     Vec3f normal;
     PrimKind kind;
+
+    float beta, gamma;
+    int primId;
+    int meshId;
+    Face hitFace;
 };
 
 #endif // HITRECORD_H
