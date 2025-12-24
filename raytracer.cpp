@@ -350,6 +350,9 @@ Ray ComputeRay(const Scene& scene, const Camera& camera, int j, int i, float jit
     ray.depth = 0;
     ray.time = time;
 
+    ray.pixel_i = i;
+    ray.pixel_j = j;
+
     if (!camera.has_depth_of_field) { // Pinhole camera (no DOF)
         ray.origin = camera.position;
         ray.direction = (sample_point - camera.position).normalize();
@@ -390,9 +393,25 @@ Vec3f ComputeColor(const Ray& ray, const Scene& scene, const Camera& camera, std
     {
         return ApplyShading(ray, scene, camera, closestHit, rng, dist);
     }
-    else if (ray.depth == 0)
+    else if (ray.depth == 0) // Background texture or color
     {
-        return scene.background_color;
+        if (scene.background_texture_id >= 0) {
+            TextureMap* bgTex = scene.texture_maps[scene.background_texture_id].get();
+            
+            if (bgTex->needsUV()) {
+                // Use pixel coordinates from ray
+                float u = (float)ray.pixel_j / (float)camera.image_width;
+                float v = (float)ray.pixel_i / (float)camera.image_height;
+                
+                return bgTex->getValueUV(u, v, scene.image_data);
+            } else {
+                // Procedural: use ray direction
+                return bgTex->getValuePos(ray.direction);
+            }
+        }
+        else {
+            return scene.background_color;
+        }
     }
     else
     {

@@ -17,8 +17,10 @@ struct Ray {
     Vec3f direction; // should be normalized
     int depth;
     float time;
-};
 
+    int pixel_i;
+    int pixel_j;
+};
 
 void BuildTopLevelBVH(const Scene& scene);
 void MakeTopLevelPrimsArray(const Scene& scene);
