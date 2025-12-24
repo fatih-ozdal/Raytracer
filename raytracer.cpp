@@ -1293,21 +1293,23 @@ Vec3f ApplyShading(const Ray& ray, const Scene& scene, const Camera& camera, con
     Vec2f uv = ComputeUV(closestHit, scene);
     const std::vector<int>* textureIds = GetTextureIds(closestHit, scene);
 
+    Vec3f T, B;
+    bool tangentBasisComputed = false;
+    Vec3f n_original = closestHit.normal;
+
     if (textureIds && !textureIds->empty()) {
         for (int texId : *textureIds) {
-            if (texId < 0 || texId >= scene.texture_maps.size()) continue;
+            if (texId < 0 || texId >= (int)scene.texture_maps.size()) continue;
             
             TextureMap* tex = scene.texture_maps[texId].get();
             Vec3f texValue;
             
-            // Get texture value
             if (tex->needsUV()) {
                 texValue = tex->getValueUV(uv.u, uv.v, scene.image_data);
             } else {
                 texValue = tex->getValuePos(closestHit.intersectionPoint);
             }
             
-            // Apply based on decal mode
             switch (tex->decal_mode) {
                 case DecalMode::ReplaceKd:
                     mat.diffuse_refl = texValue;
@@ -1322,26 +1324,42 @@ Vec3f ApplyShading(const Ray& ray, const Scene& scene, const Camera& camera, con
                     break;
                     
                 case DecalMode::ReplaceAll:
-                    // Early exit - no shading!
-                    // TODO: may return after MaterialType stuff
                     return texValue;
                     
-                case DecalMode::BumpNormal:
-                case DecalMode::ReplaceNormal:
-                    // TODO: Handle normal modification (later)
+                case DecalMode::ReplaceNormal: {
+                    // NORMAL MAPPING
+                    if (!tangentBasisComputed) {
+                        ComputeTangentBasis(closestHit, scene, T, B, n_original);
+                        tangentBasisComputed = true;
+                    }
+                    n_original = ApplyNormalMap(texValue, T, B, n_original);
                     break;
+                }
+                    
+                case DecalMode::BumpNormal: {
+                    // BUMP MAPPING
+                    if (!tangentBasisComputed) {
+                        ComputeTangentBasis(closestHit, scene, T, B, n_original);
+                        tangentBasisComputed = true;
+                    }
+                    
+                    const PerlinNoiseMap* perlinTex = dynamic_cast<const PerlinNoiseMap*>(tex);
+                    if (perlinTex) {
+                        n_original = ApplyPerlinBumpMap(closestHit, perlinTex, n_original, perlinTex->bump_factor);
+                    } else {
+                        n_original = ApplyBumpMap(closestHit, scene, tex, T, B, n_original, uv);
+                    }
+                    break;
+                }
                     
                 case DecalMode::ReplaceBackground:
-                    // Should not be on objects!
                     break;
             }
         }
     }
 
-    Vec3f n_original = closestHit.normal;
-    Vec3f d_inc = ray.direction;
-
     Vec3f n_shading = n_original;
+    Vec3f d_inc = ray.direction;
 
     if (n_original.dotProduct(d_inc) < 0.0f)
     {
@@ -1583,8 +1601,7 @@ const std::vector<int>* GetTextureIds(const HitRecord& hit, const Scene& scene) 
         case PrimKind::Mesh: {
             const Mesh& mesh = scene.meshes[hit.meshId];
             if (mesh.isInstance) {
-                int origIdx = scene.meshIdToIndex.at(mesh.originalMeshId);
-                return &scene.meshes[origIdx].texture_ids;
+                return &scene.meshes[mesh.originalMeshId].texture_ids;
             }
             return &mesh.texture_ids;
         }
@@ -1595,6 +1612,248 @@ const std::vector<int>* GetTextureIds(const HitRecord& hit, const Scene& scene) 
         default:
             return nullptr;
     }
+}
+
+
+void ComputeTangentBasis(const HitRecord& hit, const Scene& scene, Vec3f& T, Vec3f& B, const Vec3f& N)
+{
+    switch (hit.kind) {
+        case PrimKind::Triangle:
+        case PrimKind::Mesh: {
+            // Get vertices and UV coordinates
+            const Face& face = hit.hitFace;
+            const Vertex& v0 = scene.vertex_data[face.i0 - 1];
+            const Vertex& v1 = scene.vertex_data[face.i1 - 1];
+            const Vertex& v2 = scene.vertex_data[face.i2 - 1];
+            
+            // Edge vectors in world space
+            Vec3f E1 = v1.pos - v0.pos;
+            Vec3f E2 = v2.pos - v0.pos;
+            
+            // UV differences
+            float du1 = v1.uv.u - v0.uv.u;
+            float dv1 = v1.uv.v - v0.uv.v;
+            float du2 = v2.uv.u - v0.uv.u;
+            float dv2 = v2.uv.v - v0.uv.v;
+            
+            float det = du1 * dv2 - du2 * dv1;
+            
+            if (std::abs(det) < 1e-8f) {
+                // Degenerate UV mapping - create arbitrary tangent basis
+                CreateOrthonormalBasis(N, T, B);
+                return;
+            }
+            
+            float invDet = 1.0f / det;
+            
+            // From slides:
+            // | T |   1   | dv2  -dv1 | | E1 |
+            // | B | = --- | -du2  du1 | | E2 |
+            //         det
+            T = (E1 * dv2 - E2 * dv1) * invDet;
+            B = (E2 * du1 - E1 * du2) * invDet;
+            
+            // Gram-Schmidt orthogonalization
+            T = (T - N * N.dotProduct(T)).normalize();
+            B = N.crossProduct(T);
+            break;
+        }
+        
+        case PrimKind::Sphere: {
+            // For spheres: compute from spherical parametrization
+            // p(θ,φ) = center + r*(sinθ cosφ, cosθ, sinθ sinφ)
+            // u = (-φ + π) / (2π),  v = θ / π
+            
+            const Sphere& sphere = scene.spheres[hit.primId];
+            Vec3f center = scene.vertex_data[sphere.center_vertex_id - 1].pos;
+            Vec3f local = (hit.intersectionPoint - center) / sphere.radius;
+            
+            float theta = acos(std::clamp(local.y, -1.0f, 1.0f));
+            float phi = atan2(local.z, local.x);
+            
+            float sinTheta = sin(theta);
+            float cosTheta = cos(theta);
+            float sinPhi = sin(phi);
+            float cosPhi = cos(phi);
+            
+            // ∂p/∂φ (tangent in U direction) - note: u is related to -φ
+            // T = r * sinθ * (sinφ, 0, -cosφ) → normalized: (sinφ, 0, -cosφ)
+            T = Vec3f(sinPhi, 0.0f, -cosPhi);
+            
+            // ∂p/∂θ (tangent in V direction)
+            // B = r * (cosθ cosφ, -sinθ, cosθ sinφ) → normalized
+            B = Vec3f(cosTheta * cosPhi, -sinTheta, cosTheta * sinPhi);
+            
+            // Orthonormalize
+            T = (T - N * N.dotProduct(T)).normalize();
+            B = N.crossProduct(T);
+            break;
+        }
+        
+        default:
+            CreateOrthonormalBasis(N, T, B);
+            break;
+    }
+}
+
+// ============== NORMAL MAPPING ==============
+
+Vec3f ApplyNormalMap(const Vec3f& texValue, const Vec3f& T, const Vec3f& B, const Vec3f& N)
+{
+    // texValue is in [0, 1] range (already normalized by /255)
+    // Convert to direction: map [0,1] → [-1,1]
+    Vec3f n_tangent;
+    n_tangent.x = texValue.x * 2.0f - 1.0f;  // R → X
+    n_tangent.y = texValue.y * 2.0f - 1.0f;  // G → Y  
+    n_tangent.z = texValue.z * 2.0f - 1.0f;  // B → Z
+    n_tangent = n_tangent.normalize();
+    
+    // TBN matrix transforms from tangent space to world space
+    // n_world = T * n.x + B * n.y + N * n.z
+    Vec3f n_world = T * n_tangent.x + B * n_tangent.y + N * n_tangent.z;
+    
+    return n_world.normalize();
+}
+
+// ============== BUMP MAPPING (Image Texture) ==============
+
+Vec3f ApplyBumpMap(const HitRecord& hit, const Scene& scene, const TextureMap* tex,
+                   const Vec3f& T, const Vec3f& B, const Vec3f& N, const Vec2f& uv)
+{
+    const ImageTextureMap* imgTex = dynamic_cast<const ImageTextureMap*>(tex);
+    if (!imgTex || imgTex->image_id < 0 || imgTex->image_id >= (int)scene.image_data.size()) {
+        return N;
+    }
+    
+    const ImageData& img = scene.image_data[imgTex->image_id];
+    float bumpFactor = imgTex->bump_factor;
+    
+    // Step sizes for finite differences (in UV space)
+    float du = 1.0f / static_cast<float>(img.width);
+    float dv = 1.0f / static_cast<float>(img.height);
+    
+    // Height function: grayscale value
+    auto getHeight = [&](float u, float v) -> float {
+        Vec3f color = img.sample(u, v, imgTex->interpolation);
+        // Grayscale: (R + G + B) / 3, normalized to [0, 1]
+        return (color.x + color.y + color.z) / (3.0f * 255.0f);
+    };
+    
+    // Sample heights for forward differences
+    float h = getHeight(uv.u, uv.v);
+    float h_u = getHeight(uv.u + du, uv.v);
+    float h_v = getHeight(uv.u, uv.v + dv);
+    
+    // Partial derivatives: ∂h/∂u and ∂h/∂v
+    float dh_du = (h_u - h) / du * bumpFactor;
+    float dh_dv = (h_v - h) / dv * bumpFactor;
+    
+    // Perturbed normal (from slides):
+    // n' = N - ∂h/∂u * T - ∂h/∂v * B
+    Vec3f n_perturbed = N - T * dh_du - B * dh_dv;
+    
+    return n_perturbed.normalize();
+}
+
+// ============== PERLIN NOISE GRADIENT ==============
+
+Vec3f ComputePerlinGradient(const Vec3f& pos, float noiseScale)
+{
+    // Finite differences for gradient computation
+    const float eps = 0.001f;
+    
+    // We need raw Perlin noise values, not the converted [0,1] version
+    // This is a helper that computes turbulence at a point
+    // You may need to expose PerlinNoiseMap::turbulence or compute inline
+    
+    // For now, using central differences with getValuePos
+    // Note: This is approximate since getValuePos applies conversion
+    
+    // Actually, for proper gradient, we need the raw noise before conversion
+    // Let's compute using finite differences on the final value
+    // The conversion is monotonic, so gradient direction is preserved
+    
+    auto sampleNoise = [&](const Vec3f& p) -> float {
+        // Inline Perlin turbulence computation
+        // This should match your PerlinNoiseMap implementation
+        
+        static const Vec3f gradients[16] = {
+            Vec3f(1, 1, 0),   Vec3f(-1, 1, 0),   Vec3f(1, -1, 0),   Vec3f(-1, -1, 0),
+            Vec3f(1, 0, 1),   Vec3f(-1, 0, 1),   Vec3f(1, 0, -1),   Vec3f(-1, 0, -1),
+            Vec3f(0, 1, 1),   Vec3f(0, -1, 1),   Vec3f(0, 1, -1),   Vec3f(0, -1, -1),
+            Vec3f(1, 1, 0),   Vec3f(-1, 1, 0),   Vec3f(0, -1, 1),   Vec3f(0, -1, -1)
+        };
+        
+        // Use your shuffled table here!
+        static const int table[16] = {
+            10, 2, 7, 14, 1, 13, 4, 9, 6, 0, 15, 8, 3, 11, 5, 12
+        };
+        
+        Vec3f scaled = p * noiseScale;
+        
+        int i = static_cast<int>(std::floor(scaled.x));
+        int j = static_cast<int>(std::floor(scaled.y));
+        int k = static_cast<int>(std::floor(scaled.z));
+        
+        float dx = scaled.x - i;
+        float dy = scaled.y - j;
+        float dz = scaled.z - k;
+        
+        auto fadeWeight = [](float d) -> float {
+            float absD = std::abs(d);
+            if (absD >= 1.0f) return 0.0f;
+            return -6*pow(absD,5) + 15*pow(absD,4) - 10*pow(absD,3) + 1;
+        };
+        
+        auto getGradient = [&](int ii, int jj, int kk) -> Vec3f {
+            int idx = table[std::abs(kk) % 16];
+            idx = table[std::abs(jj + idx) % 16];
+            idx = table[std::abs(ii + idx) % 16];
+            return gradients[idx];
+        };
+        
+        float sum = 0.0f;
+        for (int di = 0; di <= 1; di++) {
+            for (int dj = 0; dj <= 1; dj++) {
+                for (int dk = 0; dk <= 1; dk++) {
+                    Vec3f g = getGradient(i + di, j + dj, k + dk);
+                    Vec3f dist(dx - di, dy - dj, dz - dk);
+                    float dot = g.x * dist.x + g.y * dist.y + g.z * dist.z;
+                    float w = fadeWeight(dx - di) * fadeWeight(dy - dj) * fadeWeight(dz - dk);
+                    sum += w * dot;
+                }
+            }
+        }
+        
+        return sum;
+    };
+    
+    // Central differences
+    float gx = (sampleNoise(pos + Vec3f(eps, 0, 0)) - sampleNoise(pos - Vec3f(eps, 0, 0))) / (2.0f * eps);
+    float gy = (sampleNoise(pos + Vec3f(0, eps, 0)) - sampleNoise(pos - Vec3f(0, eps, 0))) / (2.0f * eps);
+    float gz = (sampleNoise(pos + Vec3f(0, 0, eps)) - sampleNoise(pos - Vec3f(0, 0, eps))) / (2.0f * eps);
+    
+    return Vec3f(gx, gy, gz);
+}
+
+// ============== BUMP MAPPING (Perlin Noise) ==============
+
+Vec3f ApplyPerlinBumpMap(const HitRecord& hit, const PerlinNoiseMap* perlinTex, const Vec3f& N, float bumpFactor)
+{
+    Vec3f pos = hit.intersectionPoint;
+    
+    // Compute gradient of Perlin noise at this point
+    Vec3f gradient = ComputePerlinGradient(pos, perlinTex->noise_scale) * bumpFactor;
+    
+    // Surface gradient: project gradient onto surface plane
+    // ∇_s h = ∇h - (∇h · N) * N
+    float dotGradN = gradient.dotProduct(N);
+    Vec3f surface_gradient = gradient - N * dotGradN;
+    
+    // Perturbed normal: n' = N - ∇_s h
+    Vec3f n_perturbed = N - surface_gradient;
+    
+    return n_perturbed.normalize();
 }
 
 Vec3f PerturbReflection(const Vec3f& perfect_reflection, float roughness,

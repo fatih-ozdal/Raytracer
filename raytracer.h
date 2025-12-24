@@ -57,8 +57,16 @@ float IntersectsPlane(const Ray& ray, const Vec3f& normal, float plane_d, float 
 Vec3f FindNormal_Sphere(const Vertex& center, const Vec3f& point, float radius) noexcept;
 
 Vec3f ApplyShading(const Ray& ray, const Scene& scene, const Camera& camera, const HitRecord& closestHit, std::mt19937& rng, std::uniform_real_distribution<float>& dist);
+
 Vec2f ComputeUV(const HitRecord& hit, const Scene& scene);
 const std::vector<int>* GetTextureIds(const HitRecord& hit, const Scene& scene);
+
+void ComputeTangentBasis(const HitRecord& hit, const Scene& scene, Vec3f& T, Vec3f& B, const Vec3f& N);
+Vec3f ApplyNormalMap(const Vec3f& texValue, const Vec3f& T, const Vec3f& B, const Vec3f& N);
+Vec3f ApplyBumpMap(const HitRecord& hit, const Scene& scene, const TextureMap* tex,
+    const Vec3f& T, const Vec3f& B, const Vec3f& N, const Vec2f& uv);
+Vec3f ComputePerlinGradient(const Vec3f& pos, float noiseScale);
+Vec3f ApplyPerlinBumpMap(const HitRecord& hit, const PerlinNoiseMap* perlinTex, const Vec3f& N, float bumpFactor);
 
 Vec3f PerturbReflection(const Vec3f& perfect_reflection, float roughness,
                         std::mt19937& rng, std::uniform_real_distribution<float>& dist);
