@@ -225,9 +225,9 @@ float PerlinNoiseMap::perlinNoise(const Vec3f& p) const {
         Vec3f(1, 1, 0),   Vec3f(-1, 1, 0),   Vec3f(0, -1, 1),   Vec3f(0, -1, -1)
     };
     
-    // Hash table
+    // Hash table - shuffled
     static const int table[16] = {
-        0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15
+        10, 2, 7, 14, 1, 13, 4, 9, 6, 0, 15, 8, 3, 11, 5, 12
     };
     
     // Step 1: Find lattice cell containing point
