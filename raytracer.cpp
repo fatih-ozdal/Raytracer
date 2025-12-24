@@ -41,43 +41,57 @@ int main(int argc, char* argv[])
         for (int i = 0; i < height; i++) {
             for (int j = 0; j < width; j++) {
 
-                std::mt19937 rng(i * width + j);
-                std::uniform_real_distribution<float> dist(0.0f, 1.0f);
+                Vec3f color;
 
-                std::vector<int> shuffle_array(num_samples);
-                for (int idx = 0; idx < num_samples; ++idx) {
-                    shuffle_array[idx] = idx;
-                }
-                std::shuffle(shuffle_array.begin(), shuffle_array.end(), rng);
-
-                Vec3f color_sum(0.0f, 0.0f, 0.0f);
-
-                for (int s = 0; s < num_samples; ++s) {
-                    int sx = s % samples_per_side;
-                    int sy = s / samples_per_side;
-
-                    float jitter_x = (sx + dist(rng)) / samples_per_side;
-                    float jitter_y = (sy + dist(rng)) / samples_per_side;
-                    
-                    int aperture_idx = shuffle_array[s];
-                    int ax = aperture_idx % samples_per_side;
-                    int ay = aperture_idx / samples_per_side;
-                    float aperture_u = (ax + dist(rng)) / samples_per_side;  // [0, 1)
-                    float aperture_v = (ay + dist(rng)) / samples_per_side;  // [0, 1)
+                if (num_samples == 1) {
+                    std::mt19937 rng(i * width + j);
+                    std::uniform_real_distribution<float> dist(0.0f, 1.0f);
                     
                     // Time for motion blur
                     float time = dist(rng);
                     
-                    Ray ray = ComputeRay(scene, camera, j, i, 
-                                    jitter_x, jitter_y, 
-                                    aperture_u, aperture_v, 
-                                    time);
-                    Vec3f sample_color = ComputeColor(ray, scene, camera, rng, dist);
-                    
-                    color_sum = color_sum + sample_color;
+                    Ray ray = ComputeRay(scene, camera, j, i, 0.5, 0.5, 0.5, 0.5, time);
+                    color = ComputeColor(ray, scene, camera, rng, dist);
                 }
-                
-                Vec3f color = color_sum * inv_num_samples;
+                else {
+                    std::mt19937 rng(i * width + j);
+                    std::uniform_real_distribution<float> dist(0.0f, 1.0f);
+
+                    std::vector<int> shuffle_array(num_samples);
+                    for (int idx = 0; idx < num_samples; ++idx) {
+                        shuffle_array[idx] = idx;
+                    }
+                    std::shuffle(shuffle_array.begin(), shuffle_array.end(), rng);
+
+                    Vec3f color_sum(0.0f, 0.0f, 0.0f);
+
+                    for (int s = 0; s < num_samples; ++s) {
+                        int sx = s % samples_per_side;
+                        int sy = s / samples_per_side;
+
+                        float jitter_x = (sx + dist(rng)) / samples_per_side;
+                        float jitter_y = (sy + dist(rng)) / samples_per_side;
+                        
+                        int aperture_idx = shuffle_array[s];
+                        int ax = aperture_idx % samples_per_side;
+                        int ay = aperture_idx / samples_per_side;
+                        float aperture_u = (ax + dist(rng)) / samples_per_side;  // [0, 1)
+                        float aperture_v = (ay + dist(rng)) / samples_per_side;  // [0, 1)
+                        
+                        // Time for motion blur
+                        float time = dist(rng);
+                        
+                        Ray ray = ComputeRay(scene, camera, j, i, 
+                                        jitter_x, jitter_y, 
+                                        aperture_u, aperture_v, 
+                                        time);
+                        Vec3f sample_color = ComputeColor(ray, scene, camera, rng, dist);
+                        
+                        color_sum = color_sum + sample_color;
+                    }
+                    
+                    color = color_sum * inv_num_samples;
+                }
 
                 const size_t idx = (static_cast<size_t>(i) * width + j) * 3;
                 image[idx + 0] = (unsigned char)clampF(color.x, 0.0f, 255.0f);

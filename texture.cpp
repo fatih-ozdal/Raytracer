@@ -82,13 +82,13 @@ Vec3f ImageData::sampleNearest(float u, float v) const {
     u = u - floor(u);
     v = v - floor(v);
 
-    float i = u * width;
-    float j = v * height;
+    float x = u * width;
+    float y = v * height;
 
-    int x = static_cast<int>(round(i)) % width;
-    int y = static_cast<int>(round(j)) % height;
+    int i = std::min((int) x, width - 1);
+    int j = std::min((int) y, height - 1);
     
-    return getPixel(x, y);
+    return getPixel(i, j);
 }
 
 Vec3f ImageData::sampleBilinear(float u, float v) const {
@@ -96,29 +96,32 @@ Vec3f ImageData::sampleBilinear(float u, float v) const {
     u = u - floor(u);
     v = v - floor(v);
     
-    float i = u * width;
-    float j = v * height;
+    float x = u * width;
+    float y = v * height;
+
+    float x_center = x - 0.5f;
+    float y_center = y - 0.5f;
     
-    int p = static_cast<int>(floor(i));
-    int q = static_cast<int>(floor(j));
+    int p0 = static_cast<int>(floor(x_center));
+    int q0 = static_cast<int>(floor(y_center));
     
-    float dx = i - p;
-    float dy = j - q;
+    float dx = x_center - p0;
+    float dy = y_center - q0;
     
     // Wrap coordinates for neighbors
-    int p1 = (p + 1) % width;
-    int q1 = (q + 1) % height;
+    int p1 = (p0 + 1) % width;
+    int q1 = (q0 + 1) % height;
     
     // Get four neighbor pixels
-    Vec3f c_pq   = getPixel(p,  q);   // (p, q)
-    Vec3f c_p1q  = getPixel(p1, q);   // (p+1, q)
-    Vec3f c_pq1  = getPixel(p,  q1);  // (p, q+1)
+    Vec3f c_p0q0   = getPixel(p0, q0);   // (p, q)
+    Vec3f c_p1q0  = getPixel(p1, q0);   // (p+1, q)
+    Vec3f c_p0q1  = getPixel(p0, q1);  // (p, q+1)
     Vec3f c_p1q1 = getPixel(p1, q1);  // (p+1, q+1)
     
     // Bilinear interpolation
-    Vec3f result = c_pq * (1.0f - dx) * (1.0f - dy) +
-                   c_p1q * dx * (1.0f - dy) +
-                   c_pq1 * (1.0f - dx) * dy +
+    Vec3f result = c_p0q0 * (1.0f - dx) * (1.0f - dy) +
+                   c_p1q0 * dx * (1.0f - dy) +
+                   c_p0q1 * (1.0f - dx) * dy +
                    c_p1q1 * dx * dy;
     
     return result;
