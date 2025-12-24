@@ -113,9 +113,9 @@ Vec3f ImageData::sampleBilinear(float u, float v) const {
     int q1 = (q0 + 1) % height;
     
     // Get four neighbor pixels
-    Vec3f c_p0q0   = getPixel(p0, q0);   // (p, q)
-    Vec3f c_p1q0  = getPixel(p1, q0);   // (p+1, q)
-    Vec3f c_p0q1  = getPixel(p0, q1);  // (p, q+1)
+    Vec3f c_p0q0 = getPixel(p0, q0);  // (p, q)
+    Vec3f c_p1q0 = getPixel(p1, q0);  // (p+1, q)
+    Vec3f c_p0q1 = getPixel(p0, q1);  // (p, q+1)
     Vec3f c_p1q1 = getPixel(p1, q1);  // (p+1, q+1)
     
     // Bilinear interpolation
