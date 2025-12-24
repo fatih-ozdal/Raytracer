@@ -9,6 +9,7 @@
 #include "Aabb.h"
 #include "Mat4f.h"
 #include "Vec2f.h"
+#include "texture.h"
 
 using json = nlohmann::json;
 using std::vector;
@@ -114,6 +115,8 @@ struct Mesh
     int bvhIndex;             // Index into meshBVHs array (-1 if not built)
     AABB localBounds;         // Bounds in object space
     AABB worldBounds;         // Bounds in world space (after transformation)
+
+    std::vector<int> texture_ids;
     
     Mesh() : is_smooth(false), material_id(-1), hasTransform(false), 
              isInstance(false), originalMeshId(-1), bvhIndex(-1) {
@@ -138,6 +141,8 @@ struct Triangle
     
     AABB localBounds;
     AABB worldBounds;
+
+    std::vector<int> texture_ids;
     
     Triangle() : material_id(-1), hasTransform(false) {
         transformation = Mat4f::identity();
@@ -163,6 +168,8 @@ struct Sphere
     AABB localBounds;
     AABB worldBounds;
     
+    std::vector<int> texture_ids;
+
     Sphere() : material_id(-1), center_vertex_id(-1), radius(0.0f), hasTransform(false) {
         transformation = Mat4f::identity();
         invTransformation = Mat4f::identity();
@@ -184,6 +191,8 @@ struct Plane
     // Motion Blur
     Vec3f motion_blur;
     bool has_motion_blur;
+
+    std::vector<int> texture_ids;
     
     Plane() : material_id(-1), vertex_id(-1), n_unit(0, 0, 1), plane_d(0), hasTransform(false) {
         transformation = Mat4f::identity();
@@ -195,6 +204,8 @@ struct Scene
 {
     // Data
     Vec3f background_color;
+    int background_texture_id;
+
     float shadow_ray_epsilon;
     int max_recursion_depth;
     vector<Camera> cameras;
@@ -214,6 +225,12 @@ struct Scene
     vector<Mat4f> scalings;
     vector<Mat4f> rotations;
     vector<Mat4f> composites;
+
+    // Textures
+    std::vector<ImageData> image_data;
+    std::vector<std::unique_ptr<TextureMap>> texture_maps;
+
+    Scene() : background_texture_id(-1) {}
 };
 
 struct PlyData {
@@ -239,6 +256,9 @@ private:
     // Small parser helpers
     static Vec3f parseVec3f(const std::string& s);
     static float parseFloat(const std::string& s);
+    static DecalMode parseDecalMode(const std::string& str);
+    static InterpolationMode parseInterpolationMode(const std::string& str);
+    static NoiseConversion parseNoiseConversion(const std::string& str);
     static std::vector<std::array<int,3>> load_ply_faces(const std::string& ply_path);
     static std::string flatten_faces_to_string(const std::vector<std::array<int,3>>& tris);
     static std::string join_with_json_dir(const std::string& scene_path, const std::string& rel_or_abs);
