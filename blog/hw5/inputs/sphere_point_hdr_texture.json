@@ -1,0 +1,128 @@
+{
+  "Scene": {
+    "BackgroundColor": "0 0 0",
+    "Cameras": {
+      "Camera": {
+        "_id": "1",
+        "_type": "lookAt",
+        "Position": "5 5 5",
+        "GazePoint": "0 0 0",
+        "Up": "0 1 0",
+        "FovY": "45",
+        "NearDistance": "1",
+        "ImageResolution": "800 800",
+        "ImageName": "sphere_point_hdr_texture.exr",
+        "Tonemap": [
+          {
+            "TMO": "Photographic",
+            "TMOOptions": "0.01 1",
+            "Saturation": "1.0",
+            "Gamma": "2.2",
+            "Extension": "_phot.png"
+          },
+          {
+            "TMO": "Filmic",
+            "TMOOptions": "0.01 1",
+            "Saturation": "1.0",
+            "Gamma": "2.2",
+            "Extension": "_film.png"
+          },
+          {
+            "TMO": "ACES",
+            "TMOOptions": "0.01 1",
+            "Saturation": "1.0",
+            "Gamma": "2.2",
+            "Extension": "_aces.png"
+          }
+        ]
+      }
+    },
+    "Lights": {
+      "AmbientLight": "25 25 25",
+      "PointLight": {
+        "_id": "1",
+        "Position": "-5 4 5",
+        "Intensity": "10000 10000 10000"
+      }
+    },
+    "Materials": {
+      "Material": [
+        {
+          "_id": "1",
+          "AmbientReflectance": "1 1 1",
+          "DiffuseReflectance": "1 1 1",
+          "SpecularReflectance": "0 0 0",
+          "PhongExponent": "1"
+        },
+        {
+          "_id": "2",
+          "_degamma": "true",
+          "AmbientReflectance": "0.651 0.389 0.389",
+          "DiffuseReflectance": "0.651 0.389 0.389",
+          "SpecularReflectance": "0.651 0.389 0.389",
+          "PhongExponent": "1"
+        }
+      ]
+    },
+    "Textures": {
+      "Images": {
+        "Image": {
+          "_data": "textures/grace-new.exr",
+          "_id": "1"
+        }
+      },
+      "TextureMap": {
+        "_id": "1",
+        "_type": "image",
+        "ImageId": "1",
+        "Interpolation": "bilinear",
+        "DecalMode": "replace_all",
+        "Normalizer": "1"
+      }
+    },
+    "Transformations": {
+      "Translation": [
+        {
+          "_data": "-0.5 0 -0.5",
+          "_id": "1"
+        },
+        {
+          "_data": "-0.5 -0.5 -0.5",
+          "_id": "2"
+        },
+        {
+          "_data": "0.5 0.5 0.5",
+          "_id": "3"
+        }
+      ],
+      "Scaling": [
+        {
+          "_data": "1000 1000 1000",
+          "_id": "1"
+        },
+        {
+          "_data": "2 2 2",
+          "_id": "2"
+        }
+      ],
+      "Rotation": {
+        "_data": "0 0 1 0",
+        "_id": "1"
+      }
+    },
+    "VertexData": {
+      "_data": "0 0 0",
+      "_type": "xyz"
+    },
+    "Objects": {
+      "Sphere": {
+        "_id": "1",
+        "Material": "2",
+        "Textures": "1",
+        "Transformations": "r1",
+        "Center": "1",
+        "Radius": "3"
+      }
+    }
+  }
+}

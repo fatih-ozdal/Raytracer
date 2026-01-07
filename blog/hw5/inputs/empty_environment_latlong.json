@@ -1,0 +1,82 @@
+{
+  "Scene": {
+    "BackgroundColor": "0 0 0",
+    "MaxRecursionDepth": "6",
+    "ShadowRayEpsilon": "1e-3",
+    "Cameras": {
+      "Camera": {
+        "_id": "1",
+        "_type": "lookAt",
+        "Position": "0 0 0",
+        "GazePoint": "0 0 -1",
+        "Up": "0 1 0",
+        "FovY": "90",
+        "NearDistance": "1",
+        "ImageResolution": "512 512",
+        "ImageName": "empty_environment_latlong.exr",
+        "NumSamples": "1",
+        "Tonemap": [
+          {
+            "TMO": "Photographic",
+            "TMOOptions": "0.18 1",
+            "Saturation": "1.0",
+            "Gamma": "2.2",
+            "Extension": "_phot.png"
+          },
+          {
+            "TMO": "Filmic",
+            "TMOOptions": "0.18 1",
+            "Saturation": "1.0",
+            "Gamma": "2.2",
+            "Extension": "_film.png"
+          },
+          {
+            "TMO": "ACES",
+            "TMOOptions": "0.18 1",
+            "Saturation": "1.0",
+            "Gamma": "2.2",
+            "Extension": "_aces.png"
+          }
+        ]
+      }
+    },
+    "VertexData": {
+      "_data": "0 0 -6",
+      "_type": "xyz"
+    },
+    "Materials": {
+      "Material": {
+        "_id": "1",
+        "_type": "mirror",
+        "AmbientReflectance": "0 0 0",
+        "DiffuseReflectance": "0 0 0",
+        "SpecularReflectance": "0 0 0",
+        "MirrorReflectance": "1 1 1",
+        "PhongExponent": "100"
+      }
+    },
+    "Textures": {
+      "Images": {
+        "Image": {
+          "_data": "textures/campus_probe_latlong.exr",
+          "_id": "1"
+        }
+      }
+    },
+    "Lights": {
+      "SphericalDirectionalLight": {
+        "_id": "1",
+        "_type": "latlong",
+        "ImageId": "1"
+      }
+    },
+    "Objects": {
+      "Sphere": {
+        "_id": "1",
+        "Center": "1",
+        "Radius": "0.00001",
+        "Material": "1"
+      }
+    }
+  }
+}

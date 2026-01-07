@@ -1,0 +1,3667 @@
+{
+  "Scene": {
+    "BackgroundColor": "0 0 0",
+    "MaxRecursionDepth": "6",
+    "Cameras": {
+      "Camera": {
+        "_id": "1",
+        "_type": "lookAt",
+        "Position": "-2 2 2",
+        "GazePoint": "1.79999995 -0.150000006 0.649999976",
+        "Up": "0 0 1",
+        "FovY": "30",
+        "NearDistance": "1",
+        "ImageResolution": "1500 833",
+        "ImageName": "audi-tt-glacier.exr",
+        "NumSamples": "400",
+        "Tonemap": {
+          "TMO": "Photographic",
+          "TMOOptions": "0.18 1",
+          "Saturation": "1.0",
+          "Gamma": "2.2",
+          "Extension": "_phot.png"
+        }
+      }
+    },
+    "Transformations": {
+      "Scaling": {
+        "_data": "-1 1 1",
+        "_id": "1"
+      },
+      "Translation": {
+        "_data": "0.185000002 -0.930000007 0",
+        "_id": "1"
+      },
+      "Composite": {
+        "_data": "0.9885 -0.1515 0 0.7262 0.1515 0.9885 0 -4.2062 0 0 1 0 0 0 0 1",
+        "_id": "1"
+      }
+    },
+    "Textures": {
+      "Images": {
+        "Image": [
+          {
+            "_data": "textures/glacier_latlong.exr",
+            "_id": "1"
+          },
+          {
+            "_data": "textures/plate_col.png",
+            "_id": "2"
+          },
+          {
+            "_data": "textures/tire_profile_rgb_flop.png",
+            "_id": "3"
+          }
+        ]
+      },
+      "TextureMap": [
+        {
+          "_id": "1",
+          "_type": "image",
+          "ImageId": "2",
+          "DecalMode": "replace_kd",
+          "Interpolation": "bilinear"
+        },
+        {
+          "_id": "2",
+          "_type": "image",
+          "ImageId": "3",
+          "Normalizer": "512",
+          "DecalMode": "replace_kd",
+          "Interpolation": "bilinear"
+        }
+      ]
+    },
+    "Lights": {
+      "SphericalDirectionalLight": {
+        "_id": "1",
+        "_type": "latlong",
+        "ImageId": "1",
+        "Sampler": "cosine"
+      }
+    },
+    "Materials": {
+      "Material": [
+        {
+          "_id": "1",
+          "_type": "mirror",
+          "AmbientReflectance": "0 0 0",
+          "DiffuseReflectance": "0.2 0.2 0.2",
+          "SpecularReflectance": "0.1 0.1 0.1",
+          "MirrorReflectance": "0.1 0.1 0.1",
+          "PhongExponent": "1"
+        },
+        {
+          "_id": "2",
+          "AmbientReflectance": "0 0 0",
+          "DiffuseReflectance": "1 1 1",
+          "SpecularReflectance": "1 1 1",
+          "PhongExponent": "30"
+        },
+        {
+          "_id": "3",
+          "_type": "mirror",
+          "AmbientReflectance": "0 0 0",
+          "DiffuseReflectance": "0 0 0",
+          "SpecularReflectance": "1 1 1",
+          "MirrorReflectance": "0.01 0.01 0.01",
+          "PhongExponent": "20"
+        },
+        {
+          "_id": "4",
+          "_type": "mirror",
+          "AmbientReflectance": "0 0 0",
+          "DiffuseReflectance": "0 0 0",
+          "SpecularReflectance": "1 1 1",
+          "MirrorReflectance": "1 1 1",
+          "PhongExponent": "20"
+        }
+      ]
+    },
+    "Objects": {
+      "Mesh": [
+        {
+          "_shadingMode": "smooth",
+          "_id": "1",
+          "Material": "1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00001.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "2",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00002.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "3",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00003.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "4",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00004.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "5",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00005.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "6",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00006.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "7",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00007.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "8",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00008.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "9",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00009.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "10",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00010.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "11",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00011.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "12",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00012.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "13",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00013.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "14",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00014.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "15",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00015.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "16",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00016.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "17",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00017.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "18",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00018.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "19",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00019.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "20",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00020.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "21",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00021.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "22",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00022.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "23",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00023.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "24",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00024.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "25",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00025.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "26",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00026.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "27",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00027.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "28",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00028.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "29",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00029.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "30",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00030.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "31",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00031.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "32",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00032.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "33",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00033.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "34",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00034.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "35",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00035.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "36",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00036.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "37",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00037.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "38",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00038.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "39",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00039.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "40",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00040.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "41",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00041.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "42",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00042.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "43",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00043.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "44",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00044.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "45",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00045.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "46",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00046.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "47",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00047.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "48",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00048.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "49",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00049.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "50",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00050.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "51",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00051.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "52",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00052.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "53",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00053.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "54",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00054.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "55",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00055.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "56",
+          "Material": "3",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00056.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "57",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00057.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "58",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00058.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "59",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00059.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "60",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00060.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "61",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00061.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "62",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00062.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "63",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00063.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "64",
+          "Material": "3",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00064.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "65",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00065.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "66",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00066.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "67",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00067.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "68",
+          "Material": "3",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00068.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "69",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00069.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "70",
+          "Material": "3",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00070.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "71",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00071.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "72",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00072.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "73",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00073.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "74",
+          "Material": "3",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00074.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "75",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00075.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "76",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00076.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "77",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00077.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "78",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00078.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "79",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00079.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "80",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00080.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "81",
+          "Material": "3",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00081.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "82",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00082.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "83",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00083.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "84",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00084.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "85",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00085.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "86",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00086.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "87",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00087.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "88",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00088.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "89",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00089.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "90",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00090.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "91",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00091.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "92",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00092.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "93",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00093.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "94",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00094.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "95",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00095.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "96",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00096.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "97",
+          "Material": "3",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00097.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "98",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00098.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "99",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00099.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "100",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00100.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "101",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00101.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "102",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00102.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "103",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00103.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "104",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00104.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "105",
+          "Material": "3",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00105.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "106",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00106.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "107",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00107.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "108",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00108.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "109",
+          "Material": "3",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00109.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "110",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00110.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "111",
+          "Material": "3",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00111.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "112",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00112.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "113",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00113.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "114",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00114.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "115",
+          "Material": "3",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00115.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "116",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00116.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "117",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00117.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "118",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00118.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "119",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00119.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "120",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00120.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "121",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00121.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "122",
+          "Material": "3",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00122.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "123",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00123.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "124",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00124.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "125",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00125.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "126",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00126.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "127",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00127.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "128",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00128.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "129",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00129.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "130",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00130.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "131",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00131.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "132",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00132.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "133",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00133.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "134",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00134.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "135",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00135.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "136",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00136.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "137",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00137.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "138",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00138.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "139",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00139.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "140",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00140.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "141",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00141.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "142",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00142.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "143",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00143.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "144",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00144.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "145",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00145.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "146",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00146.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "147",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00147.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "148",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00148.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "149",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00149.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "150",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00150.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "151",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00151.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "152",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00152.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "153",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00153.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "154",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00154.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "155",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00155.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "156",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00156.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "157",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00157.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "158",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00158.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "159",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00159.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "160",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00160.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "161",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00161.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "162",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00162.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "163",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00163.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "164",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00164.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "165",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00165.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "166",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00166.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "167",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00167.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "168",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00168.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "169",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00169.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "170",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00170.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "171",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00171.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "172",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00172.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "173",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00173.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "174",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00174.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "175",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00175.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "176",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00176.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "177",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00177.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "178",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00178.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "179",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00179.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "180",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00180.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "181",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00181.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "182",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00182.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "183",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00183.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "184",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00184.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "185",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00185.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "186",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00186.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "187",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00187.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "188",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00188.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "189",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00189.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "190",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00190.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "191",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00191.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "192",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00192.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "193",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00193.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "194",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00194.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "195",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00195.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "196",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00196.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "197",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00197.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "198",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00198.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "199",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00199.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "200",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00200.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "201",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00201.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "202",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00202.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "203",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00203.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "204",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00204.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "205",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00205.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "206",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00206.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "207",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00207.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "208",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00208.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "209",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00209.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "210",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00210.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "211",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00211.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "212",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00212.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "213",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00213.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "214",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00214.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "215",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00215.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "216",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00216.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "217",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00217.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "218",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00218.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "219",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00219.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "220",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00220.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "221",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00221.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "222",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00222.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "223",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00223.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "224",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00224.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "225",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00225.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "226",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00226.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "227",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00227.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "228",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00228.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "229",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00229.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "230",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00230.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "231",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00231.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "232",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00232.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "233",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00233.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "234",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00234.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "235",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00235.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "236",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00236.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "237",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00237.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "238",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00238.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "239",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00239.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "240",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00240.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "241",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00241.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "242",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00242.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "243",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00243.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "244",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00244.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "245",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00245.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "246",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00246.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "247",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00247.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "248",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00248.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "249",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00249.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "250",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00250.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "251",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00251.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "252",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00252.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "253",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00253.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "254",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00254.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "255",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00255.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "256",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00256.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "257",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00257.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "258",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00258.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "259",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00259.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "260",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00260.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "261",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00261.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "262",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00262.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "263",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00263.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "264",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00264.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "265",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00265.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "266",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00266.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "267",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00267.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "268",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00268.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "269",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00269.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "270",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00270.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "271",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00271.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "272",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00272.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "273",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00273.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "274",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00274.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "275",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00275.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "276",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00276.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "277",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00277.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "278",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00278.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "279",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00279.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "280",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00280.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "281",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00281.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "282",
+          "Material": "3",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00282.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "283",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00283.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "284",
+          "Material": "3",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00284.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "285",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00285.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "286",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00286.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "287",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00287.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "288",
+          "Material": "3",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00288.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "289",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00289.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "290",
+          "Material": "3",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00290.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "291",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00291.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "292",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00292.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "293",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00293.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "294",
+          "Material": "3",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00294.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "295",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00295.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "296",
+          "Material": "3",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00296.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "297",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00297.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "298",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00298.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "299",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00299.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "300",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00300.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "301",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00301.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "302",
+          "Material": "3",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00302.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "303",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00303.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "304",
+          "Material": "3",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00304.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "305",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00305.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "306",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00306.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "307",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00307.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "308",
+          "Material": "3",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00308.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "309",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00309.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "310",
+          "Material": "3",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00310.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "311",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00311.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "312",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00312.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "313",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00313.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "314",
+          "Material": "3",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00314.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "315",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00315.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "316",
+          "Material": "3",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00316.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "317",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00317.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "318",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00318.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "319",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00319.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "320",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00320.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "321",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00321.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "322",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00322.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "323",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00323.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "324",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00324.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "325",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00325.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "326",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00326.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "327",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00327.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "328",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00328.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "329",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00329.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "330",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00330.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "331",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00331.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "332",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00332.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "333",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00333.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "334",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00334.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "335",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00335.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "336",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00336.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "337",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00337.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "338",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00338.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "339",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00339.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "340",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00340.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "341",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00341.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "342",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00342.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "343",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00343.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "344",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00344.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "345",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00345.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "346",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00346.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "347",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00347.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "348",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00348.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "349",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00349.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "350",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00350.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "351",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00351.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "352",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00352.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "353",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00353.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "354",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00354.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "355",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00355.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "356",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00356.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "357",
+          "Material": "2",
+          "Textures": "1",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00357.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "358",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00358.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "359",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00359.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "360",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00360.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "361",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00361.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "362",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00362.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "363",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00363.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "364",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00364.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "365",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00365.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "366",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00366.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "367",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00367.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "368",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00368.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "369",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00369.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "370",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00370.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "371",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00371.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "372",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00372.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "373",
+          "Material": "2",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00373.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "374",
+          "Material": "4",
+          "Transformations": "c1 t1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00374.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "375",
+          "Material": "4",
+          "Transformations": "c1 t1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00375.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "376",
+          "Material": "4",
+          "Transformations": "c1 t1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00376.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "377",
+          "Material": "2",
+          "Textures": "2",
+          "Transformations": "c1 t1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00377.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "378",
+          "Material": "4",
+          "Transformations": "c1 t1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00378.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "379",
+          "Material": "4",
+          "Transformations": "c1 t1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00379.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "380",
+          "Material": "4",
+          "Transformations": "c1 t1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00380.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "381",
+          "Material": "4",
+          "Transformations": "c1 t1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00381.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "382",
+          "Material": "2",
+          "Textures": "2",
+          "Transformations": "c1 t1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00382.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "383",
+          "Material": "4",
+          "Transformations": "c1 t1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00383.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "384",
+          "Material": "4",
+          "Transformations": "c1 t1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00384.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "385",
+          "Material": "4",
+          "Transformations": "c1 t1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00385.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "386",
+          "Material": "4",
+          "Transformations": "c1 t1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00386.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "387",
+          "Material": "2",
+          "Textures": "2",
+          "Transformations": "c1 t1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00387.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "388",
+          "Material": "4",
+          "Transformations": "c1 t1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00388.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "389",
+          "Material": "4",
+          "Transformations": "c1 t1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00389.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "390",
+          "Material": "4",
+          "Transformations": "c1 t1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00390.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "391",
+          "Material": "4",
+          "Transformations": "c1 t1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00391.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "392",
+          "Material": "2",
+          "Textures": "2",
+          "Transformations": "c1 t1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00392.ply"
+          }
+        },
+        {
+          "_shadingMode": "smooth",
+          "_id": "393",
+          "Material": "4",
+          "Transformations": "c1 t1",
+          "Faces": {
+            "_plyFile": "geometry/mesh_00393.ply"
+          }
+        }
+      ]
+    }
+  }
+}
