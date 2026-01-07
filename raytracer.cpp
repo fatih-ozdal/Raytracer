@@ -1580,6 +1580,59 @@ Vec3f ApplyShading(const Ray& ray, const Scene& scene, const Camera& camera, con
         }
     }
 
+    // Spot lights
+    for (const auto& spot : scene.spot_lights)
+    {
+        Vec3f lightToPoint = x - spot.position; // direction FROM light TO surface
+        float distance = lightToPoint.length();
+        if (distance < 1e-6f) continue; // skip degenerate
+
+        Vec3f L = lightToPoint / distance; // normalized FROM light TO surface
+
+        float cosAlpha = clampF(spot.direction.dotProduct(L), -1.0f, 1.0f);
+        float alpha = std::acos(cosAlpha);
+
+        float coverage_rad = spot.coverage_angle * (float)M_PI / 180.0f;
+        float falloff_rad = spot.falloff_angle * (float)M_PI / 180.0f;
+        float coverage_half = coverage_rad * 0.5f;
+        float falloff_half = falloff_rad * 0.5f;
+
+        float s = 0.0f;
+        if (alpha <= falloff_half) {
+            s = 1.0f;
+        } else if (alpha <= coverage_half) {
+            float denom = std::cos(falloff_half) - std::cos(coverage_half);
+            if (std::fabs(denom) < 1e-6f) {
+                s = 0.0f;
+            } else {
+                float val = (std::cos(alpha) - std::cos(coverage_half)) / denom;
+                val = std::max(0.0f, val);
+                s = std::pow(val, 4);
+            }
+        } else {
+            s = 0.0f;
+        }
+
+        if (alpha > coverage_half || s < 1e-6f) continue;
+
+        // Shadow ray: from surface toward light => direction is -L
+        Ray shadowRay;
+        shadowRay.origin = x + n_shading * eps_shift;
+        shadowRay.direction = -L;
+        shadowRay.depth = 0;
+        shadowRay.time = ray.time;
+
+        // Use finite t_max = distance (so occluders beyond light don't block)
+        PointLight tempPL;
+        tempPL.position = spot.position;
+        tempPL.intensity = spot.intensity * s;
+
+        if (!InShadow(x, tempPL, n_shading, eps_shift, scene, ray.time)) {
+            // Reuse ComputeDiffuseAndSpecular by passing scaled intensity
+            color = color + ComputeDiffuseAndSpecular(ray.origin, mat, tempPL, x, n_shading, w0);
+        }
+    }
+
     return color;
 }
 
