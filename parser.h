@@ -56,6 +56,12 @@ struct AreaLight {
     Vec3f radiance;
 };
 
+struct DirectionalLight {
+    Vec3f direction;
+    Vec3f radiance;
+    DirectionalLight() : direction(0, -1, 0), radiance(0, 0, 0) {}
+};
+
 enum class MaterialType : uint32_t
 {
     None = 0,
@@ -212,6 +218,7 @@ struct Scene
     Vec3f ambient_light;
     vector<PointLight> point_lights;
     std::vector<AreaLight> area_lights;
+    std::vector<DirectionalLight> directional_lights;
     vector<Material> materials;
     vector<Vertex> vertex_data;
     vector<Mesh> meshes;

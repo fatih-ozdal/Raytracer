@@ -331,6 +331,36 @@ Scene parser::loadFromJson(const string &filepath)
             }
         }
 
+        // --- DirectionalLights ---
+        if (lights.contains("DirectionalLight")) {
+            const auto& dLightNode = lights["DirectionalLight"];
+
+            int dLightCount = dLightNode.is_array() ? dLightNode.size() : 1;
+            scene.directional_lights.reserve(dLightCount);
+
+            auto parseOneDirLight = [&](const json& dl) {
+                DirectionalLight L;
+
+                L.direction = parser::parseVec3f(dl["Direction"].get<std::string>());
+                float len = L.direction.length();
+                if (len < 1e-6f) {
+                    L.direction = Vec3f(0.0f, -1.0f, 0.0f);
+                } else {
+                    L.direction = L.direction.normalize();
+                }
+
+                L.radiance = parser::parseVec3f(dl["Radiance"].get<std::string>());
+
+                scene.directional_lights.push_back(L);
+            };
+
+            if (dLightNode.is_array()) {
+                for (const auto& dl : dLightNode) parseOneDirLight(dl);
+            } else {
+                parseOneDirLight(dLightNode);
+            }
+        }
+
     }
 
     // --- Cameras ---

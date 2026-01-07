@@ -14,6 +14,8 @@ uint32_t rootNodeIdx = 0, nodesUsed = 1;
 #define M_PI 3.14159265358979323846
 #endif
 
+const float RAY_T_MAX_INFINITE = 1e30f;
+
 int main(int argc, char* argv[])
 {
     if (argc < 2) {
@@ -1539,6 +1541,42 @@ Vec3f ApplyShading(const Ray& ray, const Scene& scene, const Camera& camera, con
             Vec3f specular = mat.specular_refl.elwiseMult(irradiance) * spec_factor;
             
             color = color + diffuse + specular;
+        }
+    }
+
+    // Directional lights (parallel, hard shadows, no distance attenuation)
+    for (const auto& dir_light : scene.directional_lights)
+    {
+        // Shadow ray direction: opposite of stored direction (light rays come from -direction)
+        Vec3f lightDir = -dir_light.direction;
+        Vec3f wi = lightDir.normalize();
+
+        Ray shadow_ray;
+        shadow_ray.origin = x + n_shading * eps_shift;
+        shadow_ray.direction = wi;
+        shadow_ray.depth = 0;
+        shadow_ray.time = ray.time;
+
+        bool in_shadow = false;
+        HitRecord shadow_hit;
+        if (FindClosestHit(shadow_ray, scene, camera, shadow_hit)) {
+            in_shadow = true;
+        }
+
+        if (!in_shadow) {
+            float cos_theta = std::max(0.0f, n_shading.dotProduct(wi));
+            if (cos_theta > 0.0f) {
+                // No distance attenuation
+                Vec3f irradiance = dir_light.radiance;
+
+                Vec3f diffuse = mat.diffuse_refl.elwiseMult(irradiance) * cos_theta;
+                Vec3f h = (wi + w0).normalize();
+                float cos_alpha = std::max(0.0f, n_shading.dotProduct(h));
+                float spec_factor = std::pow(cos_alpha, mat.phong_exponent);
+                Vec3f specular = mat.specular_refl.elwiseMult(irradiance) * spec_factor;
+
+                color = color + diffuse + specular;
+            }
         }
     }
 
