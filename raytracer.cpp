@@ -10,6 +10,10 @@ vector<uint32_t> topPrimIdx;
 vector<BVHNode> topBvhNodes; 
 uint32_t rootNodeIdx = 0, nodesUsed = 1;
 
+#ifndef M_PI
+#define M_PI 3.14159265358979323846
+#endif
+
 int main(int argc, char* argv[])
 {
     if (argc < 2) {
@@ -1680,7 +1684,7 @@ void ComputeTangentBasis(const HitRecord& hit, const Scene& scene, Vec3f& T, Vec
             Vec3f center = scene.vertex_data[sphere.center_vertex_id - 1].pos;
             Vec3f local = (hit.intersectionPoint - center) / sphere.radius;
             
-            float theta = acos(std::clamp(local.y, -1.0f, 1.0f));
+            float theta = acos(clampF(local.y, -1.0f, 1.0f));
             float phi = atan2(local.z, local.x);
             
             float sinTheta = sin(theta);
