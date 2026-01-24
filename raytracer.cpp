@@ -69,12 +69,22 @@ int main(int argc, char* argv[])
 
                     float jitter_x = (sx + dist(rng)) / samples_per_side;
                     float jitter_y = (sy + dist(rng)) / samples_per_side;
+
+                    if (num_samples == 1) {
+                        jitter_x = 0.5f;
+                        jitter_y = 0.5f;
+                    }
                     
                     int aperture_idx = shuffle_array[s];
                     int ax = aperture_idx % samples_per_side;
                     int ay = aperture_idx / samples_per_side;
                     float aperture_u = (ax + dist(rng)) / samples_per_side;  // [0, 1)
                     float aperture_v = (ay + dist(rng)) / samples_per_side;  // [0, 1)
+
+                    if (num_samples == 1) {
+                        aperture_u = 0.5f;
+                        aperture_v = 0.5f;
+                    }
                     
                     // Time for motion blur
                     float time = dist(rng);
@@ -1048,7 +1058,7 @@ bool InShadow(const Vec3f& point, const PointLight& I, const Vec3f& n, float eps
     shadowRay.time = time; 
     shadowRay.isInside = false;
 
-    float minT = distToLight;
+    float minT = distToLight + eps_shadow;
 
     // Test planes
     for (size_t i = 0; i < scene.planes.size(); i++) {
