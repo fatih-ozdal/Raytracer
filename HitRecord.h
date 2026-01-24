@@ -24,9 +24,11 @@ std::ostream& operator<<(std::ostream& os, PrimKind type) {
 
 struct HitRecord 
 {
-    int materialId;
+    float t;
     Vec3f intersectionPoint;
     Vec3f normal;
+    int primId;
+    int materialId;
     PrimKind kind;
 };
 

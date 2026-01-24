@@ -10,7 +10,7 @@ $(TARGET): $(SRC)
 	$(CXX) $(CXXFLAGS) -fopenmp -O3 $(SRC) -o $(TARGET)
 
 debug: $(SRC)
-	$(CXX) $(CXXFLAGS) -g -O0 $(SRC) -o $(TARGET)
+	$(CXX) $(CXXFLAGS) -g -Og $(SRC) -o $(TARGET)
 
 clean:
 	rm -f $(TARGET) $(TARGET).exe

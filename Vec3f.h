@@ -53,6 +53,10 @@ struct Vec3f
     inline friend Vec3f operator*(float val, const Vec3f& v) noexcept {
         return v * val;
     }
+
+    inline Vec3f operator*(const Vec3f& rhs) noexcept {
+        return{x * rhs.x, y * rhs.y, z * rhs.z};
+    }
     
     inline Vec3f elwiseMult(const Vec3f& rhs) const noexcept {
         return {x * rhs.x, y * rhs.y, z * rhs.z};

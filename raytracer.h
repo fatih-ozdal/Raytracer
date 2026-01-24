@@ -17,6 +17,8 @@ struct Ray {
     Vec3f direction; // should be normalized
     int depth;
     float time;
+
+    bool isInside;
 };
 
 

@@ -472,7 +472,7 @@ Scene parser::loadFromJson(const string &filepath)
             mat.ambient_refl  = parser::parseVec3f(mj.value("AmbientReflectance",  "0 0 0"));
             mat.diffuse_refl  = parser::parseVec3f(mj.value("DiffuseReflectance",  "0 0 0"));
             mat.specular_refl = parser::parseVec3f(mj.value("SpecularReflectance", "0 0 0"));
-            mat.mirror_refl   = parser::parseVec3f(mj.value("MirrorReflectance",   "0 0 0"));
+            mat.mirror_refl   = parser::parseVec3f(mj.value("MirrorReflectance",   "1 1 1"));
 
             mat.phong_exponent   = parser::parseFloat(mj.value("PhongExponent", "1"));
             mat.refraction_index = parser::parseFloat(mj.value("RefractionIndex", "0"));

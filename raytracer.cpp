@@ -10,6 +10,12 @@ vector<uint32_t> topPrimIdx;
 vector<BVHNode> topBvhNodes; 
 uint32_t rootNodeIdx = 0, nodesUsed = 1;
 
+bool isCorrectPixel = false;
+int correct_j = 326;
+int correct_i = 228;
+
+bool backfaceCullingEnabled = true;
+
 int main(int argc, char* argv[])
 {
     if (argc < 2) {
@@ -40,6 +46,11 @@ int main(int argc, char* argv[])
         #pragma omp parallel for collapse(2) schedule(static)
         for (int i = 0; i < height; i++) {
             for (int j = 0; j < width; j++) {
+
+                if ( i == correct_i && j == correct_j )
+                    isCorrectPixel = true;
+                else
+                    isCorrectPixel = false;
 
                 std::mt19937 rng(i * width + j);
                 std::uniform_real_distribution<float> dist(0.0f, 1.0f);
@@ -349,6 +360,7 @@ Ray ComputeRay(const Scene& scene, const Camera& camera, int j, int i, float jit
     Ray ray;
     ray.depth = 0;
     ray.time = time;
+    ray.isInside = false;
 
     if (!camera.has_depth_of_field) { // Pinhole camera (no DOF)
         ray.origin = camera.position;
@@ -520,6 +532,8 @@ bool FindClosestHit(const Ray& ray, const Scene& scene, const Camera& camera, Hi
     closestHit.intersectionPoint = hit_x;
     closestHit.normal = normal;
     closestHit.kind = closestType;
+    closestHit.t = minT;
+    closestHit.primId = index;
     
     return true;
 }
@@ -572,6 +586,7 @@ void IntersectTopBVH(const Ray& ray, const Scene& scene, float& minT, bool& has_
                             testRay.origin = mesh.invTransformation.transformPoint(rayOrigin);
                             testRay.direction = mesh.invTransformation.transformVector(rayDirection).normalize();
                             testRay.time = ray.time;  // Keep time for secondary rays
+                            testRay.isInside = ray.isInside;
                             
                             // Transform testMinT
                             Vec3f worldDir = ray.direction;
@@ -584,6 +599,7 @@ void IntersectTopBVH(const Ray& ray, const Scene& scene, float& minT, bool& has_
                             testRay.origin = ray.origin - mesh.motion_blur * ray.time;
                             testRay.direction = ray.direction;
                             testRay.time = ray.time;
+                            testRay.isInside = ray.isInside;
                         }
                         
                         float temp_b, temp_g;
@@ -899,6 +915,21 @@ float IntersectsTriangle_Bary(const Ray& ray, const Face& tri_face, const vector
    Vec3f tri_vb = vertex_data[tri_face.i1 - 1].pos;
    Vec3f tri_vc = vertex_data[tri_face.i2 - 1].pos;
 
+   // Conditional culling to prevent self-intersection in dielectrics
+   if (!ray.isInside && backfaceCullingEnabled) {
+       // Outside: cull backfaces
+       if (ray.direction.dotProduct(tri_face.n_unit) > 0) {
+           return RAY_MISS_VALUE;
+       }
+   } 
+   
+   if (ray.isInside) {
+       // Inside: cull frontfaces
+       if (ray.direction.dotProduct(tri_face.n_unit) < 0) {
+           return RAY_MISS_VALUE;
+       }
+   }
+
    Vec3f col_A0 = tri_va - tri_vb;
    Vec3f col_A1 = tri_va - tri_vc;
    Vec3f col_A2 = ray.direction;
@@ -1015,6 +1046,7 @@ bool InShadow(const Vec3f& point, const PointLight& I, const Vec3f& n, float eps
     shadowRay.direction = toLight / distToLight;
     shadowRay.depth = 0;
     shadowRay.time = time; 
+    shadowRay.isInside = false;
 
     float minT = distToLight;
 
@@ -1080,6 +1112,7 @@ bool InShadow(const Vec3f& point, const PointLight& I, const Vec3f& n, float eps
                             testRay.origin = mesh.invTransformation.transformPoint(rayOrigin);
                             testRay.direction = mesh.invTransformation.transformVector(rayDirection).normalize();
                             testRay.time = shadowRay.time;  // Keep time for secondary rays
+                            testRay.isInside = shadowRay.isInside;
                             
                             // Transform testMinT
                             Vec3f worldDir = shadowRay.direction;
@@ -1092,6 +1125,7 @@ bool InShadow(const Vec3f& point, const PointLight& I, const Vec3f& n, float eps
                             testRay.origin = shadowRay.origin - mesh.motion_blur * shadowRay.time;
                             testRay.direction = shadowRay.direction;
                             testRay.time = shadowRay.time;
+                            testRay.isInside = shadowRay.isInside;
                         }
                         
                         float temp_b, temp_g;
@@ -1255,6 +1289,11 @@ Vec3f ApplyShading(const Ray& ray, const Scene& scene, const Camera& camera, con
 
     Vec3f n_shading = n_original;
 
+    if (isCorrectPixel)
+    {
+        // std::cout << "Here we go again" << std::endl;
+    }
+
     if (n_original.dotProduct(d_inc) < 0.0f)
     {
         n_shading = n_original;
@@ -1279,6 +1318,8 @@ Vec3f ApplyShading(const Ray& ray, const Scene& scene, const Camera& camera, con
         reflectionRay.direction = wr;
         reflectionRay.depth = ray.depth + 1;
         reflectionRay.time = ray.time;
+        reflectionRay.isInside = ray.isInside;
+
         color = color + mat.mirror_refl.elwiseMult(ComputeColor(reflectionRay, scene, camera, rng, dist));
     }
     else if (mat.type == MaterialType::Conductor)
@@ -1291,6 +1332,7 @@ Vec3f ApplyShading(const Ray& ray, const Scene& scene, const Camera& camera, con
         reflectionRay.direction = wr;
         reflectionRay.depth = ray.depth + 1;
         reflectionRay.time = ray.time;
+        reflectionRay.isInside = ray.isInside;
 
         float cosTheta = w0.dotProduct(n_shading);
         float Fresnel_r = Fresnel_Conductor(cosTheta, mat.refraction_index, mat.absorption_index);
@@ -1302,7 +1344,7 @@ Vec3f ApplyShading(const Ray& ray, const Scene& scene, const Camera& camera, con
     {
         Vec3f d_inc_local = ray.direction;
         
-        bool entering = n_original.dotProduct(d_inc_local) < 0.0f;
+        bool entering = ray.isInside == false;
         
         Vec3f normal = entering ? n_original : (n_original * -1.0f);
         
@@ -1325,12 +1367,18 @@ Vec3f ApplyShading(const Ray& ray, const Scene& scene, const Camera& camera, con
             reflectionRay.direction = wr;
             reflectionRay.depth = ray.depth + 1;
             reflectionRay.time = ray.time;
-            color = color + mat.mirror_refl.elwiseMult(ComputeColor(reflectionRay, scene, camera, rng, dist));
+            reflectionRay.isInside = ray.isInside;
+
+            Vec3f reflectColor = ComputeColor(reflectionRay, scene, camera, rng, dist);
+            reflectColor = reflectColor * mat.mirror_refl;
+
+            color = color + reflectColor;
         }
         else {
             float cosThetaT = std::sqrt(1.0f - sin2ThetaT);
             float Fr = Fresnel_Dielectric(cosThetaI, cosThetaT, etaI, etaT);
             
+            // Reflection
             Vec3f wr_perfect = (normal * 2.0f * cosThetaI - w0_local).normalize();
             Vec3f wr = PerturbReflection(wr_perfect, mat.roughness, rng, dist);
 
@@ -1339,8 +1387,12 @@ Vec3f ApplyShading(const Ray& ray, const Scene& scene, const Camera& camera, con
             reflectionRay.direction = wr;
             reflectionRay.depth = ray.depth + 1;
             reflectionRay.time = ray.time;
-            Vec3f reflectColor = mat.mirror_refl.elwiseMult(ComputeColor(reflectionRay, scene, camera, rng, dist));
-            
+            reflectionRay.isInside = ray.isInside;
+
+            Vec3f reflectColor = ComputeColor(reflectionRay, scene, camera, rng, dist);
+            reflectColor = reflectColor * mat.mirror_refl;
+
+            // Refraction
             Vec3f wt_perfect = ((w0_local * -1.0f) * eta + normal * (eta * cosThetaI - cosThetaT)).normalize();
             Vec3f wt = PerturbReflection(wt_perfect, mat.roughness, rng, dist);
 
@@ -1349,10 +1401,12 @@ Vec3f ApplyShading(const Ray& ray, const Scene& scene, const Camera& camera, con
             refractionRay.direction = wt;
             refractionRay.depth = ray.depth + 1;
             refractionRay.time = ray.time;
+            refractionRay.isInside = !ray.isInside;
+
             Vec3f refractColor = ComputeColor(refractionRay, scene, camera, rng, dist);
             
             if (!entering) {
-                float d = (x - ray.origin).length();
+                float d = closestHit.t;
                 refractColor.x *= std::exp(-mat.absorption_coef.x * d);
                 refractColor.y *= std::exp(-mat.absorption_coef.y * d);
                 refractColor.z *= std::exp(-mat.absorption_coef.z * d);
