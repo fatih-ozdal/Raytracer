@@ -50,6 +50,19 @@ float IntersectMeshBVH(const Ray& ray, const Mesh& mesh, const Scene& scene,
 
 float IntersectAABB(const Ray& ray, const AABB& box, float minT) noexcept;
 
+struct AABBHit {
+    float tEnter;
+    float tExit;
+    bool  hit;
+};
+
+AABBHit IntersectAABB_EnterExit(
+    const Ray& ray,
+    const AABB& box,
+    float tMinAllowed,   // e.g. 0 or eps
+    float tMaxAllowed    // e.g. closest hit or INF
+) noexcept;
+
 float IntersectsMesh(const Ray& ray, const Mesh& mesh, const std::vector<Vertex>& vertex_data, float minT, /*out*/ Face& hitFace, /*out*/ float& beta_out, /*out*/ float& gamma_out) noexcept;
 float IntersectsTriangle_Bary(const Ray& ray, const Face& tri_face, const std::vector<Vertex>& vertex_data, float minT, /*out*/ float& beta_out, /*out*/ float& gamma_out) noexcept;
 float IntersectSphere(const Ray& ray, const Vertex& center, float radius, float minT) noexcept;
@@ -64,6 +77,8 @@ float Fresnel_Conductor(float cosTheta, float refractionIndex, float absorptionI
 bool InShadow(const Vec3f& point, const PointLight& I, const Vec3f& n, float eps_shadow, const Scene& scene, float time) noexcept;
 Vec3f ComputeDiffuseAndSpecular(const Vec3f& origin, const Material& material, const PointLight& light, 
     const Vec3f& point, const Vec3f& normal, const Vec3f& w0) noexcept;
+Vec3f ComputeDiffuseAndSpecular(const Material& material, const Vec3f& incoming_radiance, 
+                               const Vec3f& light_dir, const Vec3f& normal, const Vec3f& w0) noexcept;
 void CreateOrthonormalBasis(const Vec3f& n, Vec3f& tangent, Vec3f& bitangent);
 
 #endif // RAYTRACER_H
