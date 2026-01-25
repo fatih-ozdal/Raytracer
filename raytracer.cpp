@@ -401,24 +401,136 @@ Ray ComputeRay(const Scene& scene, const Camera& camera, int j, int i, float jit
 
 // ============== COLOR COMPUTATION ==============
 
+// TODO: Get from scene
+AABB volume_bounding_box;
+
+float phase_function(const Vec3f& dir_in, const Vec3f& dir_out, float g) noexcept
+{
+    Vec3f wi = dir_in.normalize();
+    Vec3f wo = dir_out.normalize();
+
+    float cos_theta = wi.dotProduct(wo);
+    cos_theta = clampF(cos_theta, -1.0f, 1.0f);
+
+    float denominator = 1.0f + g * g - 2.0f * g * cos_theta;
+    return (1.0f - g * g) / (4.0f * M_PI * denominator * std::sqrt(denominator));
+}
+
+float get_density_at(const Vec3f& point) noexcept
+{
+    // TODO: do lookup in world, if inside volume bounding box return density, else return 0
+    return 31.0f; // placeholder constant density
+}
+
+float GetTransmittance(Vec3f a, Vec3f b, float step_size) {
+    float optical_depth = 0.0f;
+    Vec3f dir = (b - a).normalize();
+    float dist = (b - a).length();
+
+    for (float t = 0; t < dist; t += step_size) {
+        Vec3f p = a + dir * t;
+        float d = get_density_at(p); // İşte burası senin lookup fonksiyonun
+        optical_depth += d * step_size;
+    }
+
+    return exp(-sigma_t * optical_depth);
+}
+
+Vec3f SampleLightRadiance(const PointLight& light, const Vec3f& point, const Scene& scene) {
+    Vec3f L = light.position - point;
+    float d_sq = L.dotProduct(L);
+    
+    // Katı engel kontrolü
+    if (IsOccludedBySolid(point, light.position, scene)) return Vec3f(0, 0, 0);
+
+    // Volume zayıflatması
+    float T = GetTransmittance(point, light.position);
+
+    return (light.intensity * T) / d_sq;
+}
+
+Vec3f sample_lights(const Vec3f& p) noexcept
+{
+    Vec3f total_light(0, 0, 0);
+    for (const auto& point_light : scene.point_lights) {
+        Vec3f light_contribution = SampleLightRadiance(point_light, p, scene);
+        total_light += light_contribution;
+    }
+    return total_light;
+}
+
+Vec3f integrate_volume(Ray ray, float t_min, float t_max, Vec3f surface_color, float sigma_t = 0.1f) noexcept
+{
+    float transmittance = 1.0f;
+    Vec3f scattered_light(0, 0, 0);
+
+    float step_size = 0.1f; // TODO: Get from scene
+    Vec3f voxel_emission(0.5f, 0.5f, 0.5f); // TODO: Get from scene
+    float g = 0.0f; //TODO: Get from scene
+
+    // Note: step işi hem burda hem sample_light_radiance içinde var, oluru budur
+    for (float t = t_min; t < t_max; t += step_size) {
+        Vec3f p = ray.at(t + std::rand()); // Aliasing için ufak bir jitter
+        float density = get_density_at(p);
+
+        if (density > 0) {
+            // 1. Beer-Lambert ile zayıflama (Transmittance)
+            float step_transmittance = exp(-sigma_t * density * step_size);
+            
+            // 2. In-Scattering (Işık kaynaklarından gelen ışık)
+            Vec3f direct_light = sample_lights(p) * phase_function(ray.direction, light_dir, g);
+            
+            // 3. Emission (Voxel'in kendi ışığı)
+            Vec3f step_emission = voxel_emission * density;
+
+            // Kümülatif toplam (Önemli: transmittance ile ağırlıklandırıyoruz)
+            scattered_light += (direct_light + step_emission) * density * transmittance * step_size;
+            transmittance *= step_transmittance;
+        }
+
+        // Eğer transmittance çok düştüyse (sis çok koyu), döngüden çıkabiliriz (Optimization)
+        if (transmittance < 0.01f) break;
+    }
+
+    return scattered_light + transmittance * surface_color;
+}
+
 Vec3f ComputeColor(const Ray& ray, const Scene& scene, const Camera& camera, std::mt19937& rng, std::uniform_real_distribution<float>& dist) 
 {
     if (ray.depth > scene.max_recursion_depth) {
         return Vec3f(0, 0, 0);
     }
 
+    float tMin = EPS_INTERSECTION;
+    float tMax = FLT_MAX;
+
+    Vec3f surface_color;
     HitRecord closestHit;
+
     if (FindClosestHit(ray, scene, camera, closestHit))
     {
-        return ApplyShading(ray, scene, camera, closestHit, rng, dist);
+        tMax = closestHit.t;
+        surface_color = ApplyShading(ray, scene, camera, closestHit, rng, dist);
     }
     else if (ray.depth == 0)
     {
-        return scene.background_color;
+        surface_color = scene.background_color;
     }
-    else
+    else // No hit for secondary rays
     {
-        return Vec3f(0, 0, 0);
+       surface_color = Vec3f(0, 0, 0);
+    }
+
+    // Check for volume intersection
+    AABBHit volume_hit = IntersectAABB_EnterExit(ray, volume_bounding_box, tMin, tMax);
+    bool has_volume = volume_hit.hit && (volume_hit.tEnter < volume_hit.tExit);
+    
+    if (has_volume) {
+        Vec3f volume_color = integrate_volume(ray, volume_hit.tEnter, volume_hit.tExit, surface_color);
+        return volume_color;
+    } 
+    else {
+        return surface_color;
     }
 }
 
@@ -837,6 +949,63 @@ float IntersectMeshBVH(const Ray& ray, const Mesh& mesh, const Scene& scene,
 }
 
 // ============== PRIMITIVE INTERSECTION ==============
+struct AABBHit {
+    float tEnter;
+    float tExit;
+    bool  hit;
+};
+
+inline AABBHit IntersectAABB_EnterExit(
+    const Ray& ray,
+    const AABB& box,
+    float tMinAllowed,   // e.g. 0 or eps
+    float tMaxAllowed    // e.g. closest hit or INF
+) noexcept
+{
+    float tEnter = tMinAllowed;
+    float tExit  = tMaxAllowed;
+
+    // X
+    if (ray.direction.x != 0.0f) {
+        float invD = 1.0f / ray.direction.x;
+        float t0 = (box.min.x - ray.origin.x) * invD;
+        float t1 = (box.max.x - ray.origin.x) * invD;
+        if (t0 > t1) std::swap(t0, t1);
+        tEnter = std::max(tEnter, t0);
+        tExit  = std::min(tExit,  t1);
+        if (tExit < tEnter) return {0,0,false};
+    } else {
+        if (ray.origin.x < box.min.x || ray.origin.x > box.max.x) return {0,0,false};
+    }
+
+    // Y
+    if (ray.direction.y != 0.0f) {
+        float invD = 1.0f / ray.direction.y;
+        float t0 = (box.min.y - ray.origin.y) * invD;
+        float t1 = (box.max.y - ray.origin.y) * invD;
+        if (t0 > t1) std::swap(t0, t1);
+        tEnter = std::max(tEnter, t0);
+        tExit  = std::min(tExit,  t1);
+        if (tExit < tEnter) return {0,0,false};
+    } else {
+        if (ray.origin.y < box.min.y || ray.origin.y > box.max.y) return {0,0,false};
+    }
+
+    // Z
+    if (ray.direction.z != 0.0f) {
+        float invD = 1.0f / ray.direction.z;
+        float t0 = (box.min.z - ray.origin.z) * invD;
+        float t1 = (box.max.z - ray.origin.z) * invD;
+        if (t0 > t1) std::swap(t0, t1);
+        tEnter = std::max(tEnter, t0);
+        tExit  = std::min(tExit,  t1);
+        if (tExit < tEnter) return {0,0,false};
+    } else {
+        if (ray.origin.z < box.min.z || ray.origin.z > box.max.z) return {0,0,false};
+    }
+
+    return {tEnter, tExit, true};
+}
 
 float IntersectAABB(const Ray& ray, const AABB& box, float minT) noexcept
 {
@@ -1434,12 +1603,21 @@ Vec3f ApplyShading(const Ray& ray, const Scene& scene, const Camera& camera, con
 
     for (const auto& point_light: scene.point_lights)
     {
-        if (!InShadow(x, point_light, n_shading, eps_shift, scene, ray.time))
+        // this function handles both falloff and absorption inside volumes
+        Vec3f incoming_radiance = SampleLightRadiance(x, light, scene);
+
+        if (radiance.isNotBlack()) // Not in shadow
         {
-            color = color + ComputeDiffuseAndSpecular(ray.origin, mat, point_light, closestHit.intersectionPoint, n_shading, w0);
+            // note use the second ComputeDiffuseAndSpecular function here
+            color += ComputeDiffuseAndSpecular(mat, incoming_radiance, ...);
         }
     }
 
+    // TODO: Send a secondary ray towards a random point to sample indirect illumination from volumes. 
+    // Ray secondary_ray(x + n_shading * eps_shift, sample_hemisphere(n_shading));
+    // color += IntegrateVolume(secondary_ray, 0.001f, 1000.0f, BackgroundColor);
+
+    // Area lights
     for (const auto& area_light : scene.area_lights)
     {
         // Sample random point on area light square
@@ -1579,6 +1757,20 @@ Vec3f ComputeDiffuseAndSpecular(const Vec3f& origin, const Material& material, c
     }
 
     Vec3f specularTerm = (material.specular_refl * std::pow(cos_alpha, material.phong_exponent)).elwiseMult(irradiance);
+
+    return diffuseTerm + specularTerm;
+}
+
+Vec3f ComputeDiffuseAndSpecular(const Material& material, const Vec3f& incoming_radiance, 
+                               const Vec3f& light_dir, const Vec3f& normal, const Vec3f& w0) {
+    float cos_theta = std::max(0.0f, light_dir.dotProduct(normal));
+    if (cos_theta <= 0.0f) return Vec3f(0.0f, 0.0f, 0.0f);
+
+    Vec3f diffuseTerm = (material.diffuse_refl * cos_theta).elwiseMult(incoming_radiance);
+
+    Vec3f h = (light_dir + w0).normalize();
+    float cos_alpha = std::max(0.0f, normal.dotProduct(h));
+    Vec3f specularTerm = (material.specular_refl * std::pow(cos_alpha, material.phong_exponent)).elwiseMult(incoming_radiance);
 
     return diffuseTerm + specularTerm;
 }
