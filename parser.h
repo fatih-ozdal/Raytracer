@@ -87,9 +87,12 @@ struct Vertex
 
 struct Face
 {
-    int i0, i1, i2;     // vertex indices
+    int i0, i1, i2;     // vertex indices (1-based)
+    int t0, t1, t2;     // texture coordinate indices (1-based, -1 if none)
     Vec3f n_unit;       // is a unit vector
     float plane_d;
+
+    Face() : i0(0), i1(0), i2(0), t0(-1), t1(-1), t2(-1), plane_d(0) {}
 };
 
 struct Mesh
@@ -214,6 +217,7 @@ struct Scene
     std::vector<AreaLight> area_lights;
     vector<Material> materials;
     vector<Vertex> vertex_data;
+    vector<Vec2f> tex_coord_data;  // Separate texture coordinates
     vector<Mesh> meshes;
     vector<Triangle> triangles;
     vector<Sphere> spheres;
@@ -236,6 +240,7 @@ struct Scene
 struct PlyData {
     std::vector<Vec3f> verts;
     std::vector<Vec3f> normals;
+    std::vector<Vec2f> uvs;
     std::vector<std::array<int,3>> faces;
 };
 

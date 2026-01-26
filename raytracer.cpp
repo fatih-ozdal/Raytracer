@@ -1628,31 +1628,42 @@ Vec2f ComputeUV(const HitRecord& hit, const Scene& scene) {
         }
         
         case PrimKind::Triangle: {
-            // Barycentric interpolation
+            // Barycentric interpolation using texture coordinate indices
             const Triangle& tri = scene.triangles[hit.primId];
-            const Vertex& a = scene.vertex_data[tri.face.i0 - 1];
-            const Vertex& b = scene.vertex_data[tri.face.i1 - 1];
-            const Vertex& c = scene.vertex_data[tri.face.i2 - 1];
-            
-            float u = a.uv.u + hit.beta * (b.uv.u - a.uv.u)+ hit.gamma * (c.uv.u - a.uv.u);
-            float v = a.uv.v + hit.beta * (b.uv.v - a.uv.v)+ hit.gamma * (c.uv.v - a.uv.v);
+            const Face& face = tri.face;
 
-            return Vec2f(u, v);
+            if (face.t0 > 0 && face.t1 > 0 && face.t2 > 0 &&
+                face.t0 <= (int)scene.tex_coord_data.size() &&
+                face.t1 <= (int)scene.tex_coord_data.size() &&
+                face.t2 <= (int)scene.tex_coord_data.size()) {
+                const Vec2f& uv_a = scene.tex_coord_data[face.t0 - 1];
+                const Vec2f& uv_b = scene.tex_coord_data[face.t1 - 1];
+                const Vec2f& uv_c = scene.tex_coord_data[face.t2 - 1];
+
+                float u = uv_a.u + hit.beta * (uv_b.u - uv_a.u) + hit.gamma * (uv_c.u - uv_a.u);
+                float v = uv_a.v + hit.beta * (uv_b.v - uv_a.v) + hit.gamma * (uv_c.v - uv_a.v);
+                return Vec2f(u, v);
+            }
+            return Vec2f(0, 0);
         }
-        
+
         case PrimKind::Mesh: {
             // Same as triangle but from mesh
-            const Mesh& mesh = scene.meshes[hit.meshId];
             const Face& face = hit.hitFace;
-            
-            const Vertex& a = scene.vertex_data[face.i0 - 1];
-            const Vertex& b = scene.vertex_data[face.i1 - 1];
-            const Vertex& c = scene.vertex_data[face.i2 - 1];
-            
-            float u = a.uv.u + hit.beta * (b.uv.u - a.uv.u)+ hit.gamma * (c.uv.u - a.uv.u);
-            float v = a.uv.v + hit.beta * (b.uv.v - a.uv.v)+ hit.gamma * (c.uv.v - a.uv.v);
 
-            return Vec2f(u, v);
+            if (face.t0 > 0 && face.t1 > 0 && face.t2 > 0 &&
+                face.t0 <= (int)scene.tex_coord_data.size() &&
+                face.t1 <= (int)scene.tex_coord_data.size() &&
+                face.t2 <= (int)scene.tex_coord_data.size()) {
+                const Vec2f& uv_a = scene.tex_coord_data[face.t0 - 1];
+                const Vec2f& uv_b = scene.tex_coord_data[face.t1 - 1];
+                const Vec2f& uv_c = scene.tex_coord_data[face.t2 - 1];
+
+                float u = uv_a.u + hit.beta * (uv_b.u - uv_a.u) + hit.gamma * (uv_c.u - uv_a.u);
+                float v = uv_a.v + hit.beta * (uv_b.v - uv_a.v) + hit.gamma * (uv_c.v - uv_a.v);
+                return Vec2f(u, v);
+            }
+            return Vec2f(0, 0);
         }
         
         default:
@@ -1695,35 +1706,44 @@ void ComputeTangentBasis(const HitRecord& hit, const Scene& scene, Vec3f& T, Vec
             const Vertex& v0 = scene.vertex_data[face.i0 - 1];
             const Vertex& v1 = scene.vertex_data[face.i1 - 1];
             const Vertex& v2 = scene.vertex_data[face.i2 - 1];
-            
+
             // Edge vectors in world space
             Vec3f E1 = v1.pos - v0.pos;
             Vec3f E2 = v2.pos - v0.pos;
-            
-            // UV differences
-            float du1 = v1.uv.u - v0.uv.u;
-            float dv1 = v1.uv.v - v0.uv.v;
-            float du2 = v2.uv.u - v0.uv.u;
-            float dv2 = v2.uv.v - v0.uv.v;
-            
+
+            // UV differences - use tex_coord_data if available
+            float du1 = 0, dv1 = 0, du2 = 0, dv2 = 0;
+            if (face.t0 > 0 && face.t1 > 0 && face.t2 > 0 &&
+                face.t0 <= (int)scene.tex_coord_data.size() &&
+                face.t1 <= (int)scene.tex_coord_data.size() &&
+                face.t2 <= (int)scene.tex_coord_data.size()) {
+                const Vec2f& uv0 = scene.tex_coord_data[face.t0 - 1];
+                const Vec2f& uv1 = scene.tex_coord_data[face.t1 - 1];
+                const Vec2f& uv2 = scene.tex_coord_data[face.t2 - 1];
+                du1 = uv1.u - uv0.u;
+                dv1 = uv1.v - uv0.v;
+                du2 = uv2.u - uv0.u;
+                dv2 = uv2.v - uv0.v;
+            }
+
             float det = du1 * dv2 - du2 * dv1;
-            
+
             if (std::abs(det) < 1e-6f) {
                 // Degenerate UV mapping - create arbitrary tangent basis
                 CreateOrthonormalBasis(N, T, B);
                 return;
             }
-            
+
             float invDet = 1.0f / det;
-            
+
             // From slides:
             // | T |   1   | dv2  -dv1 | | E1 |
             // | B | = --- | -du2  du1 | | E2 |
             //         det
             T = (E1 * dv2 - E2 * dv1) * invDet;
             B = (E2 * du1 - E1 * du2) * invDet;
-            
-            // Gram-Schmidt orthogonalization
+
+            // Gram-Schmidt orthonormalization
             T = (T - N * N.dotProduct(T)).normalize();
             B = N.crossProduct(T);
             break;
@@ -1733,27 +1753,25 @@ void ComputeTangentBasis(const HitRecord& hit, const Scene& scene, Vec3f& T, Vec
             // For spheres: compute from spherical parametrization
             // p(θ,φ) = center + r*(sinθ cosφ, cosθ, sinθ sinφ)
             // u = (-φ + π) / (2π),  v = θ / π
-            
+
             const Sphere& sphere = scene.spheres[hit.primId];
             Vec3f center = scene.vertex_data[sphere.center_vertex_id - 1].pos;
             Vec3f local = (hit.intersectionPoint - center) / sphere.radius;
-            
+
             float theta = acos(clampF(local.y, -1.0f, 1.0f));
             float phi = atan2(local.z, local.x);
-            
+
             float sinTheta = sin(theta);
             float cosTheta = cos(theta);
             float sinPhi = sin(phi);
             float cosPhi = cos(phi);
-            
-            // ∂p/∂φ (tangent in U direction) - note: u is related to -φ
-            // T = r * sinθ * (sinφ, 0, -cosφ) → normalized: (sinφ, 0, -cosφ)
+
+            // ∂p/∂φ direction (tangent in U direction)
             T = Vec3f(sinPhi, 0.0f, -cosPhi);
-            
-            // ∂p/∂θ (tangent in V direction)
-            // B = r * (cosθ cosφ, -sinθ, cosθ sinφ) → normalized
+
+            // ∂p/∂θ direction (tangent in V direction)
             B = Vec3f(cosTheta * cosPhi, -sinTheta, cosTheta * sinPhi);
-            
+
             // Orthonormalize
             T = (T - N * N.dotProduct(T)).normalize();
             B = N.crossProduct(T);
@@ -1815,11 +1833,11 @@ Vec3f ApplyBumpMap(const HitRecord& hit, const Scene& scene, const TextureMap* t
     float h_v = getHeight(uv.u, uv.v + dv);
 
     // Partial derivatives: ∂h/∂u and ∂h/∂v
-    // Mathematically correct: divide by step size, scale by bumpFactor
+    // Divide by step size, scale by bumpFactor
     float dh_du = (h_u - h) / du * bumpFactor;
     float dh_dv = (h_v - h) / dv * bumpFactor;
 
-    // Clamp slopes to prevent extreme normal perturbation
+    // Clamp to prevent extreme normal perturbation
     const float maxSlope = 1.0f;
     dh_du = clampF(dh_du, -maxSlope, maxSlope);
     dh_dv = clampF(dh_dv, -maxSlope, maxSlope);

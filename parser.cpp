@@ -535,10 +535,8 @@ Scene parser::loadFromJson(const string &filepath)
         string texCoordData = s["TexCoordData"]["_data"].get<string>();
         std::istringstream iss(texCoordData);
         float u, v;
-        size_t idx = 0;
-        while (iss >> u >> v && idx < scene.vertex_data.size()) {
-            scene.vertex_data[idx].uv = Vec2f(u, v);
-            idx++;
+        while (iss >> u >> v) {
+            scene.tex_coord_data.push_back(Vec2f(u, v));
         }
     }
 
@@ -692,6 +690,21 @@ Scene parser::loadFromJson(const string &filepath)
 
                 std::string facesStr;
                 bool ply_has_normals = false;
+                bool ply_has_uvs = false;
+                size_t ply_vertex_base = 0;  // Base index for PLY vertices
+                size_t ply_tex_base = 0;     // Base index for PLY texture coordinates
+
+                // Get offsets
+                int vertexOffset = 0;
+                int textureOffset = 0;
+                if (mj.contains("Faces")) {
+                    if (mj["Faces"].contains("_vertexOffset")) {
+                        vertexOffset = std::stoi(mj["Faces"]["_vertexOffset"].get<std::string>());
+                    }
+                    if (mj["Faces"].contains("_textureOffset")) {
+                        textureOffset = std::stoi(mj["Faces"]["_textureOffset"].get<std::string>());
+                    }
+                }
 
                 // Get all of the Vertex ids for Faces
                 if (mj.contains("Faces") && mj["Faces"].contains("_plyFile")) {
@@ -699,29 +712,34 @@ Scene parser::loadFromJson(const string &filepath)
                     std::string ply_path = join_with_json_dir(filepath, ply_rel);
                     auto ply = load_ply(ply_path);
 
-                    size_t base = scene.vertex_data.size();
-                    scene.vertex_data.resize(base + ply.verts.size());
-                    
-                    ply_has_normals = !ply.normals.empty();
+                    ply_vertex_base = scene.vertex_data.size();
+                    scene.vertex_data.resize(ply_vertex_base + ply.verts.size());
 
-                    if (ply_has_normals) {
-                        for (size_t i = 0; i < ply.verts.size(); ++i) {
-                            scene.vertex_data[base + i] = {ply.verts[i], ply.normals[i]};
+                    ply_has_normals = !ply.normals.empty();
+                    ply_has_uvs = !ply.uvs.empty();
+
+                    // Add PLY UVs to tex_coord_data
+                    if (ply_has_uvs) {
+                        ply_tex_base = scene.tex_coord_data.size();
+                        for (const auto& uv : ply.uvs) {
+                            scene.tex_coord_data.push_back(uv);
                         }
-                    } else {
-                        for (size_t i = 0; i < ply.verts.size(); ++i) {
-                            scene.vertex_data[base + i] = {ply.verts[i], Vec3f(0, 0, 0)};
-                        }
+                    }
+
+                    for (size_t i = 0; i < ply.verts.size(); ++i) {
+                        Vertex& v = scene.vertex_data[ply_vertex_base + i];
+                        v.pos = ply.verts[i];
+                        v.normal = ply_has_normals ? ply.normals[i] : Vec3f(0, 0, 0);
                     }
 
                     for (auto& f : ply.faces) {
-                        f[0] += int(base);
-                        f[1] += int(base);
-                        f[2] += int(base);
+                        f[0] += int(ply_vertex_base);
+                        f[1] += int(ply_vertex_base);
+                        f[2] += int(ply_vertex_base);
                     }
                     facesStr = flatten_faces_to_string(ply.faces);
                 }
-                else if (mj.contains("Faces") && mj["Faces"].contains("_data")) 
+                else if (mj.contains("Faces") && mj["Faces"].contains("_data"))
                 {
                     facesStr = mj.at("Faces").at("_data").get<std::string>();
                 }
@@ -739,11 +757,41 @@ Scene parser::loadFromJson(const string &filepath)
                 int i0, i1, i2;
                 while (ss >> i0 >> i1 >> i2) {
                     Face f{};
-                    f.i0 = i0; f.i1 = i1; f.i2 = i2;
 
-                    const Vec3f& va = scene.vertex_data[i0 - 1].pos;
-                    const Vec3f& vb = scene.vertex_data[i1 - 1].pos;
-                    const Vec3f& vc = scene.vertex_data[i2 - 1].pos;
+                    // Apply vertex offset for non-PLY meshes
+                    // PLY case: offset already applied to face indices above
+                    // JSON _data case: need to apply vertexOffset
+                    if (ply_vertex_base == 0 && vertexOffset != 0) {
+                        f.i0 = i0 + vertexOffset;
+                        f.i1 = i1 + vertexOffset;
+                        f.i2 = i2 + vertexOffset;
+                    } else {
+                        f.i0 = i0; f.i1 = i1; f.i2 = i2;
+                    }
+
+                    // Set texture coordinate indices
+                    if (ply_has_uvs) {
+                        // PLY case: UV indices parallel to vertex indices
+                        // vertex index i (1-based) -> local_index = i - ply_vertex_base - 1
+                        // tex_index (1-based) = ply_tex_base + local_index + 1
+                        int local0 = i0 - static_cast<int>(ply_vertex_base) - 1;
+                        int local1 = i1 - static_cast<int>(ply_vertex_base) - 1;
+                        int local2 = i2 - static_cast<int>(ply_vertex_base) - 1;
+                        f.t0 = static_cast<int>(ply_tex_base) + local0 + 1;
+                        f.t1 = static_cast<int>(ply_tex_base) + local1 + 1;
+                        f.t2 = static_cast<int>(ply_tex_base) + local2 + 1;
+                    } else if (!scene.tex_coord_data.empty()) {
+                        // TexCoordData case: use local vertex index + textureOffset
+                        // (i0, i1, i2 are local indices before vertexOffset applied)
+                        f.t0 = i0 + textureOffset;
+                        f.t1 = i1 + textureOffset;
+                        f.t2 = i2 + textureOffset;
+                    }
+                    // else: f.t0, t1, t2 remain -1 (no texture coordinates)
+
+                    const Vec3f& va = scene.vertex_data[f.i0 - 1].pos;
+                    const Vec3f& vb = scene.vertex_data[f.i1 - 1].pos;
+                    const Vec3f& vc = scene.vertex_data[f.i2 - 1].pos;
 
                     mesh.localBounds.expand(va);
                     mesh.localBounds.expand(vb);
@@ -755,13 +803,13 @@ Scene parser::loadFromJson(const string &filepath)
 
                     // Accumulate normal for smooth shading (if PLY didn't provide normals)
                     if (mesh.is_smooth && !ply_has_normals) {
-                        scene.vertex_data[i0 - 1].normal = scene.vertex_data[i0 - 1].normal + faceNorm;
-                        scene.vertex_data[i1 - 1].normal = scene.vertex_data[i1 - 1].normal + faceNorm;
-                        scene.vertex_data[i2 - 1].normal = scene.vertex_data[i2 - 1].normal + faceNorm;
+                        scene.vertex_data[f.i0 - 1].normal = scene.vertex_data[f.i0 - 1].normal + faceNorm;
+                        scene.vertex_data[f.i1 - 1].normal = scene.vertex_data[f.i1 - 1].normal + faceNorm;
+                        scene.vertex_data[f.i2 - 1].normal = scene.vertex_data[f.i2 - 1].normal + faceNorm;
 
-                        mark_touched(i0);
-                        mark_touched(i1);
-                        mark_touched(i2);
+                        mark_touched(f.i0);
+                        mark_touched(f.i1);
+                        mark_touched(f.i2);
                     }
 
                     mesh.faces.push_back(f);
@@ -1257,10 +1305,11 @@ PlyData parser::load_ply(const std::string& path) {
         return out;
     }
 
-    // Find property indices for x, y, z, nx, ny, nz
+    // Find property indices for x, y, z, nx, ny, nz, u, v (or s, t)
     int x_idx = -1, y_idx = -1, z_idx = -1;
     int nx_idx = -1, ny_idx = -1, nz_idx = -1;
-    
+    int u_idx = -1, v_idx = -1;
+
     for (size_t i = 0; i < vertex_props.size(); ++i) {
         const auto& prop = vertex_props[i];
         if (prop.name == "x") x_idx = i;
@@ -1269,9 +1318,12 @@ PlyData parser::load_ply(const std::string& path) {
         else if (prop.name == "nx") nx_idx = i;
         else if (prop.name == "ny") ny_idx = i;
         else if (prop.name == "nz") nz_idx = i;
+        else if (prop.name == "u" || prop.name == "s" || prop.name == "texture_u") u_idx = i;
+        else if (prop.name == "v" || prop.name == "t" || prop.name == "texture_v") v_idx = i;
     }
-    
+
     bool has_normals = (nx_idx >= 0 && ny_idx >= 0 && nz_idx >= 0);
+    bool has_uvs = (u_idx >= 0 && v_idx >= 0);
 
     // ---- Read data ----
     if (is_ascii) {
@@ -1280,23 +1332,30 @@ PlyData parser::load_ply(const std::string& path) {
         if (has_normals) {
             out.normals.reserve(vcount > 0 ? size_t(vcount) : 0);
         }
-        
+        if (has_uvs) {
+            out.uvs.reserve(vcount > 0 ? size_t(vcount) : 0);
+        }
+
         for (int64_t i = 0; i < vcount; ++i) {
             std::getline(in, line);
             std::istringstream ls(line);
-            
+
             std::vector<float> values;
             float val;
             while (ls >> val) {
                 values.push_back(val);
             }
-            
-            if (x_idx >= 0 && y_idx >= 0 && z_idx >= 0 && 
+
+            if (x_idx >= 0 && y_idx >= 0 && z_idx >= 0 &&
                 x_idx < (int)values.size() && y_idx < (int)values.size() && z_idx < (int)values.size()) {
                 out.verts.push_back({values[x_idx], values[y_idx], values[z_idx]});
-                
+
                 if (has_normals && nx_idx < (int)values.size() && ny_idx < (int)values.size() && nz_idx < (int)values.size()) {
                     out.normals.push_back({values[nx_idx], values[ny_idx], values[nz_idx]});
+                }
+
+                if (has_uvs && u_idx < (int)values.size() && v_idx < (int)values.size()) {
+                    out.uvs.push_back({values[u_idx], values[v_idx]});
                 }
             }
         }
@@ -1322,6 +1381,9 @@ PlyData parser::load_ply(const std::string& path) {
     out.verts.reserve(vcount > 0 ? size_t(vcount) : 0);
     if (has_normals) {
         out.normals.reserve(vcount > 0 ? size_t(vcount) : 0);
+    }
+    if (has_uvs) {
+        out.uvs.reserve(vcount > 0 ? size_t(vcount) : 0);
     }
     
     for (int64_t i = 0; i < vcount; ++i) {
@@ -1379,12 +1441,16 @@ PlyData parser::load_ply(const std::string& path) {
             }
         }
         
-        // Extract position and normal
+        // Extract position, normal, and UV
         if (x_idx >= 0 && y_idx >= 0 && z_idx >= 0) {
             out.verts.push_back({values[x_idx], values[y_idx], values[z_idx]});
-            
+
             if (has_normals) {
                 out.normals.push_back({values[nx_idx], values[ny_idx], values[nz_idx]});
+            }
+
+            if (has_uvs) {
+                out.uvs.push_back({values[u_idx], values[v_idx]});
             }
         }
     }
