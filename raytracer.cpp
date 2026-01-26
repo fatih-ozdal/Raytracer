@@ -431,14 +431,18 @@ float SampleDensity(const Volume& vol, const Vec3f& p)
     return density * vol.scale;
 }
 
-float GetVolumeTransmittance(const Vec3f& p, const Vec3f& lightPos, const Scene& scene)
+// Change return type to Vec3f
+Vec3f GetVolumeTransmittance(const Vec3f& p, const Vec3f& lightPos, const Scene& scene)
 {
     Vec3f dir = lightPos - p;
     float dist = dir.length();
     dir = dir.normalize();
 
-    float transmittance = 1.0f;
+    Vec3f transmittance(1.0f, 1.0f, 1.0f); // Start white
     float step_size = 0.5f; 
+
+    // TRICK: Multiplier to fake multiple scattering (0.5 lets light penetrate 2x deeper)
+    float shadow_trick = 0.3f; 
 
     for (float t = 0; t < dist; t += step_size) {
         Vec3f current_p = p + dir * t;
@@ -447,14 +451,21 @@ float GetVolumeTransmittance(const Vec3f& p, const Vec3f& lightPos, const Scene&
             float density = SampleDensity(vol, current_p);
             
             if (density > 0.0f) {
+                // No averaging! Keep it Vec3f
                 Vec3f sigma_t = (vol.sigma_a + vol.sigma_s) * density;
-                // Average extinction for single-channel transmittance
-                float ext = (sigma_t.x + sigma_t.y + sigma_t.z) / 3.0f;
-                transmittance *= std::exp(-ext * step_size);
+                
+                // Apply the trick to sigma_t
+                sigma_t = sigma_t * shadow_trick;
+
+                transmittance.x *= std::exp(-sigma_t.x * step_size);
+                transmittance.y *= std::exp(-sigma_t.y * step_size);
+                transmittance.z *= std::exp(-sigma_t.z * step_size);
             }
         }
 
-        if (transmittance < 0.01f) return 0.0f;
+        // Optimization: If all channels are blocked
+        if (transmittance.x < 0.01f && transmittance.y < 0.01f && transmittance.z < 0.01f) 
+            return Vec3f(0,0,0);
     }
 
     return transmittance;
@@ -463,28 +474,28 @@ float GetVolumeTransmittance(const Vec3f& p, const Vec3f& lightPos, const Scene&
 Vec3f SampleLightRadiance(const PointLight& light, const Vec3f& point, const Scene& scene) noexcept
 {
     // 1. Check solid occlusion (Standard Shadow Ray)
+    // (Keep your existing check here)
     if (InShadow(point, light, Vec3f(0,0,0), 0.001f, scene, 0.0f)) {
         return Vec3f(0, 0, 0);
     }
 
-    // 2. Check Volume Attenuation
-    float T = GetVolumeTransmittance(point, light.position, scene);
-    if (T <= 0.0f) return Vec3f(0, 0, 0);
-
+    // 2. Check Volume Attenuation (Now returns Vec3f)
+    Vec3f T = GetVolumeTransmittance(point, light.position, scene);
+    
     // 3. Distance Falloff
     Vec3f L = light.position - point;
     float d_sq = L.dotProduct(L);
 
-    return (light.intensity * T) / d_sq;
+    // Multiply light intensity by Colored Transmittance
+    return light.intensity.elwiseMult(T) / d_sq;
 }
-
 Vec3f integrate_volume(const Ray& ray, const Scene& scene, float t_entry, float t_exit, const Vec3f& background_color)
 {
     if (t_entry >= t_exit) return background_color;
 
     Vec3f L(0, 0, 0); 
     Vec3f T(1, 1, 1); 
-    float step_size = 0.1f; 
+    float step_size = 0.5f; 
     
     for (float t = t_entry; t < t_exit; t += step_size) {
         

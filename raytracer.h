@@ -87,7 +87,7 @@ float phase_function(const Vec3f& dir_in, const Vec3f& dir_out, float g) noexcep
 float SampleDensity(const Volume& vol, const Vec3f& p);
 
 // 3. Shadow Transmittance (How much light reaches a point through the volume)
-float GetVolumeTransmittance(const Vec3f& p, const Vec3f& lightPos, const Scene& scene);
+Vec3f GetVolumeTransmittance(const Vec3f& p, const Vec3f& lightPos, const Scene& scene);
 
 // 4. Main Volume Integrator (Ray Marching)
 Vec3f integrate_volume(const Ray& ray, const Scene& scene, float t_entry, float t_exit, const Vec3f& background_color);
