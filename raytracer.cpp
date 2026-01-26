@@ -41,6 +41,7 @@ int main(int argc, char* argv[])
     BuildAllMeshBVHs(scene);
     BuildTopLevelBVH(scene);
     
+    Timer timer;
     for (const Camera& camera : scene.cameras)
     {
         const int width  = camera.image_width;
@@ -117,8 +118,9 @@ int main(int argc, char* argv[])
 
         stbi_write_png(camera.image_name.c_str(), width, height, 3, image, width * 3);
         delete[] image;
+        timer.printElapsed(camera.image_name);
     }
-
+    
     return 0;
 }
 
@@ -439,7 +441,7 @@ Vec3f GetVolumeTransmittance(const Vec3f& p, const Vec3f& lightPos, const Scene&
     dir = dir.normalize();
 
     Vec3f transmittance(1.0f, 1.0f, 1.0f); // Start white
-    float step_size = 0.5f; 
+    float step_size = 0.4f; 
 
     // TRICK: Multiplier to fake multiple scattering (0.5 lets light penetrate 2x deeper)
     float shadow_trick = 0.3f; 
@@ -495,7 +497,7 @@ Vec3f integrate_volume(const Ray& ray, const Scene& scene, float t_entry, float 
 
     Vec3f L(0, 0, 0); 
     Vec3f T(1, 1, 1); 
-    float step_size = 0.5f; 
+    float step_size = 0.3f; 
     
     for (float t = t_entry; t < t_exit; t += step_size) {
         

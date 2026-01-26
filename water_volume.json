@@ -1,0 +1,107 @@
+{
+  "Scene": {
+    "MaxRecursionDepth": "6",
+    "BackgroundColor": "100 100 100",
+    "Cameras": {
+      "Camera": {
+        "_id": "1",
+        "Position": "0 5 50",
+        "Gaze": "0 0 -1",
+        "Up": "0 1 0",
+        "NearPlane": "-1 1 -1 1",
+        "NearDistance": "1",
+        "ImageResolution": "800 800",
+        "ImageName": "volume_test.png"
+      }
+    },
+    "Lights": {
+      "AmbientLight": "25 25 25",
+      "PointLight": [
+        {
+          "_id": "1",
+          "Position": "20 30 20",
+          "Intensity": "1000000 1000000 1000000"
+        },
+        {
+          "_id": "2",
+          "Position": "0 0 0",
+          "Intensity": "100000 100000 100000"
+        }
+      ]
+      
+    },
+    "Materials": {
+      "Material": [
+        {
+          "_id": "1",
+          "AmbientReflectance": "1 1 1",
+          "DiffuseReflectance": "1 1 1",
+          "SpecularReflectance": "1 1 1",
+          "PhongExponent": "1"
+        },
+        {
+          "_id": "2",
+          "AmbientReflectance": "1 1 1",
+          "DiffuseReflectance": "1 0 0",
+          "SpecularReflectance": "1 1 1",
+          "PhongExponent": "100"
+        }
+      ]
+    },
+    "Transformations": {
+      "Translation": [
+        {
+          "_data": "-10 5 10",
+          "_id": "1"
+        },
+        {
+          "_data": "0 5 0",
+          "_id": "2"
+        },
+        {
+          "_data": "15 5 -10",
+          "_id": "3"
+        },
+        {
+          "_data": "50 5 -40",
+          "_id": "4"
+        }
+      ],
+      "Scaling": [
+        {
+          "_data": "5 5 5",
+          "_id": "1"
+        },
+        {
+          "_data": "100 1 100",
+          "_id": "2"
+        }
+      ]
+    },
+    "VertexData": {
+      "_data": "-1 0 1 1 0 1 1 0 -1 -1 0 -1 0 0 0",
+      "_type": "xyz"
+    },
+    "Objects": {
+      "Mesh": {
+        "_id": "1",
+        "Material": "1",
+        "Faces": {
+          "_data": "1 1 1 1 1 1",
+          "_type": "triangle"
+        },
+        "Transformations": "s2"
+      }
+    },
+    "Volumes": {
+      "Volume": {
+        "path": "../fire.nvdb",
+        "Absorption": "0.0000 0.1000 0.20000",
+        "Scattering": "0.6 0.0 0.0",
+        "Scale":"4.0"
+
+        
+      }
+    }
+  }
+}

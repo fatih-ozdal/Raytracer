@@ -12,6 +12,7 @@
 #include <nanovdb/NanoVDB.h>
 #include <nanovdb/util/GridHandle.h>
 
+
 using json = nlohmann::json;
 using std::vector;
 using std::string;

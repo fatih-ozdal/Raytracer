@@ -5,8 +5,8 @@
     "Cameras": {
       "Camera": {
         "_id": "1",
-        "Position": "0 5 50",
-        "Gaze": "0 0 -1",
+        "Position": "0 5 -50",
+        "Gaze": "0 0 1",
         "Up": "0 1 0",
         "NearPlane": "-1 1 -1 1",
         "NearDistance": "1",
@@ -19,13 +19,18 @@
       "PointLight": [
         {
           "_id": "1",
-          "Position": "20 30 50",
+          "Position": "20 30 -50",
           "Intensity": "1000000 1000000 1000000"
         },
         {
           "_id": "2",
           "Position": "-20 30 50",
           "Intensity": "1000000 1000000 1000000"
+        },
+        {
+          "_id": "3",
+          "Position": "0 5 0",
+          "Intensity": "100000 100000 100000"
         }
       ]
       
@@ -98,7 +103,7 @@
         "path": "../bunny_cloud.nvdb",
         "Absorption": "0.0000 0.0000 0.00000",
         "Scattering": "1.0 1.0 1.0",
-        "Scale":"3.0"
+        "Scale":"1.0"
 
         
       }
