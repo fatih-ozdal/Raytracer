@@ -19,8 +19,10 @@ struct Ray {
     float time;
 
     bool isInside;
-};
 
+    int pixel_i;
+    int pixel_j;
+};
 
 void BuildTopLevelBVH(const Scene& scene);
 void MakeTopLevelPrimsArray(const Scene& scene);
@@ -57,10 +59,22 @@ float IntersectsPlane(const Ray& ray, const Vec3f& normal, float plane_d, float 
 Vec3f FindNormal_Sphere(const Vertex& center, const Vec3f& point, float radius) noexcept;
 
 Vec3f ApplyShading(const Ray& ray, const Scene& scene, const Camera& camera, const HitRecord& closestHit, std::mt19937& rng, std::uniform_real_distribution<float>& dist);
+
+Vec2f ComputeUV(const HitRecord& hit, const Scene& scene);
+const std::vector<int>* GetTextureIds(const HitRecord& hit, const Scene& scene);
+
+void ComputeTangentBasis(const HitRecord& hit, const Scene& scene, Vec3f& T, Vec3f& B, const Vec3f& N);
+Vec3f ApplyNormalMap(const Vec3f& texValue, const Vec3f& T, const Vec3f& B, const Vec3f& N);
+Vec3f ApplyBumpMap(const HitRecord& hit, const Scene& scene, const TextureMap* tex,
+    const Vec3f& T, const Vec3f& B, const Vec3f& N, const Vec2f& uv);
+Vec3f ComputePerlinGradient(const Vec3f& pos, float noiseScale);
+Vec3f ApplyPerlinBumpMap(const HitRecord& hit, const PerlinNoiseMap* perlinTex, const Vec3f& N, float bumpFactor);
+
 Vec3f PerturbReflection(const Vec3f& perfect_reflection, float roughness,
                         std::mt19937& rng, std::uniform_real_distribution<float>& dist);
 float Fresnel_Dielectric(float cosTheta, float cosPhi, float n1, float n2) noexcept;
 float Fresnel_Conductor(float cosTheta, float refractionIndex, float absorptionIndex) noexcept;
+
 bool InShadow(const Vec3f& point, const PointLight& I, const Vec3f& n, float eps_shadow, const Scene& scene, float time) noexcept;
 Vec3f ComputeDiffuseAndSpecular(const Vec3f& origin, const Material& material, const PointLight& light, 
     const Vec3f& point, const Vec3f& normal, const Vec3f& w0) noexcept;

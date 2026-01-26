@@ -1,0 +1,154 @@
+{
+  "Scene": {
+    "BackgroundColor": "125 125 125",
+    "ShadowRayEpsilon": "1e-3",
+    "MaxRecursionDepth": "6",
+    "Cameras": {
+      "Camera": {
+        "_id": "1",
+        "Position": "5.232500076293945 -5.666950702667236 4.410021781921387",
+        "Gaze": "-0.5773380994796753 0.7157089710235596 -0.3929905593395233",
+        "Up": "-0.24674050509929657 0.3058769106864929 0.9195426106452942",
+        "NearPlane": "-1 1 -0.5625 0.5625",
+        "NearDistance": "3",
+        "ImageResolution": "1920 1080",
+        "ImageName": "mytap_final.png",
+        "NumSamples": "256"
+      }
+    },
+    "Lights": {
+      "AmbientLight": "10 10 10",
+      "PointLight": [
+        {
+          "_id": "1",
+          "Position": "4.076245307922363 1.0054539442062378 5.903861999511719",
+          "Intensity": "3000.0 3000.0 3000.0"
+        },
+        {
+          "_id": "2",
+          "Position": "-4.076245307922363 1.0054539442062378 5.903861999511719",
+          "Intensity": "3000.0 3000.0 3000.0"
+        }
+      ]
+    },
+    "Materials": {
+      "Material": [
+        {
+          "_id": "1",
+          "AmbientReflectance": "0 0 0",
+          "DiffuseReflectance": "2.8 2.8 2.8",
+          "SpecularReflectance": "0.0 0.0 0.0",
+          "MirrorReflectance": "0.0 0.0 0.0",
+          "PhongExponent": "1"
+        },
+        {
+          "_id": "2",
+          "AmbientReflectance": "1 1 1",
+          "DiffuseReflectance": "0.8 0.8 0.8",
+          "SpecularReflectance": "0.5 0.5 0.5",
+          "MirrorReflectance": "0.5 0.5 0.5",
+          "PhongExponent": "1"
+        },
+        {
+          "_id": "3",
+          "AmbientReflectance": "1 1 1",
+          "DiffuseReflectance": "0.8 0.8 0.8",
+          "SpecularReflectance": "0.5 0.5 0.5",
+          "MirrorReflectance": "0.5 0.5 0.5",
+          "PhongExponent": "1"
+        },
+        {
+          "_id": "4",
+          "_type": "conductor",
+          "AmbientReflectance": "1 1 1",
+          "DiffuseReflectance": "0 0 0",
+          "SpecularReflectance": "0 0 0",
+          "MirrorReflectance": "1 0.86 0.57",
+          "RefractionIndex": "0.370",
+          "AbsorptionIndex": "2.820",
+          "Roughness": "0.25"
+        },
+        {
+          "_id": "5",
+          "_type": "dielectric",
+          "AmbientReflectance": "0 0 0",
+          "DiffuseReflectance": "0 0 0",
+          "SpecularReflectance": "0 0 0",
+          "AbsorptionCoefficient": "0.01 0.01 0.01",
+          "RefractionIndex": "1.55"
+        },
+        {
+          "_id": "6",
+          "_type": "conductor",
+          "AmbientReflectance": "1 1 1",
+          "DiffuseReflectance": "0 0 0",
+          "SpecularReflectance": "0 0 0",
+          "MirrorReflectance": "1 1 1",
+          "RefractionIndex": "0.370",
+          "AbsorptionIndex": "2.820",
+          "Roughness": "0"
+        }
+      ]
+    },
+    "Textures": {
+      "Images": {
+        "Image": {
+          "_data": "../textures/bathroom.jpg",
+          "_id": "1"
+        }
+      },
+      "TextureMap": [
+        {
+          "_id": "1",
+          "_type": "image",
+          "ImageId": "1",
+          "Interpolation": "trilinear",
+          "DecalMode": "replace_kd",
+          "Normalizer": "16"
+        },
+        {
+          "_id": "2",
+          "_type": "image",
+          "ImageId": "1",
+          "DecalMode": "bump_normal",
+          "BumpFactor": "0.01"
+        }
+      ]
+    },
+    "Objects": {
+      "Mesh": [
+        {
+          "_id": "1",
+          "Material": "1",
+          "Faces": {
+            "_plyFile": "mytap_final_ply/tap_room_without_back_wall.ply"
+          }
+        },
+        {
+          "_id": "2",
+          "Material": "6",
+          "Textures": "1 2",
+          "Faces": {
+            "_plyFile": "mytap_final_ply/tap_room_back_wall.ply"
+          }
+        },
+        {
+          "_id": "3",
+          "_shadingMode": "smooth",
+          "Material": "4",
+          "Faces": {
+            "_plyFile": "mytap_final_ply/mesh_2.ply"
+          }
+        },
+        {
+          "_id": "4",
+          "_shadingMode": "smooth",
+          "Material": "5",
+          "Faces": {
+            "_plyFile": "mytap_final_ply/mesh_3.ply"
+          }
+        }
+      ]
+    }
+  }
+}

@@ -1,6 +1,7 @@
 #ifndef MATHF_H
 #define MATHF_H
 
+#include <cstdint> 
 #include "BitCast.h"
 
 #define FLT_MAX 3.402823466e+38F

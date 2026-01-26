@@ -10,6 +10,10 @@ vector<uint32_t> topPrimIdx;
 vector<BVHNode> topBvhNodes; 
 uint32_t rootNodeIdx = 0, nodesUsed = 1;
 
+#ifndef M_PI
+#define M_PI 3.14159265358979323846
+#endif
+
 bool isCorrectPixel = false;
 int correct_j = 326;
 int correct_i = 228;
@@ -52,53 +56,57 @@ int main(int argc, char* argv[])
                 else
                     isCorrectPixel = false;
 
-                std::mt19937 rng(i * width + j);
-                std::uniform_real_distribution<float> dist(0.0f, 1.0f);
+                Vec3f color;
 
-                std::vector<int> shuffle_array(num_samples);
-                for (int idx = 0; idx < num_samples; ++idx) {
-                    shuffle_array[idx] = idx;
-                }
-                std::shuffle(shuffle_array.begin(), shuffle_array.end(), rng);
-
-                Vec3f color_sum(0.0f, 0.0f, 0.0f);
-
-                for (int s = 0; s < num_samples; ++s) {
-                    int sx = s % samples_per_side;
-                    int sy = s / samples_per_side;
-
-                    float jitter_x = (sx + dist(rng)) / samples_per_side;
-                    float jitter_y = (sy + dist(rng)) / samples_per_side;
-
-                    if (num_samples == 1) {
-                        jitter_x = 0.5f;
-                        jitter_y = 0.5f;
-                    }
-                    
-                    int aperture_idx = shuffle_array[s];
-                    int ax = aperture_idx % samples_per_side;
-                    int ay = aperture_idx / samples_per_side;
-                    float aperture_u = (ax + dist(rng)) / samples_per_side;  // [0, 1)
-                    float aperture_v = (ay + dist(rng)) / samples_per_side;  // [0, 1)
-
-                    if (num_samples == 1) {
-                        aperture_u = 0.5f;
-                        aperture_v = 0.5f;
-                    }
+                if (num_samples == 1) {
+                    std::mt19937 rng(i * width + j);
+                    std::uniform_real_distribution<float> dist(0.0f, 1.0f);
                     
                     // Time for motion blur
                     float time = dist(rng);
                     
-                    Ray ray = ComputeRay(scene, camera, j, i, 
-                                    jitter_x, jitter_y, 
-                                    aperture_u, aperture_v, 
-                                    time);
-                    Vec3f sample_color = ComputeColor(ray, scene, camera, rng, dist);
-                    
-                    color_sum = color_sum + sample_color;
+                    Ray ray = ComputeRay(scene, camera, j, i, 0.5, 0.5, 0.5, 0.5, time);
+                    color = ComputeColor(ray, scene, camera, rng, dist);
                 }
-                
-                Vec3f color = color_sum * inv_num_samples;
+                else {
+                    std::mt19937 rng(i * width + j);
+                    std::uniform_real_distribution<float> dist(0.0f, 1.0f);
+
+                    std::vector<int> shuffle_array(num_samples);
+                    for (int idx = 0; idx < num_samples; ++idx) {
+                        shuffle_array[idx] = idx;
+                    }
+                    std::shuffle(shuffle_array.begin(), shuffle_array.end(), rng);
+
+                    Vec3f color_sum(0.0f, 0.0f, 0.0f);
+
+                    for (int s = 0; s < num_samples; ++s) {
+                        int sx = s % samples_per_side;
+                        int sy = s / samples_per_side;
+
+                        float jitter_x = (sx + dist(rng)) / samples_per_side;
+                        float jitter_y = (sy + dist(rng)) / samples_per_side;
+                        
+                        int aperture_idx = shuffle_array[s];
+                        int ax = aperture_idx % samples_per_side;
+                        int ay = aperture_idx / samples_per_side;
+                        float aperture_u = (ax + dist(rng)) / samples_per_side;  // [0, 1)
+                        float aperture_v = (ay + dist(rng)) / samples_per_side;  // [0, 1)
+                        
+                        // Time for motion blur
+                        float time = dist(rng);
+                        
+                        Ray ray = ComputeRay(scene, camera, j, i, 
+                                        jitter_x, jitter_y, 
+                                        aperture_u, aperture_v, 
+                                        time);
+                        Vec3f sample_color = ComputeColor(ray, scene, camera, rng, dist);
+                        
+                        color_sum = color_sum + sample_color;
+                    }
+
+                    color = color_sum * inv_num_samples;
+                }
 
                 const size_t idx = (static_cast<size_t>(i) * width + j) * 3;
                 image[idx + 0] = (unsigned char)clampF(color.x, 0.0f, 255.0f);
@@ -372,6 +380,9 @@ Ray ComputeRay(const Scene& scene, const Camera& camera, int j, int i, float jit
     ray.time = time;
     ray.isInside = false;
 
+    ray.pixel_i = i;
+    ray.pixel_j = j;
+
     if (!camera.has_depth_of_field) { // Pinhole camera (no DOF)
         ray.origin = camera.position;
         ray.direction = (sample_point - camera.position).normalize();
@@ -412,9 +423,25 @@ Vec3f ComputeColor(const Ray& ray, const Scene& scene, const Camera& camera, std
     {
         return ApplyShading(ray, scene, camera, closestHit, rng, dist);
     }
-    else if (ray.depth == 0)
+    else if (ray.depth == 0) // Background texture or color
     {
-        return scene.background_color;
+        if (scene.background_texture_id >= 0) {
+            TextureMap* bgTex = scene.texture_maps[scene.background_texture_id].get();
+            
+            if (bgTex->needsUV()) {
+                // Use pixel coordinates from ray
+                float u = (float)ray.pixel_j / (float)camera.image_width;
+                float v = (float)ray.pixel_i / (float)camera.image_height;
+                
+                return bgTex->getValueUV(u, v, scene.image_data);
+            } else {
+                // Procedural: use ray direction
+                return bgTex->getValuePos(ray.direction);
+            }
+        }
+        else {
+            return scene.background_color;
+        }
     }
     else
     {
@@ -543,6 +570,12 @@ bool FindClosestHit(const Ray& ray, const Scene& scene, const Camera& camera, Hi
     closestHit.normal = normal;
     closestHit.kind = closestType;
     closestHit.t = minT;
+    closestHit.primId = index;
+
+    closestHit.beta = bary_beta;
+    closestHit.gamma = bary_gamma;
+    closestHit.hitFace = hitTriFace;
+    closestHit.meshId = closestMeshId;
     closestHit.primId = index;
     
     return true;
@@ -1291,13 +1324,80 @@ bool InShadow(const Vec3f& point, const PointLight& I, const Vec3f& n, float eps
 
 Vec3f ApplyShading(const Ray& ray, const Scene& scene, const Camera& camera, const HitRecord& closestHit, std::mt19937& rng, std::uniform_real_distribution<float>& dist)
 {
-    Material mat = scene.materials[closestHit.materialId - 1];
     Vec3f color = Vec3f(0, 0, 0);
+    Material mat = scene.materials[closestHit.materialId - 1];
 
+    // Check For Textures
+    Vec2f uv = ComputeUV(closestHit, scene);
+    const std::vector<int>* textureIds = GetTextureIds(closestHit, scene);
+
+    Vec3f T, B;
+    bool tangentBasisComputed = false;
     Vec3f n_original = closestHit.normal;
-    Vec3f d_inc = ray.direction;
+
+    if (textureIds && !textureIds->empty()) {
+        for (int texId : *textureIds) {
+            if (texId < 0 || texId >= (int)scene.texture_maps.size()) continue;
+            
+            TextureMap* tex = scene.texture_maps[texId].get();
+            Vec3f texValue;
+            
+            if (tex->needsUV()) {
+                texValue = tex->getValueUV(uv.u, uv.v, scene.image_data);
+            } else {
+                texValue = tex->getValuePos(closestHit.intersectionPoint);
+            }
+            
+            switch (tex->decal_mode) {
+                case DecalMode::ReplaceKd:
+                    mat.diffuse_refl = texValue;
+                    break;
+                    
+                case DecalMode::BlendKd:
+                    mat.diffuse_refl = (mat.diffuse_refl + texValue) * 0.5f;
+                    break;
+                    
+                case DecalMode::ReplaceKs:
+                    mat.specular_refl = texValue;
+                    break;
+                    
+                case DecalMode::ReplaceAll:
+                    return texValue;
+                    
+                case DecalMode::ReplaceNormal: {
+                    // NORMAL MAPPING
+                    if (!tangentBasisComputed) {
+                        ComputeTangentBasis(closestHit, scene, T, B, n_original);
+                        tangentBasisComputed = true;
+                    }
+                    n_original = ApplyNormalMap(texValue, T, B, n_original);
+                    break;
+                }
+                    
+                case DecalMode::BumpNormal: {
+                    // BUMP MAPPING
+                    if (!tangentBasisComputed) {
+                        ComputeTangentBasis(closestHit, scene, T, B, n_original);
+                        tangentBasisComputed = true;
+                    }
+                    
+                    const PerlinNoiseMap* perlinTex = dynamic_cast<const PerlinNoiseMap*>(tex);
+                    if (perlinTex) {
+                        n_original = ApplyPerlinBumpMap(closestHit, perlinTex, n_original, perlinTex->bump_factor);
+                    } else {
+                        n_original = ApplyBumpMap(closestHit, scene, tex, T, B, n_original, uv);
+                    }
+                    break;
+                }
+                    
+                case DecalMode::ReplaceBackground:
+                    break;
+            }
+        }
+    }
 
     Vec3f n_shading = n_original;
+    Vec3f d_inc = ray.direction;
 
     if (isCorrectPixel)
     {
@@ -1497,6 +1597,333 @@ Vec3f ApplyShading(const Ray& ray, const Scene& scene, const Camera& camera, con
     }
 
     return color;
+}
+
+Vec2f ComputeUV(const HitRecord& hit, const Scene& scene) {
+    switch (hit.kind) {
+        case PrimKind::Sphere: {
+            const Sphere& sphere = scene.spheres[hit.primId];
+            
+            // Hit point'i object space'e transform et
+            Vec3f hitLocalSpace = hit.intersectionPoint;
+            
+            if (sphere.hasTransform) {
+                // World space → Object space
+                Vec3f pLocal = sphere.invTransformation.transformPoint(hitLocalSpace);
+                hitLocalSpace = Vec3f(pLocal.x, pLocal.y, pLocal.z);
+            }
+            
+            // Object space'de center ve local coordinates
+            Vec3f center = scene.vertex_data[sphere.center_vertex_id - 1].pos;
+            Vec3f local = (hitLocalSpace - center) / sphere.radius;  // Normalize
+            
+            // Parametric coordinates
+            float theta = acos(clampF(local.y, -1.0f, 1.0f));
+            float phi = atan2(local.z, local.x);
+            
+            float u = (-phi + M_PI) / (2.0f * M_PI);
+            float v = theta / M_PI;
+            
+            return Vec2f(u, v);
+        }
+        
+        case PrimKind::Triangle: {
+            // Barycentric interpolation
+            const Triangle& tri = scene.triangles[hit.primId];
+            const Vertex& a = scene.vertex_data[tri.face.i0 - 1];
+            const Vertex& b = scene.vertex_data[tri.face.i1 - 1];
+            const Vertex& c = scene.vertex_data[tri.face.i2 - 1];
+            
+            float u = a.uv.u + hit.beta * (b.uv.u - a.uv.u)+ hit.gamma * (c.uv.u - a.uv.u);
+            float v = a.uv.v + hit.beta * (b.uv.v - a.uv.v)+ hit.gamma * (c.uv.v - a.uv.v);
+
+            return Vec2f(u, v);
+        }
+        
+        case PrimKind::Mesh: {
+            // Same as triangle but from mesh
+            const Mesh& mesh = scene.meshes[hit.meshId];
+            const Face& face = hit.hitFace;
+            
+            const Vertex& a = scene.vertex_data[face.i0 - 1];
+            const Vertex& b = scene.vertex_data[face.i1 - 1];
+            const Vertex& c = scene.vertex_data[face.i2 - 1];
+            
+            float u = a.uv.u + hit.beta * (b.uv.u - a.uv.u)+ hit.gamma * (c.uv.u - a.uv.u);
+            float v = a.uv.v + hit.beta * (b.uv.v - a.uv.v)+ hit.gamma * (c.uv.v - a.uv.v);
+
+            return Vec2f(u, v);
+        }
+        
+        default:
+            return Vec2f(0, 0);
+    }
+}
+
+const std::vector<int>* GetTextureIds(const HitRecord& hit, const Scene& scene) {
+    switch (hit.kind) {
+        case PrimKind::Sphere:
+            return &scene.spheres[hit.primId].texture_ids;
+            
+        case PrimKind::Triangle:
+            return &scene.triangles[hit.primId].texture_ids;
+            
+        case PrimKind::Mesh: {
+            const Mesh& mesh = scene.meshes[hit.meshId];
+            if (mesh.isInstance) {
+                return &scene.meshes[mesh.originalMeshId].texture_ids;
+            }
+            return &mesh.texture_ids;
+        }
+        
+        case PrimKind::Plane:
+            return &scene.planes[hit.primId].texture_ids;
+            
+        default:
+            return nullptr;
+    }
+}
+
+
+void ComputeTangentBasis(const HitRecord& hit, const Scene& scene, Vec3f& T, Vec3f& B, const Vec3f& N)
+{
+    switch (hit.kind) {
+        case PrimKind::Triangle:
+        case PrimKind::Mesh: {
+            // Get vertices and UV coordinates
+            const Face& face = hit.hitFace;
+            const Vertex& v0 = scene.vertex_data[face.i0 - 1];
+            const Vertex& v1 = scene.vertex_data[face.i1 - 1];
+            const Vertex& v2 = scene.vertex_data[face.i2 - 1];
+            
+            // Edge vectors in world space
+            Vec3f E1 = v1.pos - v0.pos;
+            Vec3f E2 = v2.pos - v0.pos;
+            
+            // UV differences
+            float du1 = v1.uv.u - v0.uv.u;
+            float dv1 = v1.uv.v - v0.uv.v;
+            float du2 = v2.uv.u - v0.uv.u;
+            float dv2 = v2.uv.v - v0.uv.v;
+            
+            float det = du1 * dv2 - du2 * dv1;
+            
+            if (std::abs(det) < 1e-8f) {
+                // Degenerate UV mapping - create arbitrary tangent basis
+                CreateOrthonormalBasis(N, T, B);
+                return;
+            }
+            
+            float invDet = 1.0f / det;
+            
+            // From slides:
+            // | T |   1   | dv2  -dv1 | | E1 |
+            // | B | = --- | -du2  du1 | | E2 |
+            //         det
+            T = (E1 * dv2 - E2 * dv1) * invDet;
+            B = (E2 * du1 - E1 * du2) * invDet;
+            
+            // Gram-Schmidt orthogonalization
+            T = (T - N * N.dotProduct(T)).normalize();
+            B = N.crossProduct(T);
+            break;
+        }
+        
+        case PrimKind::Sphere: {
+            // For spheres: compute from spherical parametrization
+            // p(θ,φ) = center + r*(sinθ cosφ, cosθ, sinθ sinφ)
+            // u = (-φ + π) / (2π),  v = θ / π
+            
+            const Sphere& sphere = scene.spheres[hit.primId];
+            Vec3f center = scene.vertex_data[sphere.center_vertex_id - 1].pos;
+            Vec3f local = (hit.intersectionPoint - center) / sphere.radius;
+            
+            float theta = acos(clampF(local.y, -1.0f, 1.0f));
+            float phi = atan2(local.z, local.x);
+            
+            float sinTheta = sin(theta);
+            float cosTheta = cos(theta);
+            float sinPhi = sin(phi);
+            float cosPhi = cos(phi);
+            
+            // ∂p/∂φ (tangent in U direction) - note: u is related to -φ
+            // T = r * sinθ * (sinφ, 0, -cosφ) → normalized: (sinφ, 0, -cosφ)
+            T = Vec3f(sinPhi, 0.0f, -cosPhi);
+            
+            // ∂p/∂θ (tangent in V direction)
+            // B = r * (cosθ cosφ, -sinθ, cosθ sinφ) → normalized
+            B = Vec3f(cosTheta * cosPhi, -sinTheta, cosTheta * sinPhi);
+            
+            // Orthonormalize
+            T = (T - N * N.dotProduct(T)).normalize();
+            B = N.crossProduct(T);
+            break;
+        }
+        
+        default:
+            CreateOrthonormalBasis(N, T, B);
+            break;
+    }
+}
+
+// ============== NORMAL MAPPING ==============
+
+Vec3f ApplyNormalMap(const Vec3f& texValue, const Vec3f& T, const Vec3f& B, const Vec3f& N)
+{
+    // texValue is in [0, 1] range (already normalized by /255)
+    // Convert to direction: map [0,1] → [-1,1]
+    Vec3f n_tangent;
+    n_tangent.x = texValue.x * 2.0f - 1.0f;  // R → X
+    n_tangent.y = texValue.y * 2.0f - 1.0f;  // G → Y  
+    n_tangent.z = texValue.z * 2.0f - 1.0f;  // B → Z
+    n_tangent = n_tangent.normalize();
+    
+    // TBN matrix transforms from tangent space to world space
+    // n_world = T * n.x + B * n.y + N * n.z
+    Vec3f n_world = T * n_tangent.x + B * n_tangent.y + N * n_tangent.z;
+    
+    return n_world.normalize();
+}
+
+// ============== BUMP MAPPING (Image Texture) ==============
+
+Vec3f ApplyBumpMap(const HitRecord& hit, const Scene& scene, const TextureMap* tex,
+                   const Vec3f& T, const Vec3f& B, const Vec3f& N, const Vec2f& uv)
+{
+    const ImageTextureMap* imgTex = dynamic_cast<const ImageTextureMap*>(tex);
+    if (!imgTex || imgTex->image_id < 0 || imgTex->image_id >= (int)scene.image_data.size()) {
+        return N;
+    }
+    
+    const ImageData& img = scene.image_data[imgTex->image_id];
+    float bumpFactor = imgTex->bump_factor;
+    
+    // Step sizes for finite differences (in UV space)
+    float du = 1.0f / static_cast<float>(img.width);
+    float dv = 1.0f / static_cast<float>(img.height);
+    
+    // Height function: grayscale value
+    auto getHeight = [&](float u, float v) -> float {
+        Vec3f color = img.sample(u, v, imgTex->interpolation);
+        // Grayscale: (R + G + B) / 3, normalized to [0, 1]
+        return (color.x + color.y + color.z) / (3.0f * 255.0f);
+    };
+    
+    // Sample heights for forward differences
+    float h = getHeight(uv.u, uv.v);
+    float h_u = getHeight(uv.u + du, uv.v);
+    float h_v = getHeight(uv.u, uv.v + dv);
+    
+    // Partial derivatives: ∂h/∂u and ∂h/∂v
+    float dh_du = (h_u - h) / du * bumpFactor;
+    float dh_dv = (h_v - h) / dv * bumpFactor;
+    
+    // Perturbed normal (from slides):
+    // n' = N - ∂h/∂u * T - ∂h/∂v * B
+    Vec3f n_perturbed = N - T * dh_du - B * dh_dv;
+    
+    return n_perturbed.normalize();
+}
+
+// ============== PERLIN NOISE GRADIENT ==============
+
+Vec3f ComputePerlinGradient(const Vec3f& pos, float noiseScale)
+{
+    // Finite differences for gradient computation
+    const float eps = 0.001f;
+    
+    // We need raw Perlin noise values, not the converted [0,1] version
+    // This is a helper that computes turbulence at a point
+    // You may need to expose PerlinNoiseMap::turbulence or compute inline
+    
+    // For now, using central differences with getValuePos
+    // Note: This is approximate since getValuePos applies conversion
+    
+    // Actually, for proper gradient, we need the raw noise before conversion
+    // Let's compute using finite differences on the final value
+    // The conversion is monotonic, so gradient direction is preserved
+    
+    auto sampleNoise = [&](const Vec3f& p) -> float {
+        // Inline Perlin turbulence computation
+        // This should match your PerlinNoiseMap implementation
+        
+        static const Vec3f gradients[16] = {
+            Vec3f(1, 1, 0),   Vec3f(-1, 1, 0),   Vec3f(1, -1, 0),   Vec3f(-1, -1, 0),
+            Vec3f(1, 0, 1),   Vec3f(-1, 0, 1),   Vec3f(1, 0, -1),   Vec3f(-1, 0, -1),
+            Vec3f(0, 1, 1),   Vec3f(0, -1, 1),   Vec3f(0, 1, -1),   Vec3f(0, -1, -1),
+            Vec3f(1, 1, 0),   Vec3f(-1, 1, 0),   Vec3f(0, -1, 1),   Vec3f(0, -1, -1)
+        };
+        
+        // Use your shuffled table here!
+        static const int table[16] = {
+            10, 2, 7, 14, 1, 13, 4, 9, 6, 0, 15, 8, 3, 11, 5, 12
+        };
+        
+        Vec3f scaled = p * noiseScale;
+        
+        int i = static_cast<int>(std::floor(scaled.x));
+        int j = static_cast<int>(std::floor(scaled.y));
+        int k = static_cast<int>(std::floor(scaled.z));
+        
+        float dx = scaled.x - i;
+        float dy = scaled.y - j;
+        float dz = scaled.z - k;
+        
+        auto fadeWeight = [](float d) -> float {
+            float absD = std::abs(d);
+            if (absD >= 1.0f) return 0.0f;
+            return -6*pow(absD,5) + 15*pow(absD,4) - 10*pow(absD,3) + 1;
+        };
+        
+        auto getGradient = [&](int ii, int jj, int kk) -> Vec3f {
+            int idx = table[std::abs(kk) % 16];
+            idx = table[std::abs(jj + idx) % 16];
+            idx = table[std::abs(ii + idx) % 16];
+            return gradients[idx];
+        };
+        
+        float sum = 0.0f;
+        for (int di = 0; di <= 1; di++) {
+            for (int dj = 0; dj <= 1; dj++) {
+                for (int dk = 0; dk <= 1; dk++) {
+                    Vec3f g = getGradient(i + di, j + dj, k + dk);
+                    Vec3f dist(dx - di, dy - dj, dz - dk);
+                    float dot = g.x * dist.x + g.y * dist.y + g.z * dist.z;
+                    float w = fadeWeight(dx - di) * fadeWeight(dy - dj) * fadeWeight(dz - dk);
+                    sum += w * dot;
+                }
+            }
+        }
+        
+        return sum;
+    };
+    
+    // Central differences
+    float gx = (sampleNoise(pos + Vec3f(eps, 0, 0)) - sampleNoise(pos - Vec3f(eps, 0, 0))) / (2.0f * eps);
+    float gy = (sampleNoise(pos + Vec3f(0, eps, 0)) - sampleNoise(pos - Vec3f(0, eps, 0))) / (2.0f * eps);
+    float gz = (sampleNoise(pos + Vec3f(0, 0, eps)) - sampleNoise(pos - Vec3f(0, 0, eps))) / (2.0f * eps);
+    
+    return Vec3f(gx, gy, gz);
+}
+
+// ============== BUMP MAPPING (Perlin Noise) ==============
+
+Vec3f ApplyPerlinBumpMap(const HitRecord& hit, const PerlinNoiseMap* perlinTex, const Vec3f& N, float bumpFactor)
+{
+    Vec3f pos = hit.intersectionPoint;
+    
+    // Compute gradient of Perlin noise at this point
+    Vec3f gradient = ComputePerlinGradient(pos, perlinTex->noise_scale) * bumpFactor;
+    
+    // Surface gradient: project gradient onto surface plane
+    // ∇_s h = ∇h - (∇h · N) * N
+    float dotGradN = gradient.dotProduct(N);
+    Vec3f surface_gradient = gradient - N * dotGradN;
+    
+    // Perturbed normal: n' = N - ∇_s h
+    Vec3f n_perturbed = N - surface_gradient;
+    
+    return n_perturbed.normalize();
 }
 
 Vec3f PerturbReflection(const Vec3f& perfect_reflection, float roughness,

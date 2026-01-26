@@ -530,6 +530,137 @@ Scene parser::loadFromJson(const string &filepath)
         }
     }
 
+    // --- TexCoordData ---
+    if (s.contains("TexCoordData")) {
+        string texCoordData = s["TexCoordData"]["_data"].get<string>();
+        std::istringstream iss(texCoordData);
+        float u, v;
+        size_t idx = 0;
+        while (iss >> u >> v && idx < scene.vertex_data.size()) {
+            scene.vertex_data[idx].uv = Vec2f(u, v);
+            idx++;
+        }
+    }
+
+    // --- Textures ---
+    if (s.contains("Textures")) {
+        auto& textures = s["Textures"];
+        
+        // --- Images ---
+        if (textures.contains("Images") && textures["Images"].contains("Image")) {
+            auto images = textures["Images"]["Image"];
+
+            if (!images.is_array()) {
+                images = json::array({images});
+            }
+            
+            for (auto& imgJson : images) {
+                ImageData img;
+                string imgPath = imgJson["_data"].get<string>();
+                string fullPath = join_with_json_dir(filepath, imgPath);
+                
+                if (!img.load(fullPath)) {
+                    std::cerr << "Warning: Failed to load image: " << fullPath << std::endl;
+                }
+                
+                scene.image_data.push_back(std::move(img));
+            }
+        }
+
+        // --- TextureMaps ---
+        if (textures.contains("TextureMap")) {
+            auto textureMaps = textures["TextureMap"];
+            if (!textureMaps.is_array()) {
+                textureMaps = json::array({textureMaps});
+            }
+            
+            for (auto& texJson : textureMaps) {
+                int id = std::stoi(texJson["_id"].get<string>());
+                string type = texJson["_type"].get<string>();
+                
+                string decalStr = texJson["DecalMode"].get<string>();
+                DecalMode decal = parseDecalMode(decalStr);
+                
+                if (type == "image") {
+                    auto tex = std::make_unique<ImageTextureMap>(id, decal);
+                    
+                    int imageId = std::stoi(texJson["ImageId"].get<string>());
+                    tex->image_id = imageId - 1; // 1-indexed to 0-indexed
+                    
+                    if (texJson.contains("Interpolation")) {
+                        string interpStr = texJson["Interpolation"].get<string>();
+                        tex->interpolation = parseInterpolationMode(interpStr);
+                    }
+                    
+                    if (texJson.contains("BumpFactor")) {
+                        tex->bump_factor = parseFloat(texJson["BumpFactor"].get<string>());
+                    }
+
+                    if (texJson.contains("Normalizer")) {
+                        tex->normalizer = parseFloat(texJson["Normalizer"].get<string>());
+                    }
+
+                    if (decal == DecalMode::ReplaceBackground) {
+                        scene.background_texture_id = scene.texture_maps.size(); // Current index
+                    }                
+                    
+                    scene.texture_maps.push_back(std::move(tex));
+                }
+                else if (type == "perlin") {
+                    auto tex = std::make_unique<PerlinNoiseMap>(id, decal);
+                    
+                    if (texJson.contains("NoiseScale")) {
+                        tex->noise_scale = parseFloat(texJson["NoiseScale"].get<string>());
+                    }
+                    
+                    if (texJson.contains("NoiseConversion")) {
+                        string convStr = texJson["NoiseConversion"].get<string>();
+                        tex->conversion = parseNoiseConversion(convStr);
+                    }
+                    
+                    if (texJson.contains("NumOctaves")) {
+                        tex->num_octaves = std::stoi(texJson["NumOctaves"].get<string>());
+                    }
+                    
+                    if (texJson.contains("BumpFactor")) {
+                        tex->bump_factor = parseFloat(texJson["BumpFactor"].get<string>());
+                    }
+
+                    if (decal == DecalMode::ReplaceBackground) {
+                        scene.background_texture_id = scene.texture_maps.size(); // Current index
+                    }
+
+                    scene.texture_maps.push_back(std::move(tex));
+                }
+                else if (type == "checkerboard") {
+                    auto tex = std::make_unique<CheckerboardMap>(id, decal);
+                    
+                    if (texJson.contains("Scale")) {
+                        tex->scale = parseFloat(texJson["Scale"].get<string>());
+                    }
+                    
+                    if (texJson.contains("Offset")) {
+                        tex->offset = parseFloat(texJson["Offset"].get<string>());
+                    }
+                    
+                    if (texJson.contains("BlackColor")) {
+                        tex->black_color = parseVec3f(texJson["BlackColor"].get<string>());
+                    }
+                    
+                    if (texJson.contains("WhiteColor")) {
+                        tex->white_color = parseVec3f(texJson["WhiteColor"].get<string>());
+                    }
+                    
+                    if (decal == DecalMode::ReplaceBackground) {
+                        scene.background_texture_id = scene.texture_maps.size(); // Current index
+                    }
+                
+                    scene.texture_maps.push_back(std::move(tex));
+                }
+            }
+        }
+    }
+
     // --- Objects ---
     if (s.contains("Objects"))
     {
@@ -656,6 +787,16 @@ Scene parser::loadFromJson(const string &filepath)
                     std::istringstream iss(mb_str);
                     iss >> mesh.motion_blur.x >> mesh.motion_blur.y >> mesh.motion_blur.z;
                     mesh.has_motion_blur = true;
+                }
+
+                // Texture Ids
+                if (mj.contains("Textures")) {
+                    string texIds = mj["Textures"].get<string>();
+                    std::istringstream iss(texIds);
+                    int texId;
+                    while (iss >> texId) {
+                        mesh.texture_ids.push_back(texId - 1); // 1-indexed to 0-indexed
+                    }
                 }
 
                 scene.meshes.push_back(mesh);
@@ -809,6 +950,16 @@ Scene parser::loadFromJson(const string &filepath)
                     iss >> tri.motion_blur.x >> tri.motion_blur.y >> tri.motion_blur.z;
                     tri.has_motion_blur = true;
                 }
+                
+                // Texture Ids
+                if (tj.contains("Textures")) {
+                    string texIds = tj["Textures"].get<string>();
+                    std::istringstream iss(texIds);
+                    int texId;
+                    while (iss >> texId) {
+                        tri.texture_ids.push_back(texId - 1); // 1-indexed to 0-indexed
+                    }
+                }
 
                 scene.triangles.push_back(tri);
             };
@@ -858,6 +1009,16 @@ Scene parser::loadFromJson(const string &filepath)
                     std::istringstream iss(mb_str);
                     iss >> sp.motion_blur.x >> sp.motion_blur.y >> sp.motion_blur.z;
                     sp.has_motion_blur = true;
+                }
+
+                // Texture Ids
+                if (sj.contains("Textures")) {
+                    string texIds = sj["Textures"].get<string>();
+                    std::istringstream iss(texIds);
+                    int texId;
+                    while (iss >> texId) {
+                        sp.texture_ids.push_back(texId - 1); // 1-indexed to 0-indexed
+                    }
                 }
 
                 scene.spheres.push_back(sp);
@@ -915,6 +1076,16 @@ Scene parser::loadFromJson(const string &filepath)
                     plane.has_motion_blur = true;
                 }
 
+                // Texture Ids
+                if (pj.contains("Textures")) {
+                    string texIds = pj["Textures"].get<string>();
+                    std::istringstream iss(texIds);
+                    int texId;
+                    while (iss >> texId) {
+                        plane.texture_ids.push_back(texId - 1); // 1-indexed to 0-indexed
+                    }
+                }
+
                 scene.planes.push_back(plane);
             };
 
@@ -941,6 +1112,30 @@ Vec3f parser::parseVec3f(const std::string& s) {
 float parser::parseFloat(const std::string& s)
 {
     return std::strtof(s.c_str(), nullptr);
+}
+
+DecalMode parser::parseDecalMode(const std::string& str) {
+    if (str == "replace_kd") return DecalMode::ReplaceKd;
+    if (str == "blend_kd") return DecalMode::BlendKd;
+    if (str == "replace_ks") return DecalMode::ReplaceKs;
+    if (str == "replace_all") return DecalMode::ReplaceAll;
+    if (str == "replace_background") return DecalMode::ReplaceBackground;
+    if (str == "replace_normal") return DecalMode::ReplaceNormal;
+    if (str == "bump_normal") return DecalMode::BumpNormal;
+    return DecalMode::ReplaceKd; // default
+}
+
+InterpolationMode parser::parseInterpolationMode(const std::string& str) {
+    if (str == "nearest") return InterpolationMode::Nearest;
+    if (str == "bilinear") return InterpolationMode::Bilinear;
+    if (str == "trilinear") return InterpolationMode::Trilinear;
+    return InterpolationMode::Bilinear; // default
+}
+
+NoiseConversion parser::parseNoiseConversion(const std::string& str) {
+    if (str == "absval") return NoiseConversion::Absval;
+    if (str == "linear") return NoiseConversion::Linear;
+    return NoiseConversion::Linear; // default
 }
 
 std::string parser::join_with_json_dir(const std::string& scene_path, const std::string& rel_or_abs)

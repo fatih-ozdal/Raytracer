@@ -30,6 +30,10 @@ struct HitRecord
     int primId;
     int materialId;
     PrimKind kind;
+
+    float beta, gamma;
+    int meshId;
+    Face hitFace;
 };
 
 #endif // HITRECORD_H

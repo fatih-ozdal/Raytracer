@@ -1,6 +1,8 @@
 #ifndef VEC3F_H
 #define VEC3F_H
 
+#include <ostream>
+#include <cassert>
 #include <cmath>
 #include "MathF.h"
 

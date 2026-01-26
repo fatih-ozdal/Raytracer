@@ -1,0 +1,95 @@
+
+        {
+          "Scene": {
+            "MaxRecursionDepth": "6",
+            "BackgroundColor": "0 0 0",
+            "Cameras": {
+              "Camera": {
+                "_id": "1",
+                "Position": "0 10 -9.2500000000",
+                "Gaze": "0 0 -1",
+                "Up": "0 1 0",
+                "NearPlane": "-1 1 -1 1",
+                "NearDistance": "1",
+                "ImageResolution": "800 800",
+                "NumSamples": "16",
+                "ImageName": "tunnel_of_doom_205.png"
+              }
+            },
+            "Lights": {
+              "AmbientLight": "25 25 25",
+              "PointLight": [
+                {
+                  "_id": "1",
+                  "Position": "5 5 5",
+                  "Intensity": "500000 100000 100000"
+                },
+                {
+                  "_id": "2",
+                  "Position": "-5 10 5",
+                  "Intensity": "100000 300000 300000"
+                },
+                {
+                  "_id": "3",
+                  "Position": "0 20 -20",
+                  "Intensity": "10000 10000 30000"
+                }
+              ]
+            },
+            "Materials": {
+              "Material": {
+                "_id": "1",
+                "AmbientReflectance": "0 0 0",
+                "DiffuseReflectance": "0.3 0.3 0.3",
+                "SpecularReflectance": "0.5 0.5 0.5",
+                "PhongExponent": "100"
+              }
+            },
+            "Textures": {
+              "TextureMap": {
+                  "_id": "1",
+                  "_type": "perlin",
+                  "DecalMode": "bump_normal",
+                  "NoiseConversion": "absval",
+                  "NoiseScale": "0.85"
+                }
+            },
+            "VertexData": {
+              "_data": "0 0 0 20 0 0 -20 0 0 0 30 0",
+              "_type": "xyz"
+            },
+            "Objects": {
+              "Plane": [
+                  {
+                    "_id": "1",
+                    "Material": "1",
+                    "Textures": "1",
+                    "Point": "1",
+                    "Normal": "0 1 0"
+                  },
+                  {
+                    "_id": "2",
+                    "Material": "1",
+                    "Textures": "1",
+                    "Point": "2",
+                    "Normal": "-1 0 0"
+                  },
+                  {
+                    "_id": "3",
+                    "Material": "1",
+                    "Textures": "1",
+                    "Point": "3",
+                    "Normal": "1 0 0"
+                  },
+                  {
+                    "_id": "4",
+                    "Material": "1",
+                    "Textures": "1",
+                    "Point": "4",
+                    "Normal": "0 -1 0"
+                  }
+              ]
+            }
+          }
+        }
+    
