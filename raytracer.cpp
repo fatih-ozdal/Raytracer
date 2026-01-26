@@ -1736,24 +1736,15 @@ void ComputeTangentBasis(const HitRecord& hit, const Scene& scene, Vec3f& T, Vec
 
             float invDet = 1.0f / det;
 
-            // From slides:
-            // | T |   1   | dv2  -dv1 | | E1 |
-            // | B | = --- | -du2  du1 | | E2 |
-            //         det
             T = (E1 * dv2 - E2 * dv1) * invDet;
             B = (E2 * du1 - E1 * du2) * invDet;
 
-            // Gram-Schmidt orthonormalization
             T = (T - N * N.dotProduct(T)).normalize();
             B = N.crossProduct(T);
             break;
         }
         
         case PrimKind::Sphere: {
-            // For spheres: compute from spherical parametrization
-            // p(θ,φ) = center + r*(sinθ cosφ, cosθ, sinθ sinφ)
-            // u = (-φ + π) / (2π),  v = θ / π
-
             const Sphere& sphere = scene.spheres[hit.primId];
             Vec3f center = scene.vertex_data[sphere.center_vertex_id - 1].pos;
             Vec3f local = (hit.intersectionPoint - center) / sphere.radius;
@@ -1766,13 +1757,9 @@ void ComputeTangentBasis(const HitRecord& hit, const Scene& scene, Vec3f& T, Vec
             float sinPhi = sin(phi);
             float cosPhi = cos(phi);
 
-            // ∂p/∂φ direction (tangent in U direction)
             T = Vec3f(sinPhi, 0.0f, -cosPhi);
-
-            // ∂p/∂θ direction (tangent in V direction)
             B = Vec3f(cosTheta * cosPhi, -sinTheta, cosTheta * sinPhi);
 
-            // Orthonormalize
             T = (T - N * N.dotProduct(T)).normalize();
             B = N.crossProduct(T);
             break;
@@ -1784,26 +1771,17 @@ void ComputeTangentBasis(const HitRecord& hit, const Scene& scene, Vec3f& T, Vec
     }
 }
 
-// ============== NORMAL MAPPING ==============
-
 Vec3f ApplyNormalMap(const Vec3f& texValue, const Vec3f& T, const Vec3f& B, const Vec3f& N)
 {
-    // texValue is in [0, 1] range (already normalized by /255)
-    // Convert to direction: map [0,1] → [-1,1]
     Vec3f n_tangent;
-    n_tangent.x = texValue.x * 2.0f - 1.0f;  // R → X
-    n_tangent.y = texValue.y * 2.0f - 1.0f;  // G → Y  
-    n_tangent.z = texValue.z * 2.0f - 1.0f;  // B → Z
+    n_tangent.x = texValue.x * 2.0f - 1.0f;
+    n_tangent.y = texValue.y * 2.0f - 1.0f;
+    n_tangent.z = texValue.z * 2.0f - 1.0f;
     n_tangent = n_tangent.normalize();
-    
-    // TBN matrix transforms from tangent space to world space
-    // n_world = T * n.x + B * n.y + N * n.z
+
     Vec3f n_world = T * n_tangent.x + B * n_tangent.y + N * n_tangent.z;
-    
     return n_world.normalize();
 }
-
-// ============== BUMP MAPPING (Image Texture) ==============
 
 Vec3f ApplyBumpMap(const HitRecord& hit, const Scene& scene, const TextureMap* tex,
                    const Vec3f& T, const Vec3f& B, const Vec3f& N, const Vec2f& uv)
@@ -1812,67 +1790,40 @@ Vec3f ApplyBumpMap(const HitRecord& hit, const Scene& scene, const TextureMap* t
     if (!imgTex || imgTex->image_id < 0 || imgTex->image_id >= (int)scene.image_data.size()) {
         return N;
     }
-    
+
     const ImageData& img = scene.image_data[imgTex->image_id];
     float bumpFactor = imgTex->bump_factor;
-    
-    // Step sizes for finite differences (in UV space)
+
     float du = 1.0f / static_cast<float>(img.width);
     float dv = 1.0f / static_cast<float>(img.height);
 
-    // Height function: grayscale value
     auto getHeight = [&](float u, float v) -> float {
         Vec3f color = img.sample(u, v, imgTex->interpolation);
-        // Rec. 709 luminance
         return (0.2126f * color.x + 0.7152f * color.y + 0.0722f * color.z) / 255.0f;
     };
 
-    // Sample heights for forward differences
     float h = getHeight(uv.u, uv.v);
     float h_u = getHeight(uv.u + du, uv.v);
     float h_v = getHeight(uv.u, uv.v + dv);
 
-    // Partial derivatives: ∂h/∂u and ∂h/∂v
-    // Divide by step size, scale by bumpFactor
     float dh_du = (h_u - h) / du * bumpFactor;
     float dh_dv = (h_v - h) / dv * bumpFactor;
 
-    // Clamp to prevent extreme normal perturbation
-    const float maxSlope = 1.0f;
-    dh_du = clampF(dh_du, -maxSlope, maxSlope);
-    dh_dv = clampF(dh_dv, -maxSlope, maxSlope);
+    dh_du = clampF(dh_du, -1.0f, 1.0f);
+    dh_dv = clampF(dh_dv, -1.0f, 1.0f);
 
-    // Perturbed normal (from slides):
-    // n' = N - ∂h/∂u * T - ∂h/∂v * B
     Vec3f n_perturbed = N - T * dh_du - B * dh_dv;
 
     float len = n_perturbed.length();
-    if (len < 1e-6f) return N;  // Safety: degenerate → use original
+    if (len < 1e-6f) return N;
     return n_perturbed / len;
 }
 
-// ============== PERLIN NOISE GRADIENT ==============
-
 Vec3f ComputePerlinGradient(const Vec3f& pos, float noiseScale)
 {
-    // Finite differences for gradient computation
     const float eps = 0.001f;
-    
-    // We need raw Perlin noise values, not the converted [0,1] version
-    // This is a helper that computes turbulence at a point
-    // You may need to expose PerlinNoiseMap::turbulence or compute inline
-    
-    // For now, using central differences with getValuePos
-    // Note: This is approximate since getValuePos applies conversion
-    
-    // Actually, for proper gradient, we need the raw noise before conversion
-    // Let's compute using finite differences on the final value
-    // The conversion is monotonic, so gradient direction is preserved
-    
+
     auto sampleNoise = [&](const Vec3f& p) -> float {
-        // Inline Perlin turbulence computation
-        // This should match your PerlinNoiseMap implementation
-        
         static const Vec3f gradients[16] = {
             Vec3f(1, 1, 0),   Vec3f(-1, 1, 0),   Vec3f(1, -1, 0),   Vec3f(-1, -1, 0),
             Vec3f(1, 0, 1),   Vec3f(-1, 0, 1),   Vec3f(1, 0, -1),   Vec3f(-1, 0, -1),
@@ -1880,7 +1831,6 @@ Vec3f ComputePerlinGradient(const Vec3f& pos, float noiseScale)
             Vec3f(1, 1, 0),   Vec3f(-1, 1, 0),   Vec3f(0, -1, 1),   Vec3f(0, -1, -1)
         };
         
-        // Use your shuffled table here!
         static const int table[16] = {
             10, 2, 7, 14, 1, 13, 4, 9, 6, 0, 15, 8, 3, 11, 5, 12
         };
@@ -1923,8 +1873,7 @@ Vec3f ComputePerlinGradient(const Vec3f& pos, float noiseScale)
         
         return sum;
     };
-    
-    // Central differences
+
     float gx = (sampleNoise(pos + Vec3f(eps, 0, 0)) - sampleNoise(pos - Vec3f(eps, 0, 0))) / (2.0f * eps);
     float gy = (sampleNoise(pos + Vec3f(0, eps, 0)) - sampleNoise(pos - Vec3f(0, eps, 0))) / (2.0f * eps);
     float gz = (sampleNoise(pos + Vec3f(0, 0, eps)) - sampleNoise(pos - Vec3f(0, 0, eps))) / (2.0f * eps);
@@ -1932,23 +1881,15 @@ Vec3f ComputePerlinGradient(const Vec3f& pos, float noiseScale)
     return Vec3f(gx, gy, gz);
 }
 
-// ============== BUMP MAPPING (Perlin Noise) ==============
-
 Vec3f ApplyPerlinBumpMap(const HitRecord& hit, const PerlinNoiseMap* perlinTex, const Vec3f& N, float bumpFactor)
 {
     Vec3f pos = hit.intersectionPoint;
-    
-    // Compute gradient of Perlin noise at this point
     Vec3f gradient = ComputePerlinGradient(pos, perlinTex->noise_scale) * bumpFactor;
-    
-    // Surface gradient: project gradient onto surface plane
-    // ∇_s h = ∇h - (∇h · N) * N
+
     float dotGradN = gradient.dotProduct(N);
     Vec3f surface_gradient = gradient - N * dotGradN;
-    
-    // Perturbed normal: n' = N - ∇_s h
+
     Vec3f n_perturbed = N - surface_gradient;
-    
     return n_perturbed.normalize();
 }
 

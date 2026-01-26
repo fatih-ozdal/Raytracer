@@ -57,39 +57,6 @@ bool ImageData::load(const std::string& path) {
         return false;
     }
 
-    std::cout << "Loaded texture: " << path
-              << " (" << width << "x" << height
-              << ", " << channels << " channels)" << std::endl;
-
-    // DEBUG: Print corner pixels and some UV samples
-    std::cout << "=== DEBUG: Image data for " << path << " ===" << std::endl;
-
-    // Print raw data at corners
-    auto printPixel = [&](int x, int y, const char* name) {
-        int idx = (y * width + x) * channels;
-        std::cout << "  " << name << " (" << x << "," << y << "): ";
-        for (int c = 0; c < channels; c++) {
-            std::cout << (int)data[idx + c] << " ";
-        }
-        std::cout << std::endl;
-    };
-
-    printPixel(0, 0, "TopLeft");
-    printPixel(width-1, 0, "TopRight");
-    printPixel(0, height-1, "BottomLeft");
-    printPixel(width-1, height-1, "BottomRight");
-    printPixel(width/2, height/2, "Center");
-
-    // Test UV sampling
-    std::cout << "  UV samples (after getPixel):" << std::endl;
-    Vec3f uv00 = getPixel(0, 0);
-    Vec3f uv11 = getPixel(width-1, height-1);
-    Vec3f uvCenter = getPixel(width/2, height/2);
-    std::cout << "    UV(0,0) = (" << uv00.x << "," << uv00.y << "," << uv00.z << ")" << std::endl;
-    std::cout << "    UV(1,1) = (" << uv11.x << "," << uv11.y << "," << uv11.z << ")" << std::endl;
-    std::cout << "    UV(0.5,0.5) = (" << uvCenter.x << "," << uvCenter.y << "," << uvCenter.z << ")" << std::endl;
-    std::cout << "=== END DEBUG ===" << std::endl;
-
     return true;
 }
 
@@ -198,31 +165,14 @@ Vec3f ImageData::getPixel(int x, int y) const {
 ImageTextureMap::ImageTextureMap(int id, DecalMode mode)
     : TextureMap(id, mode), image_id(-1),
       interpolation(InterpolationMode::Bilinear),
-      bump_factor(0.01f), normalizer(255) {}  // bump_factor: small default for /du formula
+      bump_factor(0.01f), normalizer(255) {}
 
 Vec3f ImageTextureMap::getValueUV(float u, float v, const std::vector<ImageData>& images) const
 {
-    static int debug_count = 0;
-    const int DEBUG_LIMIT = 20;  // Only print first 20 samples per texture
-
     if (image_id < 0 || image_id >= static_cast<int>(images.size())) {
-        std::cerr << "Invalid image_id: " << image_id << std::endl;
-        return Vec3f(1, 0, 1);  // Magenta error
+        return Vec3f(1, 0, 1);
     }
-
-    Vec3f result = images[image_id].sample(u, v, interpolation) / normalizer;
-
-    if (debug_count < DEBUG_LIMIT) {
-        const auto& img = images[image_id];
-        std::cout << "[DEBUG UV #" << debug_count << "] image_id=" << image_id
-                  << " u=" << u << " v=" << v
-                  << " -> pixel ~(" << (int)(u * img.width) << "," << (int)(v * img.height) << ")"
-                  << " = (" << result.x << "," << result.y << "," << result.z << ")"
-                  << std::endl;
-        debug_count++;
-    }
-
-    return result;
+    return images[image_id].sample(u, v, interpolation) / normalizer;
 }
 
 PerlinNoiseMap::PerlinNoiseMap(int id, DecalMode mode)
