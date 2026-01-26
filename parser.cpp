@@ -12,6 +12,7 @@
 #include <iostream>
 #include <unordered_set>
 
+
 using std::cout;
 using std::endl;
 
@@ -531,6 +532,78 @@ Scene parser::loadFromJson(const string &filepath)
     }
 
     // --- Objects ---
+   if (s.contains("Volumes")) {
+        json volNode = s["Volumes"];
+
+        // FIX: Handle the nested structure "Volumes": { "Volume": { ... } }
+        // If "Volumes" is an object containing a key "Volume", drill down into it.
+        if (volNode.is_object() && volNode.contains("Volume")) {
+            volNode = volNode["Volume"];
+        }
+
+        // Reserve space if it's an array
+        int volCount = volNode.is_array() ? volNode.size() : 1;
+        scene.volumes.reserve(volCount);
+
+        auto parseOneVolume = [&](const json& vj) {
+            Volume vol;
+
+            // 1. Load parameters (Physics)
+            vol.sigma_a = parser::parseVec3f(vj.value("Absorption", "0.0 0.0 0.0"));
+            vol.sigma_s = parser::parseVec3f(vj.value("Scattering", "1.0 1.0 1.0"));
+            vol.g       = parser::parseFloat(vj.value("Asymmetry", "0.0"));
+            vol.scale   = parser::parseFloat(vj.value("Scale", "2.0"));
+
+            // 2. Load NanoVDB Grid Path
+            // Robust check for different key names (path, Path, file, File)
+            string nvdb_rel;
+            if (vj.contains("path")) nvdb_rel = vj["path"];
+            else if (vj.contains("Path")) nvdb_rel = vj["Path"];
+            else if (vj.contains("File")) nvdb_rel = vj["File"];
+            else if (vj.contains("file")) nvdb_rel = vj["file"];
+            else {
+                std::cerr << "Error: Volume definition missing 'path' or 'File' key." << std::endl;
+                // Don't crash, just skip this volume
+                return;
+            }
+
+            string nvdb_path =  nvdb_rel;
+            
+            try {
+                // Read the first grid from the file
+                auto handle = nanovdb::io::readGrid<nanovdb::HostBuffer>(nvdb_path);
+                vol.handle = std::move(handle);
+                vol.grid = vol.handle.grid<float>();
+
+                if (!vol.grid) {
+                    std::cerr << "Error: Loaded VDB is not a FloatGrid: " << nvdb_path << std::endl;
+                    return;
+                }
+                
+                // 3. Extract World Space AABB
+                auto bbox = vol.grid->worldBBox();
+                vol.worldBounds.min = Vec3f(bbox.min()[0], bbox.min()[1], bbox.min()[2]);
+                vol.worldBounds.max = Vec3f(bbox.max()[0], bbox.max()[1], bbox.max()[2]);
+                
+                // std::cout << "Volume Loaded: " << nvdb_path << " Bounds: " << vol.worldBounds.min << " -> " << vol.worldBounds.max << std::endl;
+
+            } catch (const std::exception& e) {
+                std::cerr << "Failed to load volume: " << nvdb_path << "\nReason: " << e.what() << std::endl;
+                return;
+            }
+
+            scene.volumes.push_back(std::move(vol));
+        };
+
+        // Handle Array vs Single Object
+        if (volNode.is_array()) {
+            for (const auto& vj : volNode) parseOneVolume(vj);
+        } else {
+            parseOneVolume(volNode);
+        }
+    }
+    
+    
     if (s.contains("Objects"))
     {
         const auto& objects = s["Objects"];

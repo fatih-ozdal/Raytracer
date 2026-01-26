@@ -3,4 +3,5 @@ raytracer
 *.pdf
 *.png
 bozuk/
+build/
 .vscode/settings.json

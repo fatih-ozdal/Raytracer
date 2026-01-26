@@ -81,4 +81,14 @@ Vec3f ComputeDiffuseAndSpecular(const Material& material, const Vec3f& incoming_
                                const Vec3f& light_dir, const Vec3f& normal, const Vec3f& w0) noexcept;
 void CreateOrthonormalBasis(const Vec3f& n, Vec3f& tangent, Vec3f& bitangent);
 
+float phase_function(const Vec3f& dir_in, const Vec3f& dir_out, float g) noexcept;
+
+// 2. NanoVDB Density Lookup Wrapper
+float SampleDensity(const Volume& vol, const Vec3f& p);
+
+// 3. Shadow Transmittance (How much light reaches a point through the volume)
+float GetVolumeTransmittance(const Vec3f& p, const Vec3f& lightPos, const Scene& scene);
+
+// 4. Main Volume Integrator (Ray Marching)
+Vec3f integrate_volume(const Ray& ray, const Scene& scene, float t_entry, float t_exit, const Vec3f& background_color);
 #endif // RAYTRACER_H

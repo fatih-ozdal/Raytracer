@@ -8,6 +8,9 @@
 #include "Vec3f.h"
 #include "Aabb.h"
 #include "Mat4f.h"
+#include <nanovdb/util/IO.h>
+#include <nanovdb/NanoVDB.h>
+#include <nanovdb/util/GridHandle.h>
 
 using json = nlohmann::json;
 using std::vector;
@@ -188,6 +191,24 @@ struct Plane
         invTransformation = Mat4f::identity();
     }
 };
+struct Volume
+{
+    // The handle manages the memory of the grid
+    nanovdb::GridHandle<nanovdb::HostBuffer> handle;
+    
+    // Pointer to the actual grid for fast access
+    const nanovdb::FloatGrid* grid = nullptr;
+
+    // Optical properties
+    Vec3f sigma_a; // Absorption coefficient
+    Vec3f sigma_s; // Scattering coefficient
+    float g;       // Phase function asymmetry (anisotropy)
+    float scale;   // Density multiplier
+
+    AABB worldBounds; // Converted from NanoVDB bounds for intersection tests
+
+    Volume() : g(0.0f), scale(1.0f) {}
+};
 
 struct Scene
 {
@@ -205,6 +226,7 @@ struct Scene
     vector<Triangle> triangles;
     vector<Sphere> spheres;
     vector<Plane> planes;
+    vector<Volume> volumes;
     std::unordered_map<int, int> meshIdToIndex;
     
     // Transformations
