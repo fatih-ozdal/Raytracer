@@ -1708,7 +1708,7 @@ void ComputeTangentBasis(const HitRecord& hit, const Scene& scene, Vec3f& T, Vec
             
             float det = du1 * dv2 - du2 * dv1;
             
-            if (std::abs(det) < 1e-8f) {
+            if (std::abs(det) < 1e-6f) {
                 // Degenerate UV mapping - create arbitrary tangent basis
                 CreateOrthonormalBasis(N, T, B);
                 return;
@@ -1801,28 +1801,36 @@ Vec3f ApplyBumpMap(const HitRecord& hit, const Scene& scene, const TextureMap* t
     // Step sizes for finite differences (in UV space)
     float du = 1.0f / static_cast<float>(img.width);
     float dv = 1.0f / static_cast<float>(img.height);
-    
+
     // Height function: grayscale value
     auto getHeight = [&](float u, float v) -> float {
         Vec3f color = img.sample(u, v, imgTex->interpolation);
-        // Grayscale: (R + G + B) / 3, normalized to [0, 1]
-        return (color.x + color.y + color.z) / (3.0f * 255.0f);
+        // Rec. 709 luminance
+        return (0.2126f * color.x + 0.7152f * color.y + 0.0722f * color.z) / 255.0f;
     };
-    
+
     // Sample heights for forward differences
     float h = getHeight(uv.u, uv.v);
     float h_u = getHeight(uv.u + du, uv.v);
     float h_v = getHeight(uv.u, uv.v + dv);
-    
+
     // Partial derivatives: ∂h/∂u and ∂h/∂v
+    // Mathematically correct: divide by step size, scale by bumpFactor
     float dh_du = (h_u - h) / du * bumpFactor;
     float dh_dv = (h_v - h) / dv * bumpFactor;
-    
+
+    // Clamp slopes to prevent extreme normal perturbation
+    const float maxSlope = 1.0f;
+    dh_du = clampF(dh_du, -maxSlope, maxSlope);
+    dh_dv = clampF(dh_dv, -maxSlope, maxSlope);
+
     // Perturbed normal (from slides):
     // n' = N - ∂h/∂u * T - ∂h/∂v * B
     Vec3f n_perturbed = N - T * dh_du - B * dh_dv;
-    
-    return n_perturbed.normalize();
+
+    float len = n_perturbed.length();
+    if (len < 1e-6f) return N;  // Safety: degenerate → use original
+    return n_perturbed / len;
 }
 
 // ============== PERLIN NOISE GRADIENT ==============
