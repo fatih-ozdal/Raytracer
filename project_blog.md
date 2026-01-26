@@ -369,24 +369,50 @@ float shadow_trick = 0.3f;
 
 By reducing `sigma_t` for shadow rays, we let more light penetrate the volume. This **approximates** the effect of multiple scattering: even deep inside a cloud, some light reaches you via indirect paths.
 
-## Images
-Scale 02 04
-<img width="800" height="800" alt="bunny_scale_02" src="https://github.com/user-attachments/assets/2fb6925b-54b9-4fda-9b62-3bf47f711150" />
-<img width="800" height="800" alt="bunny_scale_04" src="https://github.com/user-attachments/assets/0f4816fe-b660-4cb2-a193-3b9abb9b4b74" />
-<img width="800" height="800" alt="green_radiance" src="https://github.com/user-attachments/assets/7bfa9470-800a-4e06-8e50-84ea555e2dd5" />
+## Results
 
--Light inside the volume Step size 0.3 0.4 0.5
-<img width="800" height="800" alt="volume_test0_3" src="https://github.com/user-attachments/assets/c6ac095f-1d2b-4f99-b6aa-cb0aeea39b90" />
-<img width="800" height="800" alt="volume_test_0 4" src="https://github.com/user-attachments/assets/3b93123e-fb28-41c9-9d6a-972a499a75ad" />
-<img width="800" height="800" alt="volume_test_step_size0 5" src="https://github.com/user-attachments/assets/4dd43ff3-e886-4ca3-ae2f-6cb207e04c4f" />
+### Density Scale Comparison (Bunny Cloud)
 
+The `scale` parameter controls how "thick" the volume appears. Higher values mean denser smoke with more light absorption.
 
-<img width="800" height="800" alt="fire_bend" src="https://github.com/user-attachments/assets/d91e721e-e657-4f21-b3da-75024c5a8bac" />
-<img width="800" height="800" alt="red_green_smoke" src="https://github.com/user-attachments/assets/83d6d575-e915-4c4c-83c6-a39ee29cab2e" />
-<img width="800" height="800" alt="bunny_gray" src="https://github.com/user-attachments/assets/2399c890-389b-4789-bb89-869ca79d1668" />
+| Render | Scale | Render Time |
+|--------|-------|-------------|
+| <img width="400" alt="bunny_scale_02" src="https://github.com/user-attachments/assets/2fb6925b-54b9-4fda-9b62-3bf47f711150" /> | `scale = 0.2` | _TBD_ |
+| <img width="400" alt="bunny_scale_04" src="https://github.com/user-attachments/assets/0f4816fe-b660-4cb2-a193-3b9abb9b4b74" /> | `scale = 0.4` | _TBD_ |
 
+### Colored Scattering (Green Radiance)
 
+Demonstrates per-channel scattering coefficients creating colored volumetric effects.
 
+| Render | Settings | Render Time |
+|--------|----------|-------------|
+| <img width="400" alt="green_radiance" src="https://github.com/user-attachments/assets/7bfa9470-800a-4e06-8e50-84ea555e2dd5" /> | Green scattering | _TBD_ |
+
+---
+
+### Step Size Comparison (Light Inside Volume)
+
+Step size controls quality vs. performance tradeoff. Smaller steps = higher quality but slower renders.
+
+| Render | Step Size | Render Time |
+|--------|-----------|-------------|
+| <img width="400" alt="volume_test0_3" src="https://github.com/user-attachments/assets/c6ac095f-1d2b-4f99-b6aa-cb0aeea39b90" /> | `step_size = 0.3` | _TBD_ |
+| <img width="400" alt="volume_test_0 4" src="https://github.com/user-attachments/assets/3b93123e-fb28-41c9-9d6a-972a499a75ad" /> | `step_size = 0.4` | _TBD_ |
+| <img width="400" alt="volume_test_step_size0 5" src="https://github.com/user-attachments/assets/4dd43ff3-e886-4ca3-ae2f-6cb207e04c4f" /> | `step_size = 0.5` | _TBD_ |
+
+---
+
+### Fire & Smoke Effects
+
+Demonstrating different volumetric materials with absorption/scattering coefficients.
+
+| Render | Description | Render Time |
+|--------|-------------|-------------|
+| <img width="400" alt="fire_bend" src="https://github.com/user-attachments/assets/d91e721e-e657-4f21-b3da-75024c5a8bac" /> | Fire VDB with red/orange emission | _TBD_ |
+| <img width="400" alt="red_green_smoke" src="https://github.com/user-attachments/assets/83d6d575-e915-4c4c-83c6-a39ee29cab2e" /> | Dual-color smoke (red + green scattering) | _TBD_ |
+| <img width="400" alt="bunny_gray" src="https://github.com/user-attachments/assets/2399c890-389b-4789-bb89-869ca79d1668" /> | Neutral gray bunny cloud | _TBD_ |
+
+---
 
 
 
@@ -394,7 +420,5 @@ Scale 02 04
 ## Conclusion
 
 Implementing volumetric rendering required integrating external data formats (NanoVDB), understanding participating media physics (Beer's Law, phase functions), and optimizing ray marching for performance (AABB culling, early termination). The result is a renderer capable of producing realistic fog, smoke, and clouds from industry-standard VDB files.
-
-4. **Per-channel Beer's Law**: Colored transmittance enables realistic colored fog/glass.
 
 The code is available at [fatih-ozdal/Raytracer](https://github.com/fatih-ozdal/Raytracer/tree/feature/volume).
