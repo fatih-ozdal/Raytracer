@@ -381,6 +381,11 @@ Scale 02 04
 <img width="800" height="800" alt="volume_test_step_size0 5" src="https://github.com/user-attachments/assets/4dd43ff3-e886-4ca3-ae2f-6cb207e04c4f" />
 
 
+<img width="800" height="800" alt="fire_bend" src="https://github.com/user-attachments/assets/d91e721e-e657-4f21-b3da-75024c5a8bac" />
+<img width="800" height="800" alt="red_green_smoke" src="https://github.com/user-attachments/assets/83d6d575-e915-4c4c-83c6-a39ee29cab2e" />
+<img width="800" height="800" alt="bunny_gray" src="https://github.com/user-attachments/assets/2399c890-389b-4789-bb89-869ca79d1668" />
+
+
 
 
 
