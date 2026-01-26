@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(find:*)",
+      "Bash(git -C /c/Projects/RT/Raytracer log --oneline --all)",
+      "Bash(ls:*)",
+      "Bash(git -C /c/Projects/RT/Raytracer log feature/volume --oneline -20)",
+      "Bash(git -C /c/Projects/RT/Raytracer show de11569 --stat)"
+    ]
+  }
+}
