@@ -1,0 +1,98 @@
+{
+  "Scene": {
+    "BackgroundColor": "12 12 12",
+    "ShadowRayEpsilon": "1e-3",
+    "MaxRecursionDepth": "6",
+    "Cameras": {
+      "Camera": {
+        "_id": "1",
+        "Position": "10.793930053710938 -13.800168991088867 8.283384323120117",
+        "Gaze": "-0.584232747554779 0.7294511795043945 -0.3557710647583008",
+        "Up": "-0.2224043905735016 0.27768564224243164 0.9345731735229492",
+        "NearPlane": "-1 1 -0.5625 0.5625",
+        "NearDistance": "3",
+        "ImageResolution": "1920 1080",
+        "ImageName": "teapot_roughness.exr",
+        "NumSamples": "900",
+        "Scissor2": "0 1919 650 750",
+        "Tonemap": {
+          "TMO": "Photographic",
+          "TMOOptions": "0.18 1",
+          "Saturation": "1.0",
+          "Gamma": "2.2",
+          "Extension": "_phot.png"
+        }
+      }
+    },
+    "Textures": {
+      "Images": {
+        "Image": {
+          "_data": "textures/grace-new-blur.exr",
+          "_id": "1"
+        }
+      }
+    },
+    "Lights": {
+      "SphericalDirectionalLight": {
+        "_id": "1",
+        "_type": "latlong",
+        "ImageId": "1",
+        "Sampler": "cosine"
+      }
+    },
+    "Materials": {
+      "Material": [
+        {
+          "_id": "1",
+          "AmbientReflectance": "1 1 1",
+          "DiffuseReflectance": "0.800000011920929 0.800000011920929 0.800000011920929",
+          "SpecularReflectance": "0.1 0.1 0.1",
+          "MirrorReflectance": "1.0 1.0 1.0",
+          "PhongExponent": "1"
+        },
+        {
+          "_id": "2",
+          "_type": "dielectric",
+          "AmbientReflectance": "0 0 0",
+          "DiffuseReflectance": "0 0 0",
+          "MirrorReflectance": "1 1 1",
+          "SpecularReflectance": "0 0 0",
+          "AbsorptionCoefficient": "0.01 0.01 0.01",
+          "RefractionIndex": "1.55",
+          "Roughness": "0.4"
+        },
+        {
+          "_id": "3",
+          "_type": "mirror",
+          "AmbientReflectance": "1 1 1",
+          "DiffuseReflectance": "1 1 1",
+          "SpecularReflectance": "0 0 0",
+          "MirrorReflectance": "0.77 0.77 0.77"
+        }
+      ]
+    },
+    "VertexData": {
+      "_data": "0 0 0",
+      "_type": "xyz"
+    },
+    "Objects": {
+      "Mesh": [
+        {
+          "_id": "1",
+          "Material": "2",
+          "_shadingMode": "smooth",
+          "Faces": {
+            "_plyFile": "teapot_ply/mesh_1.ply"
+          }
+        },
+        {
+          "_id": "2",
+          "Material": "3",
+          "Faces": {
+            "_plyFile": "teapot_ply/mesh_2.ply"
+          }
+        }
+      ]
+    }
+  }
+}

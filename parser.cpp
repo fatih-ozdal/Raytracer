@@ -331,6 +331,82 @@ Scene parser::loadFromJson(const string &filepath)
             }
         }
 
+        // --- DirectionalLights ---
+        if (lights.contains("DirectionalLight")) {
+            const auto& dLightNode = lights["DirectionalLight"];
+
+            int dLightCount = dLightNode.is_array() ? dLightNode.size() : 1;
+            scene.directional_lights.reserve(dLightCount);
+
+            auto parseOneDirLight = [&](const json& dl) {
+                DirectionalLight L;
+
+                L.direction = parser::parseVec3f(dl["Direction"].get<std::string>());
+                float len = L.direction.length();
+                if (len < 1e-6f) {
+                    L.direction = Vec3f(0.0f, -1.0f, 0.0f);
+                } else {
+                    L.direction = L.direction.normalize();
+                }
+
+                L.radiance = parser::parseVec3f(dl["Radiance"].get<std::string>());
+
+                scene.directional_lights.push_back(L);
+            };
+
+            if (dLightNode.is_array()) {
+                for (const auto& dl : dLightNode) parseOneDirLight(dl);
+            } else {
+                parseOneDirLight(dLightNode);
+            }
+        }
+
+        // --- SpotLights ---
+        if (lights.contains("SpotLight")) {
+            const auto& sLightNode = lights["SpotLight"];
+
+            int sLightCount = sLightNode.is_array() ? sLightNode.size() : 1;
+            scene.spot_lights.reserve(sLightCount);
+
+            auto parseOneSpotLight = [&](const json& sj) {
+                SpotLight s;
+
+                s.position = parser::parseVec3f(sj["Position"].get<std::string>());
+                s.direction = parser::parseVec3f(sj["Direction"].get<std::string>());
+                float len = s.direction.length();
+                if (len < 1e-6f) {
+                    s.direction = Vec3f(0.0f, -1.0f, 0.0f);
+                } else {
+                    s.direction = s.direction.normalize();
+                }
+
+                s.intensity = parser::parseVec3f(sj["Intensity"].get<std::string>());
+
+                s.coverage_angle = parser::parseFloat(sj.value("CoverageAngle", "30"));
+                s.falloff_angle = parser::parseFloat(sj.value("FalloffAngle", "20"));
+
+                if (s.falloff_angle > s.coverage_angle) {
+                    std::cerr << "Warning: SpotLight FalloffAngle > CoverageAngle; clamping FalloffAngle to CoverageAngle\n";
+                    s.falloff_angle = s.coverage_angle;
+                }
+
+                // Apply transformations if present
+                if (sj.contains("Transformations")) {
+                    Mat4f transform = ParseTransformations(sj.at("Transformations").get<string>(), scene);
+                    s.position = transform.transformPoint(s.position);
+                    s.direction = transform.transformVector(s.direction).normalize();
+                }
+
+                scene.spot_lights.push_back(s);
+            };
+
+            if (sLightNode.is_array()) {
+                for (const auto& sj : sLightNode) parseOneSpotLight(sj);
+            } else {
+                parseOneSpotLight(sLightNode);
+            }
+        }
+
     }
 
     // --- Cameras ---

@@ -56,6 +56,21 @@ struct AreaLight {
     Vec3f radiance;
 };
 
+struct DirectionalLight {
+    Vec3f direction;
+    Vec3f radiance;
+    DirectionalLight() : direction(0, -1, 0), radiance(0, 0, 0) {}
+};
+
+struct SpotLight {
+    Vec3f position;
+    Vec3f direction;    // points WHERE the light aims (center cone axis)
+    Vec3f intensity;    // same semantic as PointLight (wattage), uses 1/r^2
+    float coverage_angle; // degrees
+    float falloff_angle;  // degrees
+    SpotLight() : position(0,0,0), direction(0, -1, 0), intensity(0,0,0), coverage_angle(30.0f), falloff_angle(20.0f) {}
+};
+
 enum class MaterialType : uint32_t
 {
     None = 0,
@@ -215,6 +230,8 @@ struct Scene
     Vec3f ambient_light;
     vector<PointLight> point_lights;
     std::vector<AreaLight> area_lights;
+    std::vector<DirectionalLight> directional_lights;
+    std::vector<SpotLight> spot_lights;
     vector<Material> materials;
     vector<Vertex> vertex_data;
     vector<Vec2f> tex_coord_data;  // Separate texture coordinates

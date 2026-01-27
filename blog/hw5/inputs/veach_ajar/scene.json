@@ -1,0 +1,429 @@
+{
+  "Scene": {
+    "BackgroundColor": "0 0 0",
+    "MaxRecursionDepth": "6",
+    "Cameras": {
+      "Camera": {
+        "_id": "1",
+        "_type": "lookAt",
+        "Position": "4.05402 1.61647 -2.30652",
+        "GazePoint": "-4.29809 1.34399 -3.4641",
+        "Up": "0 1 0",
+        "FovY": "35.983398",
+        "NearDistance": "1.7321",
+        "ImageResolution": "1280 720",
+        "ImageName": "VeachAjar.exr",
+        "NumSamples": "16",
+        "Tonemap": [
+          {
+            "TMO": "Photographic",
+            "TMOOptions": "0.18 1",
+            "Saturation": "1.2",
+            "Gamma": "2.2",
+            "Extension": "_phot_key_0_18_s1_2_burn_1.png"
+          },
+          {
+            "TMO": "Photographic",
+            "TMOOptions": "0.18 1",
+            "Saturation": "1.0",
+            "Gamma": "2.2",
+            "Extension": "_phot_key_0_18_s1_0_burn_1.png"
+          },
+          {
+            "TMO": "Photographic",
+            "TMOOptions": "0.18 0",
+            "Saturation": "1.0",
+            "Gamma": "2.2",
+            "Extension": "_phot_key_0_18_s1_0_burn_0.png"
+          },
+          {
+            "TMO": "Photographic",
+            "TMOOptions": "0.09 1",
+            "Saturation": "1.0",
+            "Gamma": "2.2",
+            "Extension": "_phot_key_0_09_s1_0_burn_1.png"
+          },
+          {
+            "TMO": "ACES",
+            "TMOOptions": "0.18 0",
+            "Saturation": "1.2",
+            "Gamma": "2.2",
+            "Extension": "_aces_key_0_18_s1_2_burn_0.png"
+          },
+          {
+            "TMO": "ACES",
+            "TMOOptions": "0.18 1",
+            "Saturation": "1.2",
+            "Gamma": "2.2",
+            "Extension": "_aces_key_0_18_s1_2_burn_1.png"
+          },
+          {
+            "TMO": "Filmic",
+            "TMOOptions": "0.18 1",
+            "Saturation": "1.2",
+            "Gamma": "2.2",
+            "Extension": "_film_key_0_18_s1_2_burn_1.png"
+          },
+          {
+            "TMO": "Filmic",
+            "TMOOptions": "0.18 0",
+            "Saturation": "1.2",
+            "Gamma": "2.2",
+            "Extension": "_film_key_0_18_s1_2_burn_0.png"
+          }
+        ]
+      }
+    },
+    "Transformations": {
+      "Composite": [
+        {
+          "_data": "-0.0757886 0 -0.0468591 -1.95645 0 0.0891049 0 0.648205 0.0468591 0 -0.0757886 -1.77687 0 0 0 1",
+          "_id": "1"
+        },
+        {
+          "_data": "-0.0891049 0 7.7898e-009 -1.95645 0 0.0891049 0 0.648205 -7.7898e-009 0 -0.0891049 -2.67687 0 0 0 1",
+          "_id": "2"
+        },
+        {
+          "_data": "-0.083761 0 0.0303938 -1.95645 0 0.0891049 0 0.651268 -0.0303938 0 -0.083761 -3.57687 0 0 0 1",
+          "_id": "3"
+        },
+        {
+          "_data": "1.8 0 0 2.3 0 1 0 0 0 0 1 0 0 0 0 1",
+          "_id": "4"
+        }
+      ]
+    },
+    "Lights": {
+      "AmbientLight": "7.5 7.5 7.5",
+      "PointLight": [
+        {
+          "_id": "1",
+          "Position": "-4.4391 1.50656 -4.44377",
+          "Intensity": "10000 10000 10000"
+        },
+        {
+          "_id": "2",
+          "Position": "3.4391 1.50656 -4.44377",
+          "Intensity": "10000 10000 10000"
+        },
+        {
+          "_id": "3",
+          "Position": "3.4391 3.50656 -4.44377",
+          "Intensity": "10000 10000 10000"
+        }
+      ]
+    },
+    "Materials": {
+      "Material": [
+        {
+          "_id": "1",
+          "_degamma": "true",
+          "AmbientReflectance": "1 1 1",
+          "DiffuseReflectance": "1 1 1",
+          "SpecularReflectance": "0 0 0",
+          "PhongExponent": "1"
+        },
+        {
+          "_id": "2",
+          "_degamma": "true",
+          "AmbientReflectance": "0.1 0.1 0.1",
+          "DiffuseReflectance": "2 2 2",
+          "SpecularReflectance": "1 1 1",
+          "PhongExponent": "1"
+        },
+        {
+          "_id": "3",
+          "_degamma": "true",
+          "_type": "dielectric",
+          "AmbientReflectance": "0 0 0",
+          "DiffuseReflectance": "0.0 0.0 0.0",
+          "SpecularReflectance": "0.0 0.0 0.0",
+          "MirrorReflectance": "1.0 1.0 1.0",
+          "PhongExponent": "30",
+          "AbsorptionCoefficient": "0.1 0 0.1",
+          "RefractionIndex": "1.3"
+        },
+        {
+          "_id": "4",
+          "_degamma": "true",
+          "AmbientReflectance": "0 0 0",
+          "DiffuseReflectance": "1 1 1",
+          "SpecularReflectance": "1 1 1",
+          "PhongExponent": "10",
+          "MirrorReflectance": "0.3 0.3 0.3"
+        },
+        {
+          "_id": "5",
+          "_degamma": "true",
+          "_type": "mirror",
+          "AmbientReflectance": "1 1 1",
+          "DiffuseReflectance": "1 1 1",
+          "SpecularReflectance": "0 0 0",
+          "MirrorReflectance": "0.4 0.4 0.4",
+          "PhongExponent": "10"
+        },
+        {
+          "_id": "6",
+          "_degamma": "true",
+          "AmbientReflectance": "0 0 0",
+          "DiffuseReflectance": "5 5 5",
+          "SpecularReflectance": "1 1 1",
+          "PhongExponent": "10"
+        },
+        {
+          "_id": "7",
+          "_degamma": "true",
+          "AmbientReflectance": "0 0 0",
+          "DiffuseReflectance": "2.58824 2.07843 1.45098",
+          "SpecularReflectance": "0 0 0",
+          "PhongExponent": "1"
+        },
+        {
+          "_id": "8",
+          "_degamma": "true",
+          "AmbientReflectance": "0 0 0",
+          "DiffuseReflectance": "2.47059 1.68627 0.901961",
+          "SpecularReflectance": "0 0 0",
+          "PhongExponent": "1"
+        },
+        {
+          "_id": "9",
+          "_degamma": "true",
+          "AmbientReflectance": "0 0 0",
+          "DiffuseReflectance": "1 1 1",
+          "SpecularReflectance": "1 1 1",
+          "PhongExponent": "10",
+          "MirrorReflectance": "0.3 0.3 0.3"
+        },
+        {
+          "_id": "10",
+          "_degamma": "true",
+          "AmbientReflectance": "0 0 0",
+          "DiffuseReflectance": "3 3 3",
+          "SpecularReflectance": "0.5 0.5 0.5",
+          "PhongExponent": "1",
+          "MirrorReflectance": "0.05 0.05 0.05"
+        }
+      ]
+    },
+    "Textures": {
+      "Images": {
+        "Image": [
+          {
+            "_data": "textures/Ocean.exr",
+            "_id": "1"
+          },
+          {
+            "_data": "textures/Good_Textures_005844_2.jpg",
+            "_id": "2"
+          },
+          {
+            "_data": "textures/cherry-wood-texture_2.jpg",
+            "_id": "3"
+          }
+        ]
+      },
+      "TextureMap": [
+        {
+          "_id": "1",
+          "_degamma": "false",
+          "_type": "image",
+          "ImageId": "1",
+          "Interpolation": "bilinear",
+          "DecalMode": "replace_kd",
+          "Normalizer": "0.005"
+        },
+        {
+          "_id": "2",
+          "_degamma": "true",
+          "_type": "image",
+          "ImageId": "2",
+          "Interpolation": "bilinear",
+          "DecalMode": "replace_kd",
+          "Normalizer": "30"
+        },
+        {
+          "_id": "3",
+          "_degamma": "true",
+          "_type": "image",
+          "ImageId": "3",
+          "Interpolation": "bilinear",
+          "DecalMode": "replace_kd",
+          "Normalizer": "30"
+        },
+        {
+          "_id": "4",
+          "_degamma": "true",
+          "_type": "checkerboard",
+          "BlackColor": "0.01 0.01 0.01",
+          "WhiteColor": "10 10 10",
+          "Scale": "5",
+          "Offset": "0.001",
+          "DecalMode": "blend_kd"
+        }
+      ]
+    },
+    "Objects": {
+      "Mesh": [
+        {
+          "_id": "1",
+          "Material": "6",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "models/Mesh000.ply"
+          }
+        },
+        {
+          "_id": "2",
+          "Material": "1",
+          "Textures": "1",
+          "Faces": {
+            "_plyFile": "models/Mesh008.ply"
+          }
+        },
+        {
+          "_id": "3",
+          "Material": "7",
+          "Faces": {
+            "_plyFile": "models/Mesh013.ply"
+          }
+        },
+        {
+          "_id": "4",
+          "Material": "4",
+          "Textures": "4",
+          "Transformations": "c4",
+          "Faces": {
+            "_plyFile": "models/Mesh011.ply"
+          }
+        },
+        {
+          "_id": "5",
+          "Material": "9",
+          "Faces": {
+            "_plyFile": "models/Mesh015_fixed.ply"
+          }
+        },
+        {
+          "_id": "6",
+          "Material": "9",
+          "Faces": {
+            "_plyFile": "models/Mesh016.ply"
+          }
+        },
+        {
+          "_id": "7",
+          "Material": "9",
+          "Faces": {
+            "_plyFile": "models/Mesh012.ply"
+          }
+        },
+        {
+          "_id": "8",
+          "Material": "9",
+          "Faces": {
+            "_plyFile": "models/Mesh010.ply"
+          }
+        },
+        {
+          "_id": "9",
+          "Material": "1",
+          "Textures": "3",
+          "Faces": {
+            "_plyFile": "models/Mesh006.ply"
+          }
+        },
+        {
+          "_id": "10",
+          "Material": "8",
+          "Faces": {
+            "_plyFile": "models/Mesh005.ply"
+          }
+        },
+        {
+          "_id": "11",
+          "Material": "10",
+          "Faces": {
+            "_plyFile": "models/Mesh007.ply"
+          }
+        },
+        {
+          "_id": "12",
+          "Material": "10",
+          "Faces": {
+            "_plyFile": "models/Mesh003.ply"
+          }
+        },
+        {
+          "_id": "13",
+          "Material": "10",
+          "Faces": {
+            "_plyFile": "models/Mesh002.ply"
+          }
+        },
+        {
+          "_id": "14",
+          "Material": "10",
+          "Faces": {
+            "_plyFile": "models/Mesh001.ply"
+          }
+        },
+        {
+          "_id": "15",
+          "Material": "1",
+          "Textures": "2",
+          "Faces": {
+            "_plyFile": "models/Mesh004.ply"
+          }
+        },
+        {
+          "_id": "16",
+          "Material": "2",
+          "Transformations": "c4",
+          "Faces": {
+            "_plyFile": "models/Mesh014.ply"
+          }
+        },
+        {
+          "_id": "17",
+          "Material": "6",
+          "Transformations": "c1",
+          "Faces": {
+            "_plyFile": "models/Mesh009.ply"
+          }
+        }
+      ],
+      "MeshInstance": [
+        {
+          "_id": "1",
+          "_baseMeshId": "1",
+          "_resetTransform": "true",
+          "Material": "5",
+          "Transformations": "c2"
+        },
+        {
+          "_id": "2",
+          "_baseMeshId": "1",
+          "_resetTransform": "true",
+          "Material": "3",
+          "Transformations": "c3"
+        },
+        {
+          "_id": "3",
+          "_baseMeshId": "17",
+          "_resetTransform": "true",
+          "Material": "5",
+          "Transformations": "c2"
+        },
+        {
+          "_id": "4",
+          "_baseMeshId": "17",
+          "_resetTransform": "true",
+          "Material": "3",
+          "Transformations": "c3"
+        }
+      ]
+    }
+  }
+}

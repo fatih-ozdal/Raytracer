@@ -47,6 +47,10 @@ struct Vec3f
     inline Vec3f operator-(const Vec3f& rhs) const noexcept{
         return {x - rhs.x,  y - rhs.y, z - rhs.z};
     }
+
+    inline Vec3f operator-() const noexcept{
+        return Vec3f{-x, -y, -z};
+    }
     
     inline Vec3f operator*(float val) const noexcept {
         return {x * val, y * val, z * val};

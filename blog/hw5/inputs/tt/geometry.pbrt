@@ -1,0 +1,2813 @@
+# ground plane
+AttributeBegin
+    Material "matte" "rgb Kd" [ 0.7 0.7 0.7 ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00001.ply" 
+AttributeEnd
+
+AttributeBegin
+    ConcatTransform [ 0.988451004 0.151541993 0 0 -0.151541993 0.988451004 0 0 0 0 1 0 0.726225972 -4.20618582 0 1  ]
+    Material "uber" 
+            "texture Kd" [ "tt-kd-11" ] 
+            "texture Ks" [ "tt-ks-11" ] 
+            "texture roughness" [ "tt-roughness-11" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00002.ply" 
+AttributeEnd
+
+AttributeBegin
+    ConcatTransform [ 0.988451004 0.151541993 0 0 -0.151541993 0.988451004 0 0 0 0 1 0 0.726225972 -4.20618582 0 1  ]
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-1" ] 
+            "texture Ks" [ "tt-ks-1" ] 
+            "texture uroughness" [ "tt-urough-1" ] 
+            "texture vroughness" [ "tt-vrough-1" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00003.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-2" ] 
+            "texture Ks" [ "tt-ks-2" ] 
+            "texture uroughness" [ "tt-urough-2" ] 
+            "texture vroughness" [ "tt-vrough-2" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00004.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-1" ] 
+            "texture Ks" [ "tt-ks-1" ] 
+            "texture uroughness" [ "tt-urough-1" ] 
+            "texture vroughness" [ "tt-vrough-1" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00005.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-2" ] 
+            "texture Ks" [ "tt-ks-2" ] 
+            "texture uroughness" [ "tt-urough-2" ] 
+            "texture vroughness" [ "tt-vrough-2" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00006.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-1" ] 
+            "texture Ks" [ "tt-ks-1" ] 
+            "texture uroughness" [ "tt-urough-1" ] 
+            "texture vroughness" [ "tt-vrough-1" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00007.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-3" ] 
+            "texture Ks" [ "tt-ks-3" ] 
+            "texture uroughness" [ "tt-urough-3" ] 
+            "texture vroughness" [ "tt-vrough-3" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00008.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-2" ] 
+            "texture Ks" [ "tt-ks-2" ] 
+            "texture uroughness" [ "tt-urough-2" ] 
+            "texture vroughness" [ "tt-vrough-2" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00009.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-3" ] 
+            "texture Ks" [ "tt-ks-3" ] 
+            "texture uroughness" [ "tt-urough-3" ] 
+            "texture vroughness" [ "tt-vrough-3" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00010.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-2" ] 
+            "texture Ks" [ "tt-ks-2" ] 
+            "texture uroughness" [ "tt-urough-2" ] 
+            "texture vroughness" [ "tt-vrough-2" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00011.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-3" ] 
+            "texture Ks" [ "tt-ks-3" ] 
+            "texture uroughness" [ "tt-urough-3" ] 
+            "texture vroughness" [ "tt-vrough-3" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00012.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-2" ] 
+            "texture Ks" [ "tt-ks-2" ] 
+            "texture uroughness" [ "tt-urough-2" ] 
+            "texture vroughness" [ "tt-vrough-2" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00013.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-3" ] 
+            "texture Ks" [ "tt-ks-3" ] 
+            "texture uroughness" [ "tt-urough-3" ] 
+            "texture vroughness" [ "tt-vrough-3" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00014.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-2" ] 
+            "texture Ks" [ "tt-ks-2" ] 
+            "texture uroughness" [ "tt-urough-2" ] 
+            "texture vroughness" [ "tt-vrough-2" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00015.ply" 
+    Material "mirror" 
+    Shape "plymesh" "string filename" "geometry/mesh_00016.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-1" ] 
+            "texture Ks" [ "tt-ks-1" ] 
+            "texture uroughness" [ "tt-urough-1" ] 
+            "texture vroughness" [ "tt-vrough-1" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00017.ply" 
+    Material "mirror" 
+    Shape "plymesh" "string filename" "geometry/mesh_00018.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-2" ] 
+            "texture Ks" [ "tt-ks-2" ] 
+            "texture uroughness" [ "tt-urough-2" ] 
+            "texture vroughness" [ "tt-vrough-2" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00019.ply" 
+    Texture "light_bump" "color" "imagemap" 
+            "string filename" [ "textures/light_bump.png" ] 
+    Texture "light_bump-scale" "color" "scale" 
+            "texture tex1" [ "light_bump" ] 
+            "rgb tex2" [ 0.80000001 0.80000001 0.80000001 ] 
+    Texture "light_bump" "float" "imagemap" 
+            "string filename" [ "textures/light_bump.png" ] 
+    Texture "light_bump-scale" "float" "scale" 
+            "float tex2" [ 0.050000001 ] 
+            "texture tex1" [ "light_bump" ] 
+    Material "uber" 
+            "float roughness" [ 0.5 ] 
+            "texture Kd" [ "light_bump-scale" ] 
+            "texture bumpmap" [ "light_bump-scale" ] 
+            "rgb opacity" [ 1 1 1 ] 
+            "rgb Ks" [ 0.30588201 0.066666998 0.0039220001 ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00020.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-2" ] 
+            "texture Ks" [ "tt-ks-2" ] 
+            "texture uroughness" [ "tt-urough-2" ] 
+            "texture vroughness" [ "tt-vrough-2" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00021.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-5" ] 
+            "texture Ks" [ "tt-ks-5" ] 
+            "texture uroughness" [ "tt-urough-5" ] 
+            "texture vroughness" [ "tt-vrough-5" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00022.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-2" ] 
+            "texture Ks" [ "tt-ks-2" ] 
+            "texture uroughness" [ "tt-urough-2" ] 
+            "texture vroughness" [ "tt-vrough-2" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00023.ply" 
+    Material "mirror" 
+    Shape "plymesh" "string filename" "geometry/mesh_00024.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-2" ] 
+            "texture Ks" [ "tt-ks-2" ] 
+            "texture uroughness" [ "tt-urough-2" ] 
+            "texture vroughness" [ "tt-vrough-2" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00025.ply" 
+    Texture "light_bump" "color" "imagemap" 
+            "string filename" [ "textures/light_bump.png" ] 
+    Material "uber" 
+            "float roughness" [ 1 ] 
+            "texture opacity" [ "light_bump" ] 
+            "rgb Kd" [ 0.16470601 0.031373002 0.015686 ] 
+            "rgb Ks" [ 0.83921599 0.16078401 0.094117999 ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00026.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-2" ] 
+            "texture Ks" [ "tt-ks-2" ] 
+            "texture uroughness" [ "tt-urough-2" ] 
+            "texture vroughness" [ "tt-vrough-2" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00027.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-1" ] 
+            "texture Ks" [ "tt-ks-1" ] 
+            "texture uroughness" [ "tt-urough-1" ] 
+            "texture vroughness" [ "tt-vrough-1" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00028.ply" 
+    Material "mirror" 
+    Shape "plymesh" "string filename" "geometry/mesh_00029.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-1" ] 
+            "texture Ks" [ "tt-ks-1" ] 
+            "texture uroughness" [ "tt-urough-1" ] 
+            "texture vroughness" [ "tt-vrough-1" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00030.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-3" ] 
+            "texture Ks" [ "tt-ks-3" ] 
+            "texture uroughness" [ "tt-urough-3" ] 
+            "texture vroughness" [ "tt-vrough-3" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00031.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-2" ] 
+            "texture Ks" [ "tt-ks-2" ] 
+            "texture uroughness" [ "tt-urough-2" ] 
+            "texture vroughness" [ "tt-vrough-2" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00032.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-3" ] 
+            "texture Ks" [ "tt-ks-3" ] 
+            "texture uroughness" [ "tt-urough-3" ] 
+            "texture vroughness" [ "tt-vrough-3" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00033.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-2" ] 
+            "texture Ks" [ "tt-ks-2" ] 
+            "texture uroughness" [ "tt-urough-2" ] 
+            "texture vroughness" [ "tt-vrough-2" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00034.ply" 
+    Material "mirror" 
+    Shape "plymesh" "string filename" "geometry/mesh_00035.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-1" ] 
+            "texture Ks" [ "tt-ks-1" ] 
+            "texture uroughness" [ "tt-urough-1" ] 
+            "texture vroughness" [ "tt-vrough-1" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00036.ply" 
+    Material "mirror" 
+    Shape "plymesh" "string filename" "geometry/mesh_00037.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-2" ] 
+            "texture Ks" [ "tt-ks-2" ] 
+            "texture uroughness" [ "tt-urough-2" ] 
+            "texture vroughness" [ "tt-vrough-2" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00038.ply" 
+    Texture "light_bump" "color" "imagemap" 
+            "string filename" [ "textures/light_bump.png" ] 
+    Texture "light_bump-scale" "color" "scale" 
+            "texture tex1" [ "light_bump" ] 
+            "rgb tex2" [ 0.80000001 0.80000001 0.80000001 ] 
+    Texture "light_bump" "float" "imagemap" 
+            "string filename" [ "textures/light_bump.png" ] 
+    Texture "light_bump-scale" "float" "scale" 
+            "float tex2" [ 0.050000001 ] 
+            "texture tex1" [ "light_bump" ] 
+    Material "uber" 
+            "float roughness" [ 0.5 ] 
+            "texture Kd" [ "light_bump-scale" ] 
+            "texture bumpmap" [ "light_bump-scale" ] 
+            "rgb opacity" [ 1 1 1 ] 
+            "rgb Ks" [ 0.30588201 0.066666998 0.0039220001 ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00039.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-2" ] 
+            "texture Ks" [ "tt-ks-2" ] 
+            "texture uroughness" [ "tt-urough-2" ] 
+            "texture vroughness" [ "tt-vrough-2" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00040.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-5" ] 
+            "texture Ks" [ "tt-ks-5" ] 
+            "texture uroughness" [ "tt-urough-5" ] 
+            "texture vroughness" [ "tt-vrough-5" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00041.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-2" ] 
+            "texture Ks" [ "tt-ks-2" ] 
+            "texture uroughness" [ "tt-urough-2" ] 
+            "texture vroughness" [ "tt-vrough-2" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00042.ply" 
+    Material "mirror" 
+    Shape "plymesh" "string filename" "geometry/mesh_00043.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-2" ] 
+            "texture Ks" [ "tt-ks-2" ] 
+            "texture uroughness" [ "tt-urough-2" ] 
+            "texture vroughness" [ "tt-vrough-2" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00044.ply" 
+    Texture "light_bump" "color" "imagemap" 
+            "string filename" [ "textures/light_bump.png" ] 
+    Material "uber" 
+            "float roughness" [ 1 ] 
+            "texture opacity" [ "light_bump" ] 
+            "rgb Kd" [ 0.16470601 0.031373002 0.015686 ] 
+            "rgb Ks" [ 0.83921599 0.16078401 0.094117999 ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00045.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-2" ] 
+            "texture Ks" [ "tt-ks-2" ] 
+            "texture uroughness" [ "tt-urough-2" ] 
+            "texture vroughness" [ "tt-vrough-2" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00046.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-1" ] 
+            "texture Ks" [ "tt-ks-1" ] 
+            "texture uroughness" [ "tt-urough-1" ] 
+            "texture vroughness" [ "tt-vrough-1" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00047.ply" 
+    Material "mirror" 
+    Shape "plymesh" "string filename" "geometry/mesh_00048.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-1" ] 
+            "texture Ks" [ "tt-ks-1" ] 
+            "texture uroughness" [ "tt-urough-1" ] 
+            "texture vroughness" [ "tt-vrough-1" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00049.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-3" ] 
+            "texture Ks" [ "tt-ks-3" ] 
+            "texture uroughness" [ "tt-urough-3" ] 
+            "texture vroughness" [ "tt-vrough-3" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00050.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-2" ] 
+            "texture Ks" [ "tt-ks-2" ] 
+            "texture uroughness" [ "tt-urough-2" ] 
+            "texture vroughness" [ "tt-vrough-2" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00051.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-3" ] 
+            "texture Ks" [ "tt-ks-3" ] 
+            "texture uroughness" [ "tt-urough-3" ] 
+            "texture vroughness" [ "tt-vrough-3" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00052.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-2" ] 
+            "texture Ks" [ "tt-ks-2" ] 
+            "texture uroughness" [ "tt-urough-2" ] 
+            "texture vroughness" [ "tt-vrough-2" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00053.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-1" ] 
+            "texture Ks" [ "tt-ks-1" ] 
+            "texture uroughness" [ "tt-urough-1" ] 
+            "texture vroughness" [ "tt-vrough-1" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00054.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-2" ] 
+            "texture Ks" [ "tt-ks-2" ] 
+            "texture uroughness" [ "tt-urough-2" ] 
+            "texture vroughness" [ "tt-vrough-2" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00055.ply" 
+    Material "glass" 
+            "float index" [ 1.5 ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00056.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-1" ] 
+            "texture Ks" [ "tt-ks-1" ] 
+            "texture uroughness" [ "tt-urough-1" ] 
+            "texture vroughness" [ "tt-vrough-1" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00057.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-2" ] 
+            "texture Ks" [ "tt-ks-2" ] 
+            "texture uroughness" [ "tt-urough-2" ] 
+            "texture vroughness" [ "tt-vrough-2" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00058.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-1" ] 
+            "texture Ks" [ "tt-ks-1" ] 
+            "texture uroughness" [ "tt-urough-1" ] 
+            "texture vroughness" [ "tt-vrough-1" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00059.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-2" ] 
+            "texture Ks" [ "tt-ks-2" ] 
+            "texture uroughness" [ "tt-urough-2" ] 
+            "texture vroughness" [ "tt-vrough-2" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00060.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-1" ] 
+            "texture Ks" [ "tt-ks-1" ] 
+            "texture uroughness" [ "tt-urough-1" ] 
+            "texture vroughness" [ "tt-vrough-1" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00061.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-2" ] 
+            "texture Ks" [ "tt-ks-2" ] 
+            "texture uroughness" [ "tt-urough-2" ] 
+            "texture vroughness" [ "tt-vrough-2" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00062.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-1" ] 
+            "texture Ks" [ "tt-ks-1" ] 
+            "texture uroughness" [ "tt-urough-1" ] 
+            "texture vroughness" [ "tt-vrough-1" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00063.ply" 
+    Material "glass" 
+            "float index" [ 1.5 ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00064.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-2" ] 
+            "texture Ks" [ "tt-ks-2" ] 
+            "texture uroughness" [ "tt-urough-2" ] 
+            "texture vroughness" [ "tt-vrough-2" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00065.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-1" ] 
+            "texture Ks" [ "tt-ks-1" ] 
+            "texture uroughness" [ "tt-urough-1" ] 
+            "texture vroughness" [ "tt-vrough-1" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00066.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-2" ] 
+            "texture Ks" [ "tt-ks-2" ] 
+            "texture uroughness" [ "tt-urough-2" ] 
+            "texture vroughness" [ "tt-vrough-2" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00067.ply" 
+    Material "glass" 
+            "float index" [ 1.5 ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00068.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-1" ] 
+            "texture Ks" [ "tt-ks-1" ] 
+            "texture uroughness" [ "tt-urough-1" ] 
+            "texture vroughness" [ "tt-vrough-1" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00069.ply" 
+    Material "glass" 
+            "float index" [ 1.5 ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00070.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-1" ] 
+            "texture Ks" [ "tt-ks-1" ] 
+            "texture uroughness" [ "tt-urough-1" ] 
+            "texture vroughness" [ "tt-vrough-1" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00071.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-2" ] 
+            "texture Ks" [ "tt-ks-2" ] 
+            "texture uroughness" [ "tt-urough-2" ] 
+            "texture vroughness" [ "tt-vrough-2" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00072.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-1" ] 
+            "texture Ks" [ "tt-ks-1" ] 
+            "texture uroughness" [ "tt-urough-1" ] 
+            "texture vroughness" [ "tt-vrough-1" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00073.ply" 
+    Material "glass" 
+            "float index" [ 1.5 ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00074.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-2" ] 
+            "texture Ks" [ "tt-ks-2" ] 
+            "texture uroughness" [ "tt-urough-2" ] 
+            "texture vroughness" [ "tt-vrough-2" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00075.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-3" ] 
+            "texture Ks" [ "tt-ks-3" ] 
+            "texture uroughness" [ "tt-urough-3" ] 
+            "texture vroughness" [ "tt-vrough-3" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00076.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-2" ] 
+            "texture Ks" [ "tt-ks-2" ] 
+            "texture uroughness" [ "tt-urough-2" ] 
+            "texture vroughness" [ "tt-vrough-2" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00077.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-3" ] 
+            "texture Ks" [ "tt-ks-3" ] 
+            "texture uroughness" [ "tt-urough-3" ] 
+            "texture vroughness" [ "tt-vrough-3" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00078.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-2" ] 
+            "texture Ks" [ "tt-ks-2" ] 
+            "texture uroughness" [ "tt-urough-2" ] 
+            "texture vroughness" [ "tt-vrough-2" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00079.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-3" ] 
+            "texture Ks" [ "tt-ks-3" ] 
+            "texture uroughness" [ "tt-urough-3" ] 
+            "texture vroughness" [ "tt-vrough-3" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00080.ply" 
+    Material "glass" 
+            "float index" [ 1.5 ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00081.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-2" ] 
+            "texture Ks" [ "tt-ks-2" ] 
+            "texture uroughness" [ "tt-urough-2" ] 
+            "texture vroughness" [ "tt-vrough-2" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00082.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-3" ] 
+            "texture Ks" [ "tt-ks-3" ] 
+            "texture uroughness" [ "tt-urough-3" ] 
+            "texture vroughness" [ "tt-vrough-3" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00083.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-2" ] 
+            "texture Ks" [ "tt-ks-2" ] 
+            "texture uroughness" [ "tt-urough-2" ] 
+            "texture vroughness" [ "tt-vrough-2" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00084.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-3" ] 
+            "texture Ks" [ "tt-ks-3" ] 
+            "texture uroughness" [ "tt-urough-3" ] 
+            "texture vroughness" [ "tt-vrough-3" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00085.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-2" ] 
+            "texture Ks" [ "tt-ks-2" ] 
+            "texture uroughness" [ "tt-urough-2" ] 
+            "texture vroughness" [ "tt-vrough-2" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00086.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-3" ] 
+            "texture Ks" [ "tt-ks-3" ] 
+            "texture uroughness" [ "tt-urough-3" ] 
+            "texture vroughness" [ "tt-vrough-3" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00087.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-2" ] 
+            "texture Ks" [ "tt-ks-2" ] 
+            "texture uroughness" [ "tt-urough-2" ] 
+            "texture vroughness" [ "tt-vrough-2" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00088.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-1" ] 
+            "texture Ks" [ "tt-ks-1" ] 
+            "texture uroughness" [ "tt-urough-1" ] 
+            "texture vroughness" [ "tt-vrough-1" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00089.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-2" ] 
+            "texture Ks" [ "tt-ks-2" ] 
+            "texture uroughness" [ "tt-urough-2" ] 
+            "texture vroughness" [ "tt-vrough-2" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00090.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-3" ] 
+            "texture Ks" [ "tt-ks-3" ] 
+            "texture uroughness" [ "tt-urough-3" ] 
+            "texture vroughness" [ "tt-vrough-3" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00091.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-2" ] 
+            "texture Ks" [ "tt-ks-2" ] 
+            "texture uroughness" [ "tt-urough-2" ] 
+            "texture vroughness" [ "tt-vrough-2" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00092.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-1" ] 
+            "texture Ks" [ "tt-ks-1" ] 
+            "texture uroughness" [ "tt-urough-1" ] 
+            "texture vroughness" [ "tt-vrough-1" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00093.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-2" ] 
+            "texture Ks" [ "tt-ks-2" ] 
+            "texture uroughness" [ "tt-urough-2" ] 
+            "texture vroughness" [ "tt-vrough-2" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00094.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-1" ] 
+            "texture Ks" [ "tt-ks-1" ] 
+            "texture uroughness" [ "tt-urough-1" ] 
+            "texture vroughness" [ "tt-vrough-1" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00095.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-2" ] 
+            "texture Ks" [ "tt-ks-2" ] 
+            "texture uroughness" [ "tt-urough-2" ] 
+            "texture vroughness" [ "tt-vrough-2" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00096.ply" 
+    Material "glass" 
+            "float index" [ 1.5 ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00097.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-1" ] 
+            "texture Ks" [ "tt-ks-1" ] 
+            "texture uroughness" [ "tt-urough-1" ] 
+            "texture vroughness" [ "tt-vrough-1" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00098.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-2" ] 
+            "texture Ks" [ "tt-ks-2" ] 
+            "texture uroughness" [ "tt-urough-2" ] 
+            "texture vroughness" [ "tt-vrough-2" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00099.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-1" ] 
+            "texture Ks" [ "tt-ks-1" ] 
+            "texture uroughness" [ "tt-urough-1" ] 
+            "texture vroughness" [ "tt-vrough-1" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00100.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-2" ] 
+            "texture Ks" [ "tt-ks-2" ] 
+            "texture uroughness" [ "tt-urough-2" ] 
+            "texture vroughness" [ "tt-vrough-2" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00101.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-1" ] 
+            "texture Ks" [ "tt-ks-1" ] 
+            "texture uroughness" [ "tt-urough-1" ] 
+            "texture vroughness" [ "tt-vrough-1" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00102.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-2" ] 
+            "texture Ks" [ "tt-ks-2" ] 
+            "texture uroughness" [ "tt-urough-2" ] 
+            "texture vroughness" [ "tt-vrough-2" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00103.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-1" ] 
+            "texture Ks" [ "tt-ks-1" ] 
+            "texture uroughness" [ "tt-urough-1" ] 
+            "texture vroughness" [ "tt-vrough-1" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00104.ply" 
+    Material "glass" 
+            "float index" [ 1.5 ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00105.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-2" ] 
+            "texture Ks" [ "tt-ks-2" ] 
+            "texture uroughness" [ "tt-urough-2" ] 
+            "texture vroughness" [ "tt-vrough-2" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00106.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-1" ] 
+            "texture Ks" [ "tt-ks-1" ] 
+            "texture uroughness" [ "tt-urough-1" ] 
+            "texture vroughness" [ "tt-vrough-1" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00107.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-2" ] 
+            "texture Ks" [ "tt-ks-2" ] 
+            "texture uroughness" [ "tt-urough-2" ] 
+            "texture vroughness" [ "tt-vrough-2" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00108.ply" 
+    Material "glass" 
+            "float index" [ 1.5 ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00109.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-1" ] 
+            "texture Ks" [ "tt-ks-1" ] 
+            "texture uroughness" [ "tt-urough-1" ] 
+            "texture vroughness" [ "tt-vrough-1" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00110.ply" 
+    Material "glass" 
+            "float index" [ 1.5 ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00111.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-1" ] 
+            "texture Ks" [ "tt-ks-1" ] 
+            "texture uroughness" [ "tt-urough-1" ] 
+            "texture vroughness" [ "tt-vrough-1" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00112.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-2" ] 
+            "texture Ks" [ "tt-ks-2" ] 
+            "texture uroughness" [ "tt-urough-2" ] 
+            "texture vroughness" [ "tt-vrough-2" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00113.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-1" ] 
+            "texture Ks" [ "tt-ks-1" ] 
+            "texture uroughness" [ "tt-urough-1" ] 
+            "texture vroughness" [ "tt-vrough-1" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00114.ply" 
+    Material "glass" 
+            "float index" [ 1.5 ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00115.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-2" ] 
+            "texture Ks" [ "tt-ks-2" ] 
+            "texture uroughness" [ "tt-urough-2" ] 
+            "texture vroughness" [ "tt-vrough-2" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00116.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-3" ] 
+            "texture Ks" [ "tt-ks-3" ] 
+            "texture uroughness" [ "tt-urough-3" ] 
+            "texture vroughness" [ "tt-vrough-3" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00117.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-2" ] 
+            "texture Ks" [ "tt-ks-2" ] 
+            "texture uroughness" [ "tt-urough-2" ] 
+            "texture vroughness" [ "tt-vrough-2" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00118.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-3" ] 
+            "texture Ks" [ "tt-ks-3" ] 
+            "texture uroughness" [ "tt-urough-3" ] 
+            "texture vroughness" [ "tt-vrough-3" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00119.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-2" ] 
+            "texture Ks" [ "tt-ks-2" ] 
+            "texture uroughness" [ "tt-urough-2" ] 
+            "texture vroughness" [ "tt-vrough-2" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00120.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-3" ] 
+            "texture Ks" [ "tt-ks-3" ] 
+            "texture uroughness" [ "tt-urough-3" ] 
+            "texture vroughness" [ "tt-vrough-3" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00121.ply" 
+    Material "glass" 
+            "float index" [ 1.5 ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00122.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-2" ] 
+            "texture Ks" [ "tt-ks-2" ] 
+            "texture uroughness" [ "tt-urough-2" ] 
+            "texture vroughness" [ "tt-vrough-2" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00123.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-3" ] 
+            "texture Ks" [ "tt-ks-3" ] 
+            "texture uroughness" [ "tt-urough-3" ] 
+            "texture vroughness" [ "tt-vrough-3" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00124.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-2" ] 
+            "texture Ks" [ "tt-ks-2" ] 
+            "texture uroughness" [ "tt-urough-2" ] 
+            "texture vroughness" [ "tt-vrough-2" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00125.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-3" ] 
+            "texture Ks" [ "tt-ks-3" ] 
+            "texture uroughness" [ "tt-urough-3" ] 
+            "texture vroughness" [ "tt-vrough-3" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00126.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-2" ] 
+            "texture Ks" [ "tt-ks-2" ] 
+            "texture uroughness" [ "tt-urough-2" ] 
+            "texture vroughness" [ "tt-vrough-2" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00127.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-3" ] 
+            "texture Ks" [ "tt-ks-3" ] 
+            "texture uroughness" [ "tt-urough-3" ] 
+            "texture vroughness" [ "tt-vrough-3" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00128.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-2" ] 
+            "texture Ks" [ "tt-ks-2" ] 
+            "texture uroughness" [ "tt-urough-2" ] 
+            "texture vroughness" [ "tt-vrough-2" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00129.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-1" ] 
+            "texture Ks" [ "tt-ks-1" ] 
+            "texture uroughness" [ "tt-urough-1" ] 
+            "texture vroughness" [ "tt-vrough-1" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00130.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-2" ] 
+            "texture Ks" [ "tt-ks-2" ] 
+            "texture uroughness" [ "tt-urough-2" ] 
+            "texture vroughness" [ "tt-vrough-2" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00131.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-3" ] 
+            "texture Ks" [ "tt-ks-3" ] 
+            "texture uroughness" [ "tt-urough-3" ] 
+            "texture vroughness" [ "tt-vrough-3" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00132.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-2" ] 
+            "texture Ks" [ "tt-ks-2" ] 
+            "texture uroughness" [ "tt-urough-2" ] 
+            "texture vroughness" [ "tt-vrough-2" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00133.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-1" ] 
+            "texture Ks" [ "tt-ks-1" ] 
+            "texture uroughness" [ "tt-urough-1" ] 
+            "texture vroughness" [ "tt-vrough-1" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00134.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-2" ] 
+            "texture Ks" [ "tt-ks-2" ] 
+            "texture uroughness" [ "tt-urough-2" ] 
+            "texture vroughness" [ "tt-vrough-2" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00135.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-1" ] 
+            "texture Ks" [ "tt-ks-1" ] 
+            "texture uroughness" [ "tt-urough-1" ] 
+            "texture vroughness" [ "tt-vrough-1" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00136.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-8" ] 
+            "texture Ks" [ "tt-ks-8" ] 
+            "texture uroughness" [ "tt-urough-8" ] 
+            "texture vroughness" [ "tt-vrough-8" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00137.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-9" ] 
+            "texture Ks" [ "tt-ks-9" ] 
+            "texture uroughness" [ "tt-urough-9" ] 
+            "texture vroughness" [ "tt-vrough-9" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00138.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-1" ] 
+            "texture Ks" [ "tt-ks-1" ] 
+            "texture uroughness" [ "tt-urough-1" ] 
+            "texture vroughness" [ "tt-vrough-1" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00139.ply" 
+    Texture "light_bump" "color" "imagemap" 
+            "string filename" [ "textures/light_bump.png" ] 
+    Texture "light_bump-scale" "color" "scale" 
+            "texture tex1" [ "light_bump" ] 
+            "rgb tex2" [ 0.80000001 0.80000001 0.80000001 ] 
+    Texture "light_bump" "float" "imagemap" 
+            "string filename" [ "textures/light_bump.png" ] 
+    Texture "light_bump-scale" "float" "scale" 
+            "float tex2" [ 0.050000001 ] 
+            "texture tex1" [ "light_bump" ] 
+    Material "uber" 
+            "float roughness" [ 0.5 ] 
+            "texture Kd" [ "light_bump-scale" ] 
+            "texture bumpmap" [ "light_bump-scale" ] 
+            "rgb opacity" [ 1 1 1 ] 
+            "rgb Ks" [ 0.30588201 0.066666998 0.0039220001 ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00140.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-1" ] 
+            "texture Ks" [ "tt-ks-1" ] 
+            "texture uroughness" [ "tt-urough-1" ] 
+            "texture vroughness" [ "tt-vrough-1" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00141.ply" 
+    Texture "light_bump" "color" "imagemap" 
+            "string filename" [ "textures/light_bump.png" ] 
+    Texture "light_bump-scale" "color" "scale" 
+            "texture tex1" [ "light_bump" ] 
+            "rgb tex2" [ 0.80000001 0.80000001 0.80000001 ] 
+    Texture "light_bump" "float" "imagemap" 
+            "string filename" [ "textures/light_bump.png" ] 
+    Texture "light_bump-scale" "float" "scale" 
+            "float tex2" [ 0.050000001 ] 
+            "texture tex1" [ "light_bump" ] 
+    Material "uber" 
+            "float roughness" [ 0.5 ] 
+            "texture Kd" [ "light_bump-scale" ] 
+            "texture bumpmap" [ "light_bump-scale" ] 
+            "rgb opacity" [ 1 1 1 ] 
+            "rgb Ks" [ 0.30588201 0.066666998 0.0039220001 ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00142.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-1" ] 
+            "texture Ks" [ "tt-ks-1" ] 
+            "texture uroughness" [ "tt-urough-1" ] 
+            "texture vroughness" [ "tt-vrough-1" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00143.ply" 
+    Texture "light_bump" "color" "imagemap" 
+            "string filename" [ "textures/light_bump.png" ] 
+    Texture "light_bump-scale" "color" "scale" 
+            "texture tex1" [ "light_bump" ] 
+            "rgb tex2" [ 0.80000001 0.80000001 0.80000001 ] 
+    Texture "light_bump" "float" "imagemap" 
+            "string filename" [ "textures/light_bump.png" ] 
+    Texture "light_bump-scale" "float" "scale" 
+            "float tex2" [ 0.050000001 ] 
+            "texture tex1" [ "light_bump" ] 
+    Material "uber" 
+            "float roughness" [ 0.5 ] 
+            "texture Kd" [ "light_bump-scale" ] 
+            "texture bumpmap" [ "light_bump-scale" ] 
+            "rgb opacity" [ 1 1 1 ] 
+            "rgb Ks" [ 0.30588201 0.066666998 0.0039220001 ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00144.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-1" ] 
+            "texture Ks" [ "tt-ks-1" ] 
+            "texture uroughness" [ "tt-urough-1" ] 
+            "texture vroughness" [ "tt-vrough-1" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00145.ply" 
+    Texture "light_bump" "color" "imagemap" 
+            "string filename" [ "textures/light_bump.png" ] 
+    Texture "light_bump-scale" "color" "scale" 
+            "texture tex1" [ "light_bump" ] 
+            "rgb tex2" [ 0.80000001 0.80000001 0.80000001 ] 
+    Texture "light_bump" "float" "imagemap" 
+            "string filename" [ "textures/light_bump.png" ] 
+    Texture "light_bump-scale" "float" "scale" 
+            "float tex2" [ 0.050000001 ] 
+            "texture tex1" [ "light_bump" ] 
+    Material "uber" 
+            "float roughness" [ 0.5 ] 
+            "texture Kd" [ "light_bump-scale" ] 
+            "texture bumpmap" [ "light_bump-scale" ] 
+            "rgb opacity" [ 1 1 1 ] 
+            "rgb Ks" [ 0.30588201 0.066666998 0.0039220001 ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00146.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-1" ] 
+            "texture Ks" [ "tt-ks-1" ] 
+            "texture uroughness" [ "tt-urough-1" ] 
+            "texture vroughness" [ "tt-vrough-1" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00147.ply" 
+    Texture "light_bump" "color" "imagemap" 
+            "string filename" [ "textures/light_bump.png" ] 
+    Texture "light_bump-scale" "color" "scale" 
+            "texture tex1" [ "light_bump" ] 
+            "rgb tex2" [ 0.80000001 0.80000001 0.80000001 ] 
+    Texture "light_bump" "float" "imagemap" 
+            "string filename" [ "textures/light_bump.png" ] 
+    Texture "light_bump-scale" "float" "scale" 
+            "float tex2" [ 0.050000001 ] 
+            "texture tex1" [ "light_bump" ] 
+    Material "uber" 
+            "float roughness" [ 0.5 ] 
+            "texture Kd" [ "light_bump-scale" ] 
+            "texture bumpmap" [ "light_bump-scale" ] 
+            "rgb opacity" [ 1 1 1 ] 
+            "rgb Ks" [ 0.30588201 0.066666998 0.0039220001 ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00148.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-1" ] 
+            "texture Ks" [ "tt-ks-1" ] 
+            "texture uroughness" [ "tt-urough-1" ] 
+            "texture vroughness" [ "tt-vrough-1" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00149.ply" 
+    Texture "light_bump" "color" "imagemap" 
+            "string filename" [ "textures/light_bump.png" ] 
+    Texture "light_bump-scale" "color" "scale" 
+            "texture tex1" [ "light_bump" ] 
+            "rgb tex2" [ 0.80000001 0.80000001 0.80000001 ] 
+    Texture "light_bump" "float" "imagemap" 
+            "string filename" [ "textures/light_bump.png" ] 
+    Texture "light_bump-scale" "float" "scale" 
+            "float tex2" [ 0.050000001 ] 
+            "texture tex1" [ "light_bump" ] 
+    Material "uber" 
+            "float roughness" [ 0.5 ] 
+            "texture Kd" [ "light_bump-scale" ] 
+            "texture bumpmap" [ "light_bump-scale" ] 
+            "rgb opacity" [ 1 1 1 ] 
+            "rgb Ks" [ 0.30588201 0.066666998 0.0039220001 ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00150.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-1" ] 
+            "texture Ks" [ "tt-ks-1" ] 
+            "texture uroughness" [ "tt-urough-1" ] 
+            "texture vroughness" [ "tt-vrough-1" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00151.ply" 
+    Texture "light_bump" "color" "imagemap" 
+            "string filename" [ "textures/light_bump.png" ] 
+    Texture "light_bump-scale" "color" "scale" 
+            "texture tex1" [ "light_bump" ] 
+            "rgb tex2" [ 0.80000001 0.80000001 0.80000001 ] 
+    Texture "light_bump" "float" "imagemap" 
+            "string filename" [ "textures/light_bump.png" ] 
+    Texture "light_bump-scale" "float" "scale" 
+            "float tex2" [ 0.050000001 ] 
+            "texture tex1" [ "light_bump" ] 
+    Material "uber" 
+            "float roughness" [ 0.5 ] 
+            "texture Kd" [ "light_bump-scale" ] 
+            "texture bumpmap" [ "light_bump-scale" ] 
+            "rgb opacity" [ 1 1 1 ] 
+            "rgb Ks" [ 0.30588201 0.066666998 0.0039220001 ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00152.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-1" ] 
+            "texture Ks" [ "tt-ks-1" ] 
+            "texture uroughness" [ "tt-urough-1" ] 
+            "texture vroughness" [ "tt-vrough-1" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00153.ply" 
+    Texture "light_bump" "color" "imagemap" 
+            "string filename" [ "textures/light_bump.png" ] 
+    Texture "light_bump-scale" "color" "scale" 
+            "texture tex1" [ "light_bump" ] 
+            "rgb tex2" [ 0.80000001 0.80000001 0.80000001 ] 
+    Texture "light_bump" "float" "imagemap" 
+            "string filename" [ "textures/light_bump.png" ] 
+    Texture "light_bump-scale" "float" "scale" 
+            "float tex2" [ 0.050000001 ] 
+            "texture tex1" [ "light_bump" ] 
+    Material "uber" 
+            "float roughness" [ 0.5 ] 
+            "texture Kd" [ "light_bump-scale" ] 
+            "texture bumpmap" [ "light_bump-scale" ] 
+            "rgb opacity" [ 1 1 1 ] 
+            "rgb Ks" [ 0.30588201 0.066666998 0.0039220001 ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00154.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-1" ] 
+            "texture Ks" [ "tt-ks-1" ] 
+            "texture uroughness" [ "tt-urough-1" ] 
+            "texture vroughness" [ "tt-vrough-1" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00155.ply" 
+    Texture "light_bump" "color" "imagemap" 
+            "string filename" [ "textures/light_bump.png" ] 
+    Texture "light_bump-scale" "color" "scale" 
+            "texture tex1" [ "light_bump" ] 
+            "rgb tex2" [ 0.80000001 0.80000001 0.80000001 ] 
+    Texture "light_bump" "float" "imagemap" 
+            "string filename" [ "textures/light_bump.png" ] 
+    Texture "light_bump-scale" "float" "scale" 
+            "float tex2" [ 0.050000001 ] 
+            "texture tex1" [ "light_bump" ] 
+    Material "uber" 
+            "float roughness" [ 0.5 ] 
+            "texture Kd" [ "light_bump-scale" ] 
+            "texture bumpmap" [ "light_bump-scale" ] 
+            "rgb opacity" [ 1 1 1 ] 
+            "rgb Ks" [ 0.30588201 0.066666998 0.0039220001 ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00156.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-1" ] 
+            "texture Ks" [ "tt-ks-1" ] 
+            "texture uroughness" [ "tt-urough-1" ] 
+            "texture vroughness" [ "tt-vrough-1" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00157.ply" 
+    Texture "light_bump" "color" "imagemap" 
+            "string filename" [ "textures/light_bump.png" ] 
+    Texture "light_bump-scale" "color" "scale" 
+            "texture tex1" [ "light_bump" ] 
+            "rgb tex2" [ 0.80000001 0.80000001 0.80000001 ] 
+    Texture "light_bump" "float" "imagemap" 
+            "string filename" [ "textures/light_bump.png" ] 
+    Texture "light_bump-scale" "float" "scale" 
+            "float tex2" [ 0.050000001 ] 
+            "texture tex1" [ "light_bump" ] 
+    Material "uber" 
+            "float roughness" [ 0.5 ] 
+            "texture Kd" [ "light_bump-scale" ] 
+            "texture bumpmap" [ "light_bump-scale" ] 
+            "rgb opacity" [ 1 1 1 ] 
+            "rgb Ks" [ 0.30588201 0.066666998 0.0039220001 ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00158.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-1" ] 
+            "texture Ks" [ "tt-ks-1" ] 
+            "texture uroughness" [ "tt-urough-1" ] 
+            "texture vroughness" [ "tt-vrough-1" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00159.ply" 
+    Texture "light_bump" "color" "imagemap" 
+            "string filename" [ "textures/light_bump.png" ] 
+    Texture "light_bump-scale" "color" "scale" 
+            "texture tex1" [ "light_bump" ] 
+            "rgb tex2" [ 0.80000001 0.80000001 0.80000001 ] 
+    Texture "light_bump" "float" "imagemap" 
+            "string filename" [ "textures/light_bump.png" ] 
+    Texture "light_bump-scale" "float" "scale" 
+            "float tex2" [ 0.050000001 ] 
+            "texture tex1" [ "light_bump" ] 
+    Material "uber" 
+            "float roughness" [ 0.5 ] 
+            "texture Kd" [ "light_bump-scale" ] 
+            "texture bumpmap" [ "light_bump-scale" ] 
+            "rgb opacity" [ 1 1 1 ] 
+            "rgb Ks" [ 0.30588201 0.066666998 0.0039220001 ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00160.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-1" ] 
+            "texture Ks" [ "tt-ks-1" ] 
+            "texture uroughness" [ "tt-urough-1" ] 
+            "texture vroughness" [ "tt-vrough-1" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00161.ply" 
+    Texture "light_bump" "color" "imagemap" 
+            "string filename" [ "textures/light_bump.png" ] 
+    Texture "light_bump-scale" "color" "scale" 
+            "texture tex1" [ "light_bump" ] 
+            "rgb tex2" [ 0.80000001 0.80000001 0.80000001 ] 
+    Texture "light_bump" "float" "imagemap" 
+            "string filename" [ "textures/light_bump.png" ] 
+    Texture "light_bump-scale" "float" "scale" 
+            "float tex2" [ 0.050000001 ] 
+            "texture tex1" [ "light_bump" ] 
+    Material "uber" 
+            "float roughness" [ 0.5 ] 
+            "texture Kd" [ "light_bump-scale" ] 
+            "texture bumpmap" [ "light_bump-scale" ] 
+            "rgb opacity" [ 1 1 1 ] 
+            "rgb Ks" [ 0.30588201 0.066666998 0.0039220001 ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00162.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-1" ] 
+            "texture Ks" [ "tt-ks-1" ] 
+            "texture uroughness" [ "tt-urough-1" ] 
+            "texture vroughness" [ "tt-vrough-1" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00163.ply" 
+    Texture "light_bump" "color" "imagemap" 
+            "string filename" [ "textures/light_bump.png" ] 
+    Texture "light_bump-scale" "color" "scale" 
+            "texture tex1" [ "light_bump" ] 
+            "rgb tex2" [ 0.80000001 0.80000001 0.80000001 ] 
+    Texture "light_bump" "float" "imagemap" 
+            "string filename" [ "textures/light_bump.png" ] 
+    Texture "light_bump-scale" "float" "scale" 
+            "float tex2" [ 0.050000001 ] 
+            "texture tex1" [ "light_bump" ] 
+    Material "uber" 
+            "float roughness" [ 0.5 ] 
+            "texture Kd" [ "light_bump-scale" ] 
+            "texture bumpmap" [ "light_bump-scale" ] 
+            "rgb opacity" [ 1 1 1 ] 
+            "rgb Ks" [ 0.30588201 0.066666998 0.0039220001 ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00164.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-1" ] 
+            "texture Ks" [ "tt-ks-1" ] 
+            "texture uroughness" [ "tt-urough-1" ] 
+            "texture vroughness" [ "tt-vrough-1" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00165.ply" 
+    Texture "light_bump" "color" "imagemap" 
+            "string filename" [ "textures/light_bump.png" ] 
+    Texture "light_bump-scale" "color" "scale" 
+            "texture tex1" [ "light_bump" ] 
+            "rgb tex2" [ 0.80000001 0.80000001 0.80000001 ] 
+    Texture "light_bump" "float" "imagemap" 
+            "string filename" [ "textures/light_bump.png" ] 
+    Texture "light_bump-scale" "float" "scale" 
+            "float tex2" [ 0.050000001 ] 
+            "texture tex1" [ "light_bump" ] 
+    Material "uber" 
+            "float roughness" [ 0.5 ] 
+            "texture Kd" [ "light_bump-scale" ] 
+            "texture bumpmap" [ "light_bump-scale" ] 
+            "rgb opacity" [ 1 1 1 ] 
+            "rgb Ks" [ 0.30588201 0.066666998 0.0039220001 ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00166.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-1" ] 
+            "texture Ks" [ "tt-ks-1" ] 
+            "texture uroughness" [ "tt-urough-1" ] 
+            "texture vroughness" [ "tt-vrough-1" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00167.ply" 
+    Texture "light_bump" "color" "imagemap" 
+            "string filename" [ "textures/light_bump.png" ] 
+    Texture "light_bump-scale" "color" "scale" 
+            "texture tex1" [ "light_bump" ] 
+            "rgb tex2" [ 0.80000001 0.80000001 0.80000001 ] 
+    Texture "light_bump" "float" "imagemap" 
+            "string filename" [ "textures/light_bump.png" ] 
+    Texture "light_bump-scale" "float" "scale" 
+            "float tex2" [ 0.050000001 ] 
+            "texture tex1" [ "light_bump" ] 
+    Material "uber" 
+            "float roughness" [ 0.5 ] 
+            "texture Kd" [ "light_bump-scale" ] 
+            "texture bumpmap" [ "light_bump-scale" ] 
+            "rgb opacity" [ 1 1 1 ] 
+            "rgb Ks" [ 0.30588201 0.066666998 0.0039220001 ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00168.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-1" ] 
+            "texture Ks" [ "tt-ks-1" ] 
+            "texture uroughness" [ "tt-urough-1" ] 
+            "texture vroughness" [ "tt-vrough-1" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00169.ply" 
+    Texture "light_bump" "color" "imagemap" 
+            "string filename" [ "textures/light_bump.png" ] 
+    Texture "light_bump-scale" "color" "scale" 
+            "texture tex1" [ "light_bump" ] 
+            "rgb tex2" [ 0.80000001 0.80000001 0.80000001 ] 
+    Texture "light_bump" "float" "imagemap" 
+            "string filename" [ "textures/light_bump.png" ] 
+    Texture "light_bump-scale" "float" "scale" 
+            "float tex2" [ 0.050000001 ] 
+            "texture tex1" [ "light_bump" ] 
+    Material "uber" 
+            "float roughness" [ 0.5 ] 
+            "texture Kd" [ "light_bump-scale" ] 
+            "texture bumpmap" [ "light_bump-scale" ] 
+            "rgb opacity" [ 1 1 1 ] 
+            "rgb Ks" [ 0.30588201 0.066666998 0.0039220001 ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00170.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-1" ] 
+            "texture Ks" [ "tt-ks-1" ] 
+            "texture uroughness" [ "tt-urough-1" ] 
+            "texture vroughness" [ "tt-vrough-1" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00171.ply" 
+    Texture "light_bump" "color" "imagemap" 
+            "string filename" [ "textures/light_bump.png" ] 
+    Texture "light_bump-scale" "color" "scale" 
+            "texture tex1" [ "light_bump" ] 
+            "rgb tex2" [ 0.80000001 0.80000001 0.80000001 ] 
+    Texture "light_bump" "float" "imagemap" 
+            "string filename" [ "textures/light_bump.png" ] 
+    Texture "light_bump-scale" "float" "scale" 
+            "float tex2" [ 0.050000001 ] 
+            "texture tex1" [ "light_bump" ] 
+    Material "uber" 
+            "float roughness" [ 0.5 ] 
+            "texture Kd" [ "light_bump-scale" ] 
+            "texture bumpmap" [ "light_bump-scale" ] 
+            "rgb opacity" [ 1 1 1 ] 
+            "rgb Ks" [ 0.30588201 0.066666998 0.0039220001 ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00172.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-1" ] 
+            "texture Ks" [ "tt-ks-1" ] 
+            "texture uroughness" [ "tt-urough-1" ] 
+            "texture vroughness" [ "tt-vrough-1" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00173.ply" 
+    Texture "light_bump" "color" "imagemap" 
+            "string filename" [ "textures/light_bump.png" ] 
+    Texture "light_bump-scale" "color" "scale" 
+            "texture tex1" [ "light_bump" ] 
+            "rgb tex2" [ 0.80000001 0.80000001 0.80000001 ] 
+    Texture "light_bump" "float" "imagemap" 
+            "string filename" [ "textures/light_bump.png" ] 
+    Texture "light_bump-scale" "float" "scale" 
+            "float tex2" [ 0.050000001 ] 
+            "texture tex1" [ "light_bump" ] 
+    Material "uber" 
+            "float roughness" [ 0.5 ] 
+            "texture Kd" [ "light_bump-scale" ] 
+            "texture bumpmap" [ "light_bump-scale" ] 
+            "rgb opacity" [ 1 1 1 ] 
+            "rgb Ks" [ 0.30588201 0.066666998 0.0039220001 ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00174.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-1" ] 
+            "texture Ks" [ "tt-ks-1" ] 
+            "texture uroughness" [ "tt-urough-1" ] 
+            "texture vroughness" [ "tt-vrough-1" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00175.ply" 
+    Texture "light_bump" "color" "imagemap" 
+            "string filename" [ "textures/light_bump.png" ] 
+    Texture "light_bump-scale" "color" "scale" 
+            "texture tex1" [ "light_bump" ] 
+            "rgb tex2" [ 0.80000001 0.80000001 0.80000001 ] 
+    Texture "light_bump" "float" "imagemap" 
+            "string filename" [ "textures/light_bump.png" ] 
+    Texture "light_bump-scale" "float" "scale" 
+            "float tex2" [ 0.050000001 ] 
+            "texture tex1" [ "light_bump" ] 
+    Material "uber" 
+            "float roughness" [ 0.5 ] 
+            "texture Kd" [ "light_bump-scale" ] 
+            "texture bumpmap" [ "light_bump-scale" ] 
+            "rgb opacity" [ 1 1 1 ] 
+            "rgb Ks" [ 0.30588201 0.066666998 0.0039220001 ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00176.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-1" ] 
+            "texture Ks" [ "tt-ks-1" ] 
+            "texture uroughness" [ "tt-urough-1" ] 
+            "texture vroughness" [ "tt-vrough-1" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00177.ply" 
+    Texture "light_bump" "color" "imagemap" 
+            "string filename" [ "textures/light_bump.png" ] 
+    Texture "light_bump-scale" "color" "scale" 
+            "texture tex1" [ "light_bump" ] 
+            "rgb tex2" [ 0.80000001 0.80000001 0.80000001 ] 
+    Texture "light_bump" "float" "imagemap" 
+            "string filename" [ "textures/light_bump.png" ] 
+    Texture "light_bump-scale" "float" "scale" 
+            "float tex2" [ 0.050000001 ] 
+            "texture tex1" [ "light_bump" ] 
+    Material "uber" 
+            "float roughness" [ 0.5 ] 
+            "texture Kd" [ "light_bump-scale" ] 
+            "texture bumpmap" [ "light_bump-scale" ] 
+            "rgb opacity" [ 1 1 1 ] 
+            "rgb Ks" [ 0.30588201 0.066666998 0.0039220001 ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00178.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-1" ] 
+            "texture Ks" [ "tt-ks-1" ] 
+            "texture uroughness" [ "tt-urough-1" ] 
+            "texture vroughness" [ "tt-vrough-1" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00179.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-8" ] 
+            "texture Ks" [ "tt-ks-8" ] 
+            "texture uroughness" [ "tt-urough-8" ] 
+            "texture vroughness" [ "tt-vrough-8" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00180.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-9" ] 
+            "texture Ks" [ "tt-ks-9" ] 
+            "texture uroughness" [ "tt-urough-9" ] 
+            "texture vroughness" [ "tt-vrough-9" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00181.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-1" ] 
+            "texture Ks" [ "tt-ks-1" ] 
+            "texture uroughness" [ "tt-urough-1" ] 
+            "texture vroughness" [ "tt-vrough-1" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00182.ply" 
+    Texture "light_bump" "color" "imagemap" 
+            "string filename" [ "textures/light_bump.png" ] 
+    Texture "light_bump-scale" "color" "scale" 
+            "texture tex1" [ "light_bump" ] 
+            "rgb tex2" [ 0.80000001 0.80000001 0.80000001 ] 
+    Texture "light_bump" "float" "imagemap" 
+            "string filename" [ "textures/light_bump.png" ] 
+    Texture "light_bump-scale" "float" "scale" 
+            "float tex2" [ 0.050000001 ] 
+            "texture tex1" [ "light_bump" ] 
+    Material "uber" 
+            "float roughness" [ 0.5 ] 
+            "texture Kd" [ "light_bump-scale" ] 
+            "texture bumpmap" [ "light_bump-scale" ] 
+            "rgb opacity" [ 1 1 1 ] 
+            "rgb Ks" [ 0.30588201 0.066666998 0.0039220001 ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00183.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-1" ] 
+            "texture Ks" [ "tt-ks-1" ] 
+            "texture uroughness" [ "tt-urough-1" ] 
+            "texture vroughness" [ "tt-vrough-1" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00184.ply" 
+    Texture "light_bump" "color" "imagemap" 
+            "string filename" [ "textures/light_bump.png" ] 
+    Texture "light_bump-scale" "color" "scale" 
+            "texture tex1" [ "light_bump" ] 
+            "rgb tex2" [ 0.80000001 0.80000001 0.80000001 ] 
+    Texture "light_bump" "float" "imagemap" 
+            "string filename" [ "textures/light_bump.png" ] 
+    Texture "light_bump-scale" "float" "scale" 
+            "float tex2" [ 0.050000001 ] 
+            "texture tex1" [ "light_bump" ] 
+    Material "uber" 
+            "float roughness" [ 0.5 ] 
+            "texture Kd" [ "light_bump-scale" ] 
+            "texture bumpmap" [ "light_bump-scale" ] 
+            "rgb opacity" [ 1 1 1 ] 
+            "rgb Ks" [ 0.30588201 0.066666998 0.0039220001 ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00185.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-1" ] 
+            "texture Ks" [ "tt-ks-1" ] 
+            "texture uroughness" [ "tt-urough-1" ] 
+            "texture vroughness" [ "tt-vrough-1" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00186.ply" 
+    Texture "light_bump" "color" "imagemap" 
+            "string filename" [ "textures/light_bump.png" ] 
+    Texture "light_bump-scale" "color" "scale" 
+            "texture tex1" [ "light_bump" ] 
+            "rgb tex2" [ 0.80000001 0.80000001 0.80000001 ] 
+    Texture "light_bump" "float" "imagemap" 
+            "string filename" [ "textures/light_bump.png" ] 
+    Texture "light_bump-scale" "float" "scale" 
+            "float tex2" [ 0.050000001 ] 
+            "texture tex1" [ "light_bump" ] 
+    Material "uber" 
+            "float roughness" [ 0.5 ] 
+            "texture Kd" [ "light_bump-scale" ] 
+            "texture bumpmap" [ "light_bump-scale" ] 
+            "rgb opacity" [ 1 1 1 ] 
+            "rgb Ks" [ 0.30588201 0.066666998 0.0039220001 ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00187.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-1" ] 
+            "texture Ks" [ "tt-ks-1" ] 
+            "texture uroughness" [ "tt-urough-1" ] 
+            "texture vroughness" [ "tt-vrough-1" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00188.ply" 
+    Texture "light_bump" "color" "imagemap" 
+            "string filename" [ "textures/light_bump.png" ] 
+    Texture "light_bump-scale" "color" "scale" 
+            "texture tex1" [ "light_bump" ] 
+            "rgb tex2" [ 0.80000001 0.80000001 0.80000001 ] 
+    Texture "light_bump" "float" "imagemap" 
+            "string filename" [ "textures/light_bump.png" ] 
+    Texture "light_bump-scale" "float" "scale" 
+            "float tex2" [ 0.050000001 ] 
+            "texture tex1" [ "light_bump" ] 
+    Material "uber" 
+            "float roughness" [ 0.5 ] 
+            "texture Kd" [ "light_bump-scale" ] 
+            "texture bumpmap" [ "light_bump-scale" ] 
+            "rgb opacity" [ 1 1 1 ] 
+            "rgb Ks" [ 0.30588201 0.066666998 0.0039220001 ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00189.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-1" ] 
+            "texture Ks" [ "tt-ks-1" ] 
+            "texture uroughness" [ "tt-urough-1" ] 
+            "texture vroughness" [ "tt-vrough-1" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00190.ply" 
+    Texture "light_bump" "color" "imagemap" 
+            "string filename" [ "textures/light_bump.png" ] 
+    Texture "light_bump-scale" "color" "scale" 
+            "texture tex1" [ "light_bump" ] 
+            "rgb tex2" [ 0.80000001 0.80000001 0.80000001 ] 
+    Texture "light_bump" "float" "imagemap" 
+            "string filename" [ "textures/light_bump.png" ] 
+    Texture "light_bump-scale" "float" "scale" 
+            "float tex2" [ 0.050000001 ] 
+            "texture tex1" [ "light_bump" ] 
+    Material "uber" 
+            "float roughness" [ 0.5 ] 
+            "texture Kd" [ "light_bump-scale" ] 
+            "texture bumpmap" [ "light_bump-scale" ] 
+            "rgb opacity" [ 1 1 1 ] 
+            "rgb Ks" [ 0.30588201 0.066666998 0.0039220001 ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00191.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-1" ] 
+            "texture Ks" [ "tt-ks-1" ] 
+            "texture uroughness" [ "tt-urough-1" ] 
+            "texture vroughness" [ "tt-vrough-1" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00192.ply" 
+    Texture "light_bump" "color" "imagemap" 
+            "string filename" [ "textures/light_bump.png" ] 
+    Texture "light_bump-scale" "color" "scale" 
+            "texture tex1" [ "light_bump" ] 
+            "rgb tex2" [ 0.80000001 0.80000001 0.80000001 ] 
+    Texture "light_bump" "float" "imagemap" 
+            "string filename" [ "textures/light_bump.png" ] 
+    Texture "light_bump-scale" "float" "scale" 
+            "float tex2" [ 0.050000001 ] 
+            "texture tex1" [ "light_bump" ] 
+    Material "uber" 
+            "float roughness" [ 0.5 ] 
+            "texture Kd" [ "light_bump-scale" ] 
+            "texture bumpmap" [ "light_bump-scale" ] 
+            "rgb opacity" [ 1 1 1 ] 
+            "rgb Ks" [ 0.30588201 0.066666998 0.0039220001 ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00193.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-1" ] 
+            "texture Ks" [ "tt-ks-1" ] 
+            "texture uroughness" [ "tt-urough-1" ] 
+            "texture vroughness" [ "tt-vrough-1" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00194.ply" 
+    Texture "light_bump" "color" "imagemap" 
+            "string filename" [ "textures/light_bump.png" ] 
+    Texture "light_bump-scale" "color" "scale" 
+            "texture tex1" [ "light_bump" ] 
+            "rgb tex2" [ 0.80000001 0.80000001 0.80000001 ] 
+    Texture "light_bump" "float" "imagemap" 
+            "string filename" [ "textures/light_bump.png" ] 
+    Texture "light_bump-scale" "float" "scale" 
+            "float tex2" [ 0.050000001 ] 
+            "texture tex1" [ "light_bump" ] 
+    Material "uber" 
+            "float roughness" [ 0.5 ] 
+            "texture Kd" [ "light_bump-scale" ] 
+            "texture bumpmap" [ "light_bump-scale" ] 
+            "rgb opacity" [ 1 1 1 ] 
+            "rgb Ks" [ 0.30588201 0.066666998 0.0039220001 ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00195.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-1" ] 
+            "texture Ks" [ "tt-ks-1" ] 
+            "texture uroughness" [ "tt-urough-1" ] 
+            "texture vroughness" [ "tt-vrough-1" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00196.ply" 
+    Texture "light_bump" "color" "imagemap" 
+            "string filename" [ "textures/light_bump.png" ] 
+    Texture "light_bump-scale" "color" "scale" 
+            "texture tex1" [ "light_bump" ] 
+            "rgb tex2" [ 0.80000001 0.80000001 0.80000001 ] 
+    Texture "light_bump" "float" "imagemap" 
+            "string filename" [ "textures/light_bump.png" ] 
+    Texture "light_bump-scale" "float" "scale" 
+            "float tex2" [ 0.050000001 ] 
+            "texture tex1" [ "light_bump" ] 
+    Material "uber" 
+            "float roughness" [ 0.5 ] 
+            "texture Kd" [ "light_bump-scale" ] 
+            "texture bumpmap" [ "light_bump-scale" ] 
+            "rgb opacity" [ 1 1 1 ] 
+            "rgb Ks" [ 0.30588201 0.066666998 0.0039220001 ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00197.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-1" ] 
+            "texture Ks" [ "tt-ks-1" ] 
+            "texture uroughness" [ "tt-urough-1" ] 
+            "texture vroughness" [ "tt-vrough-1" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00198.ply" 
+    Texture "light_bump" "color" "imagemap" 
+            "string filename" [ "textures/light_bump.png" ] 
+    Texture "light_bump-scale" "color" "scale" 
+            "texture tex1" [ "light_bump" ] 
+            "rgb tex2" [ 0.80000001 0.80000001 0.80000001 ] 
+    Texture "light_bump" "float" "imagemap" 
+            "string filename" [ "textures/light_bump.png" ] 
+    Texture "light_bump-scale" "float" "scale" 
+            "float tex2" [ 0.050000001 ] 
+            "texture tex1" [ "light_bump" ] 
+    Material "uber" 
+            "float roughness" [ 0.5 ] 
+            "texture Kd" [ "light_bump-scale" ] 
+            "texture bumpmap" [ "light_bump-scale" ] 
+            "rgb opacity" [ 1 1 1 ] 
+            "rgb Ks" [ 0.30588201 0.066666998 0.0039220001 ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00199.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-1" ] 
+            "texture Ks" [ "tt-ks-1" ] 
+            "texture uroughness" [ "tt-urough-1" ] 
+            "texture vroughness" [ "tt-vrough-1" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00200.ply" 
+    Texture "light_bump" "color" "imagemap" 
+            "string filename" [ "textures/light_bump.png" ] 
+    Texture "light_bump-scale" "color" "scale" 
+            "texture tex1" [ "light_bump" ] 
+            "rgb tex2" [ 0.80000001 0.80000001 0.80000001 ] 
+    Texture "light_bump" "float" "imagemap" 
+            "string filename" [ "textures/light_bump.png" ] 
+    Texture "light_bump-scale" "float" "scale" 
+            "float tex2" [ 0.050000001 ] 
+            "texture tex1" [ "light_bump" ] 
+    Material "uber" 
+            "float roughness" [ 0.5 ] 
+            "texture Kd" [ "light_bump-scale" ] 
+            "texture bumpmap" [ "light_bump-scale" ] 
+            "rgb opacity" [ 1 1 1 ] 
+            "rgb Ks" [ 0.30588201 0.066666998 0.0039220001 ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00201.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-1" ] 
+            "texture Ks" [ "tt-ks-1" ] 
+            "texture uroughness" [ "tt-urough-1" ] 
+            "texture vroughness" [ "tt-vrough-1" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00202.ply" 
+    Texture "light_bump" "color" "imagemap" 
+            "string filename" [ "textures/light_bump.png" ] 
+    Texture "light_bump-scale" "color" "scale" 
+            "texture tex1" [ "light_bump" ] 
+            "rgb tex2" [ 0.80000001 0.80000001 0.80000001 ] 
+    Texture "light_bump" "float" "imagemap" 
+            "string filename" [ "textures/light_bump.png" ] 
+    Texture "light_bump-scale" "float" "scale" 
+            "float tex2" [ 0.050000001 ] 
+            "texture tex1" [ "light_bump" ] 
+    Material "uber" 
+            "float roughness" [ 0.5 ] 
+            "texture Kd" [ "light_bump-scale" ] 
+            "texture bumpmap" [ "light_bump-scale" ] 
+            "rgb opacity" [ 1 1 1 ] 
+            "rgb Ks" [ 0.30588201 0.066666998 0.0039220001 ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00203.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-1" ] 
+            "texture Ks" [ "tt-ks-1" ] 
+            "texture uroughness" [ "tt-urough-1" ] 
+            "texture vroughness" [ "tt-vrough-1" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00204.ply" 
+    Texture "light_bump" "color" "imagemap" 
+            "string filename" [ "textures/light_bump.png" ] 
+    Texture "light_bump-scale" "color" "scale" 
+            "texture tex1" [ "light_bump" ] 
+            "rgb tex2" [ 0.80000001 0.80000001 0.80000001 ] 
+    Texture "light_bump" "float" "imagemap" 
+            "string filename" [ "textures/light_bump.png" ] 
+    Texture "light_bump-scale" "float" "scale" 
+            "float tex2" [ 0.050000001 ] 
+            "texture tex1" [ "light_bump" ] 
+    Material "uber" 
+            "float roughness" [ 0.5 ] 
+            "texture Kd" [ "light_bump-scale" ] 
+            "texture bumpmap" [ "light_bump-scale" ] 
+            "rgb opacity" [ 1 1 1 ] 
+            "rgb Ks" [ 0.30588201 0.066666998 0.0039220001 ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00205.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-1" ] 
+            "texture Ks" [ "tt-ks-1" ] 
+            "texture uroughness" [ "tt-urough-1" ] 
+            "texture vroughness" [ "tt-vrough-1" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00206.ply" 
+    Texture "light_bump" "color" "imagemap" 
+            "string filename" [ "textures/light_bump.png" ] 
+    Texture "light_bump-scale" "color" "scale" 
+            "texture tex1" [ "light_bump" ] 
+            "rgb tex2" [ 0.80000001 0.80000001 0.80000001 ] 
+    Texture "light_bump" "float" "imagemap" 
+            "string filename" [ "textures/light_bump.png" ] 
+    Texture "light_bump-scale" "float" "scale" 
+            "float tex2" [ 0.050000001 ] 
+            "texture tex1" [ "light_bump" ] 
+    Material "uber" 
+            "float roughness" [ 0.5 ] 
+            "texture Kd" [ "light_bump-scale" ] 
+            "texture bumpmap" [ "light_bump-scale" ] 
+            "rgb opacity" [ 1 1 1 ] 
+            "rgb Ks" [ 0.30588201 0.066666998 0.0039220001 ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00207.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-1" ] 
+            "texture Ks" [ "tt-ks-1" ] 
+            "texture uroughness" [ "tt-urough-1" ] 
+            "texture vroughness" [ "tt-vrough-1" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00208.ply" 
+    Texture "light_bump" "color" "imagemap" 
+            "string filename" [ "textures/light_bump.png" ] 
+    Texture "light_bump-scale" "color" "scale" 
+            "texture tex1" [ "light_bump" ] 
+            "rgb tex2" [ 0.80000001 0.80000001 0.80000001 ] 
+    Texture "light_bump" "float" "imagemap" 
+            "string filename" [ "textures/light_bump.png" ] 
+    Texture "light_bump-scale" "float" "scale" 
+            "float tex2" [ 0.050000001 ] 
+            "texture tex1" [ "light_bump" ] 
+    Material "uber" 
+            "float roughness" [ 0.5 ] 
+            "texture Kd" [ "light_bump-scale" ] 
+            "texture bumpmap" [ "light_bump-scale" ] 
+            "rgb opacity" [ 1 1 1 ] 
+            "rgb Ks" [ 0.30588201 0.066666998 0.0039220001 ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00209.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-1" ] 
+            "texture Ks" [ "tt-ks-1" ] 
+            "texture uroughness" [ "tt-urough-1" ] 
+            "texture vroughness" [ "tt-vrough-1" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00210.ply" 
+    Texture "light_bump" "color" "imagemap" 
+            "string filename" [ "textures/light_bump.png" ] 
+    Texture "light_bump-scale" "color" "scale" 
+            "texture tex1" [ "light_bump" ] 
+            "rgb tex2" [ 0.80000001 0.80000001 0.80000001 ] 
+    Texture "light_bump" "float" "imagemap" 
+            "string filename" [ "textures/light_bump.png" ] 
+    Texture "light_bump-scale" "float" "scale" 
+            "float tex2" [ 0.050000001 ] 
+            "texture tex1" [ "light_bump" ] 
+    Material "uber" 
+            "float roughness" [ 0.5 ] 
+            "texture Kd" [ "light_bump-scale" ] 
+            "texture bumpmap" [ "light_bump-scale" ] 
+            "rgb opacity" [ 1 1 1 ] 
+            "rgb Ks" [ 0.30588201 0.066666998 0.0039220001 ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00211.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-1" ] 
+            "texture Ks" [ "tt-ks-1" ] 
+            "texture uroughness" [ "tt-urough-1" ] 
+            "texture vroughness" [ "tt-vrough-1" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00212.ply" 
+    Texture "light_bump" "color" "imagemap" 
+            "string filename" [ "textures/light_bump.png" ] 
+    Texture "light_bump-scale" "color" "scale" 
+            "texture tex1" [ "light_bump" ] 
+            "rgb tex2" [ 0.80000001 0.80000001 0.80000001 ] 
+    Texture "light_bump" "float" "imagemap" 
+            "string filename" [ "textures/light_bump.png" ] 
+    Texture "light_bump-scale" "float" "scale" 
+            "float tex2" [ 0.050000001 ] 
+            "texture tex1" [ "light_bump" ] 
+    Material "uber" 
+            "float roughness" [ 0.5 ] 
+            "texture Kd" [ "light_bump-scale" ] 
+            "texture bumpmap" [ "light_bump-scale" ] 
+            "rgb opacity" [ 1 1 1 ] 
+            "rgb Ks" [ 0.30588201 0.066666998 0.0039220001 ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00213.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-1" ] 
+            "texture Ks" [ "tt-ks-1" ] 
+            "texture uroughness" [ "tt-urough-1" ] 
+            "texture vroughness" [ "tt-vrough-1" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00214.ply" 
+    Texture "light_bump" "color" "imagemap" 
+            "string filename" [ "textures/light_bump.png" ] 
+    Texture "light_bump-scale" "color" "scale" 
+            "texture tex1" [ "light_bump" ] 
+            "rgb tex2" [ 0.80000001 0.80000001 0.80000001 ] 
+    Texture "light_bump" "float" "imagemap" 
+            "string filename" [ "textures/light_bump.png" ] 
+    Texture "light_bump-scale" "float" "scale" 
+            "float tex2" [ 0.050000001 ] 
+            "texture tex1" [ "light_bump" ] 
+    Material "uber" 
+            "float roughness" [ 0.5 ] 
+            "texture Kd" [ "light_bump-scale" ] 
+            "texture bumpmap" [ "light_bump-scale" ] 
+            "rgb opacity" [ 1 1 1 ] 
+            "rgb Ks" [ 0.30588201 0.066666998 0.0039220001 ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00215.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-1" ] 
+            "texture Ks" [ "tt-ks-1" ] 
+            "texture uroughness" [ "tt-urough-1" ] 
+            "texture vroughness" [ "tt-vrough-1" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00216.ply" 
+    Texture "light_bump" "color" "imagemap" 
+            "string filename" [ "textures/light_bump.png" ] 
+    Texture "light_bump-scale" "color" "scale" 
+            "texture tex1" [ "light_bump" ] 
+            "rgb tex2" [ 0.80000001 0.80000001 0.80000001 ] 
+    Texture "light_bump" "float" "imagemap" 
+            "string filename" [ "textures/light_bump.png" ] 
+    Texture "light_bump-scale" "float" "scale" 
+            "float tex2" [ 0.050000001 ] 
+            "texture tex1" [ "light_bump" ] 
+    Material "uber" 
+            "float roughness" [ 0.5 ] 
+            "texture Kd" [ "light_bump-scale" ] 
+            "texture bumpmap" [ "light_bump-scale" ] 
+            "rgb opacity" [ 1 1 1 ] 
+            "rgb Ks" [ 0.30588201 0.066666998 0.0039220001 ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00217.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-1" ] 
+            "texture Ks" [ "tt-ks-1" ] 
+            "texture uroughness" [ "tt-urough-1" ] 
+            "texture vroughness" [ "tt-vrough-1" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00218.ply" 
+    Texture "light_bump" "color" "imagemap" 
+            "string filename" [ "textures/light_bump.png" ] 
+    Texture "light_bump-scale" "color" "scale" 
+            "texture tex1" [ "light_bump" ] 
+            "rgb tex2" [ 0.80000001 0.80000001 0.80000001 ] 
+    Texture "light_bump" "float" "imagemap" 
+            "string filename" [ "textures/light_bump.png" ] 
+    Texture "light_bump-scale" "float" "scale" 
+            "float tex2" [ 0.050000001 ] 
+            "texture tex1" [ "light_bump" ] 
+    Material "uber" 
+            "float roughness" [ 0.5 ] 
+            "texture Kd" [ "light_bump-scale" ] 
+            "texture bumpmap" [ "light_bump-scale" ] 
+            "rgb opacity" [ 1 1 1 ] 
+            "rgb Ks" [ 0.30588201 0.066666998 0.0039220001 ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00219.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-1" ] 
+            "texture Ks" [ "tt-ks-1" ] 
+            "texture uroughness" [ "tt-urough-1" ] 
+            "texture vroughness" [ "tt-vrough-1" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00220.ply" 
+    Texture "light_bump" "color" "imagemap" 
+            "string filename" [ "textures/light_bump.png" ] 
+    Texture "light_bump-scale" "color" "scale" 
+            "texture tex1" [ "light_bump" ] 
+            "rgb tex2" [ 0.80000001 0.80000001 0.80000001 ] 
+    Texture "light_bump" "float" "imagemap" 
+            "string filename" [ "textures/light_bump.png" ] 
+    Texture "light_bump-scale" "float" "scale" 
+            "float tex2" [ 0.050000001 ] 
+            "texture tex1" [ "light_bump" ] 
+    Material "uber" 
+            "float roughness" [ 0.5 ] 
+            "texture Kd" [ "light_bump-scale" ] 
+            "texture bumpmap" [ "light_bump-scale" ] 
+            "rgb opacity" [ 1 1 1 ] 
+            "rgb Ks" [ 0.30588201 0.066666998 0.0039220001 ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00221.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-1" ] 
+            "texture Ks" [ "tt-ks-1" ] 
+            "texture uroughness" [ "tt-urough-1" ] 
+            "texture vroughness" [ "tt-vrough-1" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00222.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-5" ] 
+            "texture Ks" [ "tt-ks-5" ] 
+            "texture uroughness" [ "tt-urough-5" ] 
+            "texture vroughness" [ "tt-vrough-5" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00223.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-2" ] 
+            "texture Ks" [ "tt-ks-2" ] 
+            "texture uroughness" [ "tt-urough-2" ] 
+            "texture vroughness" [ "tt-vrough-2" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00224.ply" 
+    Material "mirror" 
+    Shape "plymesh" "string filename" "geometry/mesh_00225.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-2" ] 
+            "texture Ks" [ "tt-ks-2" ] 
+            "texture uroughness" [ "tt-urough-2" ] 
+            "texture vroughness" [ "tt-vrough-2" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00226.ply" 
+    Material "mirror" 
+    Shape "plymesh" "string filename" "geometry/mesh_00227.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-2" ] 
+            "texture Ks" [ "tt-ks-2" ] 
+            "texture uroughness" [ "tt-urough-2" ] 
+            "texture vroughness" [ "tt-vrough-2" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00228.ply" 
+    Material "mirror" 
+    Shape "plymesh" "string filename" "geometry/mesh_00229.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-1" ] 
+            "texture Ks" [ "tt-ks-1" ] 
+            "texture uroughness" [ "tt-urough-1" ] 
+            "texture vroughness" [ "tt-vrough-1" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00230.ply" 
+    Material "mirror" 
+    Shape "plymesh" "string filename" "geometry/mesh_00231.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-1" ] 
+            "texture Ks" [ "tt-ks-1" ] 
+            "texture uroughness" [ "tt-urough-1" ] 
+            "texture vroughness" [ "tt-vrough-1" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00232.ply" 
+    Material "mirror" 
+    Shape "plymesh" "string filename" "geometry/mesh_00233.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-1" ] 
+            "texture Ks" [ "tt-ks-1" ] 
+            "texture uroughness" [ "tt-urough-1" ] 
+            "texture vroughness" [ "tt-vrough-1" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00234.ply" 
+    Material "mirror" 
+    Shape "plymesh" "string filename" "geometry/mesh_00235.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-1" ] 
+            "texture Ks" [ "tt-ks-1" ] 
+            "texture uroughness" [ "tt-urough-1" ] 
+            "texture vroughness" [ "tt-vrough-1" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00236.ply" 
+    Material "mirror" 
+    Shape "plymesh" "string filename" "geometry/mesh_00237.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-1" ] 
+            "texture Ks" [ "tt-ks-1" ] 
+            "texture uroughness" [ "tt-urough-1" ] 
+            "texture vroughness" [ "tt-vrough-1" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00238.ply" 
+    Material "mirror" 
+    Shape "plymesh" "string filename" "geometry/mesh_00239.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-1" ] 
+            "texture Ks" [ "tt-ks-1" ] 
+            "texture uroughness" [ "tt-urough-1" ] 
+            "texture vroughness" [ "tt-vrough-1" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00240.ply" 
+    Material "mirror" 
+    Shape "plymesh" "string filename" "geometry/mesh_00241.ply" 
+    Material "uber" 
+            "texture Kd" [ "tt-kd-15" ] 
+            "texture Ks" [ "tt-ks-15" ] 
+            "texture roughness" [ "tt-roughness-15" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00242.ply" 
+    Material "mirror" 
+    Shape "plymesh" "string filename" "geometry/mesh_00243.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-1" ] 
+            "texture Ks" [ "tt-ks-1" ] 
+            "texture uroughness" [ "tt-urough-1" ] 
+            "texture vroughness" [ "tt-vrough-1" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00244.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-2" ] 
+            "texture Ks" [ "tt-ks-2" ] 
+            "texture uroughness" [ "tt-urough-2" ] 
+            "texture vroughness" [ "tt-vrough-2" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00245.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-1" ] 
+            "texture Ks" [ "tt-ks-1" ] 
+            "texture uroughness" [ "tt-urough-1" ] 
+            "texture vroughness" [ "tt-vrough-1" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00246.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-2" ] 
+            "texture Ks" [ "tt-ks-2" ] 
+            "texture uroughness" [ "tt-urough-2" ] 
+            "texture vroughness" [ "tt-vrough-2" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00247.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-3" ] 
+            "texture Ks" [ "tt-ks-3" ] 
+            "texture uroughness" [ "tt-urough-3" ] 
+            "texture vroughness" [ "tt-vrough-3" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00248.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-2" ] 
+            "texture Ks" [ "tt-ks-2" ] 
+            "texture uroughness" [ "tt-urough-2" ] 
+            "texture vroughness" [ "tt-vrough-2" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00249.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-3" ] 
+            "texture Ks" [ "tt-ks-3" ] 
+            "texture uroughness" [ "tt-urough-3" ] 
+            "texture vroughness" [ "tt-vrough-3" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00250.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-2" ] 
+            "texture Ks" [ "tt-ks-2" ] 
+            "texture uroughness" [ "tt-urough-2" ] 
+            "texture vroughness" [ "tt-vrough-2" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00251.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-3" ] 
+            "texture Ks" [ "tt-ks-3" ] 
+            "texture uroughness" [ "tt-urough-3" ] 
+            "texture vroughness" [ "tt-vrough-3" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00252.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-2" ] 
+            "texture Ks" [ "tt-ks-2" ] 
+            "texture uroughness" [ "tt-urough-2" ] 
+            "texture vroughness" [ "tt-vrough-2" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00253.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-3" ] 
+            "texture Ks" [ "tt-ks-3" ] 
+            "texture uroughness" [ "tt-urough-3" ] 
+            "texture vroughness" [ "tt-vrough-3" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00254.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-2" ] 
+            "texture Ks" [ "tt-ks-2" ] 
+            "texture uroughness" [ "tt-urough-2" ] 
+            "texture vroughness" [ "tt-vrough-2" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00255.ply" 
+    Texture "light_bump" "color" "imagemap" 
+            "string filename" [ "textures/light_bump.png" ] 
+    Texture "light_bump-scale" "color" "scale" 
+            "texture tex1" [ "light_bump" ] 
+            "rgb tex2" [ 0.80000001 0.80000001 0.80000001 ] 
+    Texture "light_bump" "float" "imagemap" 
+            "string filename" [ "textures/light_bump.png" ] 
+    Texture "light_bump-scale" "float" "scale" 
+            "float tex2" [ 0.050000001 ] 
+            "texture tex1" [ "light_bump" ] 
+    Material "uber" 
+            "float roughness" [ 0.5 ] 
+            "texture Kd" [ "light_bump-scale" ] 
+            "texture bumpmap" [ "light_bump-scale" ] 
+            "rgb opacity" [ 1 1 1 ] 
+            "rgb Ks" [ 0.30588201 0.066666998 0.0039220001 ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00256.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-2" ] 
+            "texture Ks" [ "tt-ks-2" ] 
+            "texture uroughness" [ "tt-urough-2" ] 
+            "texture vroughness" [ "tt-vrough-2" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00257.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-5" ] 
+            "texture Ks" [ "tt-ks-5" ] 
+            "texture uroughness" [ "tt-urough-5" ] 
+            "texture vroughness" [ "tt-vrough-5" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00258.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-2" ] 
+            "texture Ks" [ "tt-ks-2" ] 
+            "texture uroughness" [ "tt-urough-2" ] 
+            "texture vroughness" [ "tt-vrough-2" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00259.ply" 
+    Texture "light_bump" "color" "imagemap" 
+            "string filename" [ "textures/light_bump.png" ] 
+    Material "uber" 
+            "float roughness" [ 1 ] 
+            "texture opacity" [ "light_bump" ] 
+            "rgb Kd" [ 0.16470601 0.031373002 0.015686 ] 
+            "rgb Ks" [ 0.83921599 0.16078401 0.094117999 ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00260.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-2" ] 
+            "texture Ks" [ "tt-ks-2" ] 
+            "texture uroughness" [ "tt-urough-2" ] 
+            "texture vroughness" [ "tt-vrough-2" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00261.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-1" ] 
+            "texture Ks" [ "tt-ks-1" ] 
+            "texture uroughness" [ "tt-urough-1" ] 
+            "texture vroughness" [ "tt-vrough-1" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00262.ply" 
+    Material "mirror" 
+    Shape "plymesh" "string filename" "geometry/mesh_00263.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-1" ] 
+            "texture Ks" [ "tt-ks-1" ] 
+            "texture uroughness" [ "tt-urough-1" ] 
+            "texture vroughness" [ "tt-vrough-1" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00264.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-3" ] 
+            "texture Ks" [ "tt-ks-3" ] 
+            "texture uroughness" [ "tt-urough-3" ] 
+            "texture vroughness" [ "tt-vrough-3" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00265.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-2" ] 
+            "texture Ks" [ "tt-ks-2" ] 
+            "texture uroughness" [ "tt-urough-2" ] 
+            "texture vroughness" [ "tt-vrough-2" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00266.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-3" ] 
+            "texture Ks" [ "tt-ks-3" ] 
+            "texture uroughness" [ "tt-urough-3" ] 
+            "texture vroughness" [ "tt-vrough-3" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00267.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-2" ] 
+            "texture Ks" [ "tt-ks-2" ] 
+            "texture uroughness" [ "tt-urough-2" ] 
+            "texture vroughness" [ "tt-vrough-2" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00268.ply" 
+    Texture "light_bump" "color" "imagemap" 
+            "string filename" [ "textures/light_bump.png" ] 
+    Texture "light_bump-scale" "color" "scale" 
+            "texture tex1" [ "light_bump" ] 
+            "rgb tex2" [ 0.80000001 0.80000001 0.80000001 ] 
+    Texture "light_bump" "float" "imagemap" 
+            "string filename" [ "textures/light_bump.png" ] 
+    Texture "light_bump-scale" "float" "scale" 
+            "float tex2" [ 0.050000001 ] 
+            "texture tex1" [ "light_bump" ] 
+    Material "uber" 
+            "float roughness" [ 0.5 ] 
+            "texture Kd" [ "light_bump-scale" ] 
+            "texture bumpmap" [ "light_bump-scale" ] 
+            "rgb opacity" [ 1 1 1 ] 
+            "rgb Ks" [ 0.30588201 0.066666998 0.0039220001 ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00269.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-2" ] 
+            "texture Ks" [ "tt-ks-2" ] 
+            "texture uroughness" [ "tt-urough-2" ] 
+            "texture vroughness" [ "tt-vrough-2" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00270.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-5" ] 
+            "texture Ks" [ "tt-ks-5" ] 
+            "texture uroughness" [ "tt-urough-5" ] 
+            "texture vroughness" [ "tt-vrough-5" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00271.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-2" ] 
+            "texture Ks" [ "tt-ks-2" ] 
+            "texture uroughness" [ "tt-urough-2" ] 
+            "texture vroughness" [ "tt-vrough-2" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00272.ply" 
+    Texture "light_bump" "color" "imagemap" 
+            "string filename" [ "textures/light_bump.png" ] 
+    Material "uber" 
+            "float roughness" [ 1 ] 
+            "texture opacity" [ "light_bump" ] 
+            "rgb Kd" [ 0.16470601 0.031373002 0.015686 ] 
+            "rgb Ks" [ 0.83921599 0.16078401 0.094117999 ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00273.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-2" ] 
+            "texture Ks" [ "tt-ks-2" ] 
+            "texture uroughness" [ "tt-urough-2" ] 
+            "texture vroughness" [ "tt-vrough-2" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00274.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-1" ] 
+            "texture Ks" [ "tt-ks-1" ] 
+            "texture uroughness" [ "tt-urough-1" ] 
+            "texture vroughness" [ "tt-vrough-1" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00275.ply" 
+    Material "mirror" 
+    Shape "plymesh" "string filename" "geometry/mesh_00276.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-1" ] 
+            "texture Ks" [ "tt-ks-1" ] 
+            "texture uroughness" [ "tt-urough-1" ] 
+            "texture vroughness" [ "tt-vrough-1" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00277.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-3" ] 
+            "texture Ks" [ "tt-ks-3" ] 
+            "texture uroughness" [ "tt-urough-3" ] 
+            "texture vroughness" [ "tt-vrough-3" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00278.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-2" ] 
+            "texture Ks" [ "tt-ks-2" ] 
+            "texture uroughness" [ "tt-urough-2" ] 
+            "texture vroughness" [ "tt-vrough-2" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00279.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-3" ] 
+            "texture Ks" [ "tt-ks-3" ] 
+            "texture uroughness" [ "tt-urough-3" ] 
+            "texture vroughness" [ "tt-vrough-3" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00280.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-2" ] 
+            "texture Ks" [ "tt-ks-2" ] 
+            "texture uroughness" [ "tt-urough-2" ] 
+            "texture vroughness" [ "tt-vrough-2" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00281.ply" 
+    Material "glass" 
+            "float index" [ 1.5 ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00282.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-1" ] 
+            "texture Ks" [ "tt-ks-1" ] 
+            "texture uroughness" [ "tt-urough-1" ] 
+            "texture vroughness" [ "tt-vrough-1" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00283.ply" 
+    Material "glass" 
+            "float index" [ 1.5 ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00284.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-1" ] 
+            "texture Ks" [ "tt-ks-1" ] 
+            "texture uroughness" [ "tt-urough-1" ] 
+            "texture vroughness" [ "tt-vrough-1" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00285.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-2" ] 
+            "texture Ks" [ "tt-ks-2" ] 
+            "texture uroughness" [ "tt-urough-2" ] 
+            "texture vroughness" [ "tt-vrough-2" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00286.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-1" ] 
+            "texture Ks" [ "tt-ks-1" ] 
+            "texture uroughness" [ "tt-urough-1" ] 
+            "texture vroughness" [ "tt-vrough-1" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00287.ply" 
+    Material "glass" 
+            "float index" [ 1.5 ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00288.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-1" ] 
+            "texture Ks" [ "tt-ks-1" ] 
+            "texture uroughness" [ "tt-urough-1" ] 
+            "texture vroughness" [ "tt-vrough-1" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00289.ply" 
+    Material "glass" 
+            "float index" [ 1.5 ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00290.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-1" ] 
+            "texture Ks" [ "tt-ks-1" ] 
+            "texture uroughness" [ "tt-urough-1" ] 
+            "texture vroughness" [ "tt-vrough-1" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00291.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-2" ] 
+            "texture Ks" [ "tt-ks-2" ] 
+            "texture uroughness" [ "tt-urough-2" ] 
+            "texture vroughness" [ "tt-vrough-2" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00292.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-1" ] 
+            "texture Ks" [ "tt-ks-1" ] 
+            "texture uroughness" [ "tt-urough-1" ] 
+            "texture vroughness" [ "tt-vrough-1" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00293.ply" 
+    Material "glass" 
+            "float index" [ 1.5 ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00294.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-2" ] 
+            "texture Ks" [ "tt-ks-2" ] 
+            "texture uroughness" [ "tt-urough-2" ] 
+            "texture vroughness" [ "tt-vrough-2" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00295.ply" 
+    Material "glass" 
+            "float index" [ 1.5 ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00296.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-2" ] 
+            "texture Ks" [ "tt-ks-2" ] 
+            "texture uroughness" [ "tt-urough-2" ] 
+            "texture vroughness" [ "tt-vrough-2" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00297.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-3" ] 
+            "texture Ks" [ "tt-ks-3" ] 
+            "texture uroughness" [ "tt-urough-3" ] 
+            "texture vroughness" [ "tt-vrough-3" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00298.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-2" ] 
+            "texture Ks" [ "tt-ks-2" ] 
+            "texture uroughness" [ "tt-urough-2" ] 
+            "texture vroughness" [ "tt-vrough-2" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00299.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-3" ] 
+            "texture Ks" [ "tt-ks-3" ] 
+            "texture uroughness" [ "tt-urough-3" ] 
+            "texture vroughness" [ "tt-vrough-3" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00300.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-2" ] 
+            "texture Ks" [ "tt-ks-2" ] 
+            "texture uroughness" [ "tt-urough-2" ] 
+            "texture vroughness" [ "tt-vrough-2" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00301.ply" 
+    Material "glass" 
+            "float index" [ 1.5 ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00302.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-1" ] 
+            "texture Ks" [ "tt-ks-1" ] 
+            "texture uroughness" [ "tt-urough-1" ] 
+            "texture vroughness" [ "tt-vrough-1" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00303.ply" 
+    Material "glass" 
+            "float index" [ 1.5 ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00304.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-1" ] 
+            "texture Ks" [ "tt-ks-1" ] 
+            "texture uroughness" [ "tt-urough-1" ] 
+            "texture vroughness" [ "tt-vrough-1" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00305.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-2" ] 
+            "texture Ks" [ "tt-ks-2" ] 
+            "texture uroughness" [ "tt-urough-2" ] 
+            "texture vroughness" [ "tt-vrough-2" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00306.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-1" ] 
+            "texture Ks" [ "tt-ks-1" ] 
+            "texture uroughness" [ "tt-urough-1" ] 
+            "texture vroughness" [ "tt-vrough-1" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00307.ply" 
+    Material "glass" 
+            "float index" [ 1.5 ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00308.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-1" ] 
+            "texture Ks" [ "tt-ks-1" ] 
+            "texture uroughness" [ "tt-urough-1" ] 
+            "texture vroughness" [ "tt-vrough-1" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00309.ply" 
+    Material "glass" 
+            "float index" [ 1.5 ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00310.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-1" ] 
+            "texture Ks" [ "tt-ks-1" ] 
+            "texture uroughness" [ "tt-urough-1" ] 
+            "texture vroughness" [ "tt-vrough-1" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00311.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-2" ] 
+            "texture Ks" [ "tt-ks-2" ] 
+            "texture uroughness" [ "tt-urough-2" ] 
+            "texture vroughness" [ "tt-vrough-2" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00312.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-1" ] 
+            "texture Ks" [ "tt-ks-1" ] 
+            "texture uroughness" [ "tt-urough-1" ] 
+            "texture vroughness" [ "tt-vrough-1" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00313.ply" 
+    Material "glass" 
+            "float index" [ 1.5 ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00314.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-2" ] 
+            "texture Ks" [ "tt-ks-2" ] 
+            "texture uroughness" [ "tt-urough-2" ] 
+            "texture vroughness" [ "tt-vrough-2" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00315.ply" 
+    Material "glass" 
+            "float index" [ 1.5 ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00316.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-2" ] 
+            "texture Ks" [ "tt-ks-2" ] 
+            "texture uroughness" [ "tt-urough-2" ] 
+            "texture vroughness" [ "tt-vrough-2" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00317.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-3" ] 
+            "texture Ks" [ "tt-ks-3" ] 
+            "texture uroughness" [ "tt-urough-3" ] 
+            "texture vroughness" [ "tt-vrough-3" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00318.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-2" ] 
+            "texture Ks" [ "tt-ks-2" ] 
+            "texture uroughness" [ "tt-urough-2" ] 
+            "texture vroughness" [ "tt-vrough-2" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00319.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-3" ] 
+            "texture Ks" [ "tt-ks-3" ] 
+            "texture uroughness" [ "tt-urough-3" ] 
+            "texture vroughness" [ "tt-vrough-3" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00320.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-2" ] 
+            "texture Ks" [ "tt-ks-2" ] 
+            "texture uroughness" [ "tt-urough-2" ] 
+            "texture vroughness" [ "tt-vrough-2" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00321.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-1" ] 
+            "texture Ks" [ "tt-ks-1" ] 
+            "texture uroughness" [ "tt-urough-1" ] 
+            "texture vroughness" [ "tt-vrough-1" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00322.ply" 
+    Texture "light_bump" "color" "imagemap" 
+            "string filename" [ "textures/light_bump.png" ] 
+    Texture "light_bump-scale" "color" "scale" 
+            "texture tex1" [ "light_bump" ] 
+            "rgb tex2" [ 0.80000001 0.80000001 0.80000001 ] 
+    Texture "light_bump" "float" "imagemap" 
+            "string filename" [ "textures/light_bump.png" ] 
+    Texture "light_bump-scale" "float" "scale" 
+            "float tex2" [ 0.050000001 ] 
+            "texture tex1" [ "light_bump" ] 
+    Material "uber" 
+            "float roughness" [ 0.5 ] 
+            "texture Kd" [ "light_bump-scale" ] 
+            "texture bumpmap" [ "light_bump-scale" ] 
+            "rgb opacity" [ 1 1 1 ] 
+            "rgb Ks" [ 0.30588201 0.066666998 0.0039220001 ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00323.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-1" ] 
+            "texture Ks" [ "tt-ks-1" ] 
+            "texture uroughness" [ "tt-urough-1" ] 
+            "texture vroughness" [ "tt-vrough-1" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00324.ply" 
+    Texture "light_bump" "color" "imagemap" 
+            "string filename" [ "textures/light_bump.png" ] 
+    Texture "light_bump-scale" "color" "scale" 
+            "texture tex1" [ "light_bump" ] 
+            "rgb tex2" [ 0.80000001 0.80000001 0.80000001 ] 
+    Texture "light_bump" "float" "imagemap" 
+            "string filename" [ "textures/light_bump.png" ] 
+    Texture "light_bump-scale" "float" "scale" 
+            "float tex2" [ 0.050000001 ] 
+            "texture tex1" [ "light_bump" ] 
+    Material "uber" 
+            "float roughness" [ 0.5 ] 
+            "texture Kd" [ "light_bump-scale" ] 
+            "texture bumpmap" [ "light_bump-scale" ] 
+            "rgb opacity" [ 1 1 1 ] 
+            "rgb Ks" [ 0.30588201 0.066666998 0.0039220001 ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00325.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-1" ] 
+            "texture Ks" [ "tt-ks-1" ] 
+            "texture uroughness" [ "tt-urough-1" ] 
+            "texture vroughness" [ "tt-vrough-1" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00326.ply" 
+    Texture "light_bump" "color" "imagemap" 
+            "string filename" [ "textures/light_bump.png" ] 
+    Texture "light_bump-scale" "color" "scale" 
+            "texture tex1" [ "light_bump" ] 
+            "rgb tex2" [ 0.80000001 0.80000001 0.80000001 ] 
+    Texture "light_bump" "float" "imagemap" 
+            "string filename" [ "textures/light_bump.png" ] 
+    Texture "light_bump-scale" "float" "scale" 
+            "float tex2" [ 0.050000001 ] 
+            "texture tex1" [ "light_bump" ] 
+    Material "uber" 
+            "float roughness" [ 0.5 ] 
+            "texture Kd" [ "light_bump-scale" ] 
+            "texture bumpmap" [ "light_bump-scale" ] 
+            "rgb opacity" [ 1 1 1 ] 
+            "rgb Ks" [ 0.30588201 0.066666998 0.0039220001 ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00327.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-1" ] 
+            "texture Ks" [ "tt-ks-1" ] 
+            "texture uroughness" [ "tt-urough-1" ] 
+            "texture vroughness" [ "tt-vrough-1" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00328.ply" 
+    Texture "light_bump" "color" "imagemap" 
+            "string filename" [ "textures/light_bump.png" ] 
+    Texture "light_bump-scale" "color" "scale" 
+            "texture tex1" [ "light_bump" ] 
+            "rgb tex2" [ 0.80000001 0.80000001 0.80000001 ] 
+    Texture "light_bump" "float" "imagemap" 
+            "string filename" [ "textures/light_bump.png" ] 
+    Texture "light_bump-scale" "float" "scale" 
+            "float tex2" [ 0.050000001 ] 
+            "texture tex1" [ "light_bump" ] 
+    Material "uber" 
+            "float roughness" [ 0.5 ] 
+            "texture Kd" [ "light_bump-scale" ] 
+            "texture bumpmap" [ "light_bump-scale" ] 
+            "rgb opacity" [ 1 1 1 ] 
+            "rgb Ks" [ 0.30588201 0.066666998 0.0039220001 ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00329.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-1" ] 
+            "texture Ks" [ "tt-ks-1" ] 
+            "texture uroughness" [ "tt-urough-1" ] 
+            "texture vroughness" [ "tt-vrough-1" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00330.ply" 
+    Texture "light_bump" "color" "imagemap" 
+            "string filename" [ "textures/light_bump.png" ] 
+    Texture "light_bump-scale" "color" "scale" 
+            "texture tex1" [ "light_bump" ] 
+            "rgb tex2" [ 0.80000001 0.80000001 0.80000001 ] 
+    Texture "light_bump" "float" "imagemap" 
+            "string filename" [ "textures/light_bump.png" ] 
+    Texture "light_bump-scale" "float" "scale" 
+            "float tex2" [ 0.050000001 ] 
+            "texture tex1" [ "light_bump" ] 
+    Material "uber" 
+            "float roughness" [ 0.5 ] 
+            "texture Kd" [ "light_bump-scale" ] 
+            "texture bumpmap" [ "light_bump-scale" ] 
+            "rgb opacity" [ 1 1 1 ] 
+            "rgb Ks" [ 0.30588201 0.066666998 0.0039220001 ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00331.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-1" ] 
+            "texture Ks" [ "tt-ks-1" ] 
+            "texture uroughness" [ "tt-urough-1" ] 
+            "texture vroughness" [ "tt-vrough-1" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00332.ply" 
+    Texture "light_bump" "color" "imagemap" 
+            "string filename" [ "textures/light_bump.png" ] 
+    Texture "light_bump-scale" "color" "scale" 
+            "texture tex1" [ "light_bump" ] 
+            "rgb tex2" [ 0.80000001 0.80000001 0.80000001 ] 
+    Texture "light_bump" "float" "imagemap" 
+            "string filename" [ "textures/light_bump.png" ] 
+    Texture "light_bump-scale" "float" "scale" 
+            "float tex2" [ 0.050000001 ] 
+            "texture tex1" [ "light_bump" ] 
+    Material "uber" 
+            "float roughness" [ 0.5 ] 
+            "texture Kd" [ "light_bump-scale" ] 
+            "texture bumpmap" [ "light_bump-scale" ] 
+            "rgb opacity" [ 1 1 1 ] 
+            "rgb Ks" [ 0.30588201 0.066666998 0.0039220001 ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00333.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-1" ] 
+            "texture Ks" [ "tt-ks-1" ] 
+            "texture uroughness" [ "tt-urough-1" ] 
+            "texture vroughness" [ "tt-vrough-1" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00334.ply" 
+    Texture "light_bump" "color" "imagemap" 
+            "string filename" [ "textures/light_bump.png" ] 
+    Texture "light_bump-scale" "color" "scale" 
+            "texture tex1" [ "light_bump" ] 
+            "rgb tex2" [ 0.80000001 0.80000001 0.80000001 ] 
+    Texture "light_bump" "float" "imagemap" 
+            "string filename" [ "textures/light_bump.png" ] 
+    Texture "light_bump-scale" "float" "scale" 
+            "float tex2" [ 0.050000001 ] 
+            "texture tex1" [ "light_bump" ] 
+    Material "uber" 
+            "float roughness" [ 0.5 ] 
+            "texture Kd" [ "light_bump-scale" ] 
+            "texture bumpmap" [ "light_bump-scale" ] 
+            "rgb opacity" [ 1 1 1 ] 
+            "rgb Ks" [ 0.30588201 0.066666998 0.0039220001 ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00335.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-1" ] 
+            "texture Ks" [ "tt-ks-1" ] 
+            "texture uroughness" [ "tt-urough-1" ] 
+            "texture vroughness" [ "tt-vrough-1" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00336.ply" 
+    Texture "light_bump" "color" "imagemap" 
+            "string filename" [ "textures/light_bump.png" ] 
+    Texture "light_bump-scale" "color" "scale" 
+            "texture tex1" [ "light_bump" ] 
+            "rgb tex2" [ 0.80000001 0.80000001 0.80000001 ] 
+    Texture "light_bump" "float" "imagemap" 
+            "string filename" [ "textures/light_bump.png" ] 
+    Texture "light_bump-scale" "float" "scale" 
+            "float tex2" [ 0.050000001 ] 
+            "texture tex1" [ "light_bump" ] 
+    Material "uber" 
+            "float roughness" [ 0.5 ] 
+            "texture Kd" [ "light_bump-scale" ] 
+            "texture bumpmap" [ "light_bump-scale" ] 
+            "rgb opacity" [ 1 1 1 ] 
+            "rgb Ks" [ 0.30588201 0.066666998 0.0039220001 ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00337.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-1" ] 
+            "texture Ks" [ "tt-ks-1" ] 
+            "texture uroughness" [ "tt-urough-1" ] 
+            "texture vroughness" [ "tt-vrough-1" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00338.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-5" ] 
+            "texture Ks" [ "tt-ks-5" ] 
+            "texture uroughness" [ "tt-urough-5" ] 
+            "texture vroughness" [ "tt-vrough-5" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00339.ply" 
+    Material "mirror" 
+    Shape "plymesh" "string filename" "geometry/mesh_00340.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-1" ] 
+            "texture Ks" [ "tt-ks-1" ] 
+            "texture uroughness" [ "tt-urough-1" ] 
+            "texture vroughness" [ "tt-vrough-1" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00341.ply" 
+    Material "mirror" 
+    Shape "plymesh" "string filename" "geometry/mesh_00342.ply" 
+    Material "uber" 
+            "texture Kd" [ "tt-kd-15" ] 
+            "texture Ks" [ "tt-ks-15" ] 
+            "texture roughness" [ "tt-roughness-15" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00343.ply" 
+    Material "mirror" 
+    Shape "plymesh" "string filename" "geometry/mesh_00344.ply" 
+AttributeEnd
+
+AttributeBegin
+    ConcatTransform [ 0.988451004 0.151539996 0 0 -0.151539996 0.988451004 0 0 0 0 1 0 0.726221025 -4.20618391 0 1  ]
+    Material "mirror" 
+    Shape "plymesh" "string filename" "geometry/mesh_00345.ply" 
+    Material "uber" 
+            "texture Kd" [ "tt-kd-13" ] 
+            "texture Ks" [ "tt-ks-13" ] 
+            "texture roughness" [ "tt-roughness-13" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00346.ply" 
+AttributeEnd
+
+AttributeBegin
+    ConcatTransform [ 0.988451004 0.151539996 0 0 -0.151539996 0.988451004 0 0 0 0 1 0 0.726221025 -4.20618391 0 1  ]
+    Material "uber" 
+            "texture Kd" [ "tt-kd-13" ] 
+            "texture Ks" [ "tt-ks-13" ] 
+            "texture roughness" [ "tt-roughness-13" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00347.ply" 
+AttributeEnd
+
+AttributeBegin
+    ConcatTransform [ 0.988451004 0.151541993 0 0 -0.151541993 0.988451004 0 0 0 0 1 0 0.726225972 -4.20618582 0 1  ]
+    Material "uber" 
+            "texture Kd" [ "tt-kd-16" ] 
+            "texture Ks" [ "tt-ks-16" ] 
+            "texture roughness" [ "tt-roughness-16" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00348.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-8" ] 
+            "texture Ks" [ "tt-ks-8" ] 
+            "texture uroughness" [ "tt-urough-8" ] 
+            "texture vroughness" [ "tt-vrough-8" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00349.ply" 
+    Material "uber" 
+            "texture Kd" [ "tt-kd-16" ] 
+            "texture Ks" [ "tt-ks-16" ] 
+            "texture roughness" [ "tt-roughness-16" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00350.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-8" ] 
+            "texture Ks" [ "tt-ks-8" ] 
+            "texture uroughness" [ "tt-urough-8" ] 
+            "texture vroughness" [ "tt-vrough-8" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00351.ply" 
+    Material "uber" 
+            "texture Kd" [ "tt-kd-16" ] 
+            "texture Ks" [ "tt-ks-16" ] 
+            "texture roughness" [ "tt-roughness-16" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00352.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-8" ] 
+            "texture Ks" [ "tt-ks-8" ] 
+            "texture uroughness" [ "tt-urough-8" ] 
+            "texture vroughness" [ "tt-vrough-8" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00353.ply" 
+    Material "uber" 
+            "texture Kd" [ "tt-kd-16" ] 
+            "texture Ks" [ "tt-ks-16" ] 
+            "texture roughness" [ "tt-roughness-16" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00354.ply" 
+    Material "substrate" 
+            "texture Kd" [ "tt-kd-8" ] 
+            "texture Ks" [ "tt-ks-8" ] 
+            "texture uroughness" [ "tt-urough-8" ] 
+            "texture vroughness" [ "tt-vrough-8" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00355.ply" 
+AttributeEnd
+
+AttributeBegin
+    ConcatTransform [ 0.988451004 0.151541993 0 0 -0.151541993 0.988451004 0 0 0 0 1 0 0.726225972 -4.20618582 0 1  ]
+    Texture "sadce30x10" "color" "imagemap" 
+            "string filename" [ "textures/sadce30x10.png" ] 
+    Material "uber" 
+            "texture Kd" [ "tt-kd-11" ] 
+            "texture Ks" [ "tt-ks-11" ] 
+            "texture roughness" [ "tt-roughness-11" ] 
+            "texture opacity" [ "sadce30x10" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00356.ply" 
+AttributeEnd
+
+AttributeBegin
+    ConcatTransform [ 0.988451004 0.151540995 0 0 -0.151540995 0.988451004 0 0 0 -0 1 0 0.726225972 -4.20618486 -0 1  ]
+    Texture "plate_col" "color" "imagemap" 
+            "string filename" [ "textures/plate_col.png" ] 
+    Texture "plate_col-scale" "color" "scale" 
+            "texture tex1" [ "plate_col" ] 
+            "rgb tex2" [ 0.80000001 0.80000001 0.80000001 ] 
+    Texture "plate_bump" "float" "imagemap" 
+            "string filename" [ "textures/plate_bump.png" ] 
+    Texture "plate_bump-scale" "float" "scale" 
+            "float tex2" [ 0.050000001 ] 
+            "texture tex1" [ "plate_bump" ] 
+    Material "uber" 
+            "float roughness" [ 0.14 ] 
+            "texture Kd" [ "plate_col-scale" ] 
+            "texture bumpmap" [ "plate_bump-scale" ] 
+            "rgb opacity" [ 1 1 1 ] 
+            "rgb Ks" [ 0.039216001 0.039216001 0.039216001 ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00357.ply" 
+    Material "uber" 
+            "texture Kd" [ "tt-kd-13" ] 
+            "texture Ks" [ "tt-ks-13" ] 
+            "texture roughness" [ "tt-roughness-13" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00358.ply" 
+AttributeEnd
+
+AttributeBegin
+    ConcatTransform [ 0.988451004 0.151541993 -0 0 -0.151540995 0.988451004 0 -0 0 0 1 0 0.726225972 -4.20618582 0 1  ]
+    Texture "plate_col" "color" "imagemap" 
+            "string filename" [ "textures/plate_col.png" ] 
+    Texture "plate_col-scale" "color" "scale" 
+            "texture tex1" [ "plate_col" ] 
+            "rgb tex2" [ 0.80000001 0.80000001 0.80000001 ] 
+    Texture "plate_bump" "float" "imagemap" 
+            "string filename" [ "textures/plate_bump.png" ] 
+    Texture "plate_bump-scale" "float" "scale" 
+            "float tex2" [ 0.050000001 ] 
+            "texture tex1" [ "plate_bump" ] 
+    Material "uber" 
+            "float roughness" [ 0.14 ] 
+            "texture Kd" [ "plate_col-scale" ] 
+            "texture bumpmap" [ "plate_bump-scale" ] 
+            "rgb opacity" [ 1 1 1 ] 
+            "rgb Ks" [ 0.039216001 0.039216001 0.039216001 ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00359.ply" 
+    Material "uber" 
+            "texture Kd" [ "tt-kd-13" ] 
+            "texture Ks" [ "tt-ks-13" ] 
+            "texture roughness" [ "tt-roughness-13" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00360.ply" 
+AttributeEnd
+
+AttributeBegin
+    ConcatTransform [ 0.988451004 0.151541993 0 0 -0.151541993 0.988451004 0 0 0 0 1 0 0.726225972 -4.20618582 0 1  ]
+    Material "uber" 
+            "texture Kd" [ "tt-kd-11" ] 
+            "texture Ks" [ "tt-ks-11" ] 
+            "texture roughness" [ "tt-roughness-11" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00361.ply" 
+    Material "uber" 
+            "texture Kd" [ "tt-kd-14" ] 
+            "texture Ks" [ "tt-ks-14" ] 
+            "texture roughness" [ "tt-roughness-14" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00362.ply" 
+    Material "uber" 
+            "texture Kd" [ "tt-kd-11" ] 
+            "texture Ks" [ "tt-ks-11" ] 
+            "texture roughness" [ "tt-roughness-11" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00363.ply" 
+    Material "uber" 
+            "texture Kd" [ "tt-kd-14" ] 
+            "texture Ks" [ "tt-ks-14" ] 
+            "texture roughness" [ "tt-roughness-14" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00364.ply" 
+    Material "uber" 
+            "texture Kd" [ "tt-kd-11" ] 
+            "texture Ks" [ "tt-ks-11" ] 
+            "texture roughness" [ "tt-roughness-11" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00365.ply" 
+    Material "uber" 
+            "texture Kd" [ "tt-kd-14" ] 
+            "texture Ks" [ "tt-ks-14" ] 
+            "texture roughness" [ "tt-roughness-14" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00366.ply" 
+    Material "uber" 
+            "texture Kd" [ "tt-kd-11" ] 
+            "texture Ks" [ "tt-ks-11" ] 
+            "texture roughness" [ "tt-roughness-11" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00367.ply" 
+    Material "uber" 
+            "texture Kd" [ "tt-kd-14" ] 
+            "texture Ks" [ "tt-ks-14" ] 
+            "texture roughness" [ "tt-roughness-14" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00368.ply" 
+    Material "uber" 
+            "texture Kd" [ "tt-kd-11" ] 
+            "texture Ks" [ "tt-ks-11" ] 
+            "texture roughness" [ "tt-roughness-11" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00369.ply" 
+    Material "uber" 
+            "texture Kd" [ "tt-kd-14" ] 
+            "texture Ks" [ "tt-ks-14" ] 
+            "texture roughness" [ "tt-roughness-14" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00370.ply" 
+    Material "uber" 
+            "texture Kd" [ "tt-kd-11" ] 
+            "texture Ks" [ "tt-ks-11" ] 
+            "texture roughness" [ "tt-roughness-11" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00371.ply" 
+    Material "uber" 
+            "texture Kd" [ "tt-kd-14" ] 
+            "texture Ks" [ "tt-ks-14" ] 
+            "texture roughness" [ "tt-roughness-14" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00372.ply" 
+    Material "uber" 
+            "texture Kd" [ "tt-kd-11" ] 
+            "texture Ks" [ "tt-ks-11" ] 
+            "texture roughness" [ "tt-roughness-11" ] 
+    Shape "plymesh" "string filename" "geometry/mesh_00373.ply" 
+AttributeEnd
+
+AttributeBegin
+    Translate 0.185000002 -0.930000007 0
+
+    AttributeBegin
+        ConcatTransform [ 0.988451004 0.151539996 -0 -0 -0.151539996 0.988451004 -0 0 -0 0 1 -0 0.726220012 -4.20618486 0 1  ]
+        Material "mirror" 
+        Shape "plymesh" "string filename" "geometry/mesh_00374.ply" 
+        Material "mirror" 
+        Shape "plymesh" "string filename" "geometry/mesh_00375.ply" 
+    AttributeEnd
+
+    AttributeBegin
+        ConcatTransform [ 0.988451004 0.151539996 -0 -0 -0.151539996 0.988451004 -0 0 -0 0 1 -0 0.726220012 -4.20618486 0 1  ]
+        Material "mirror" 
+        Shape "plymesh" "string filename" "geometry/mesh_00376.ply" 
+        Texture "tire_profile" "float" "imagemap" 
+                "string filename" [ "textures/tire_profile.png" ] 
+        Texture "tire_profile-scale" "float" "scale" 
+                "float tex2" [ 0.050000001 ] 
+                "texture tex1" [ "tire_profile" ] 
+        Material "plastic" 
+                "texture Kd" [ "wheel-kd-2" ] 
+                "texture Ks" [ "wheel-ks-2" ] 
+                "texture roughness" [ "wheel-roughness-2" ] 
+                "texture bumpmap" [ "tire_profile-scale" ] 
+        Shape "plymesh" "string filename" "geometry/mesh_00377.ply" 
+    AttributeEnd
+
+    AttributeBegin
+        ConcatTransform [ 0.988451004 0.151539996 -0 -0 -0.151539996 0.988451004 -0 0 -0 0 1 -0 0.726220012 -4.20618486 0 1  ]
+        Material "mirror" 
+        Shape "plymesh" "string filename" "geometry/mesh_00378.ply" 
+    AttributeEnd
+
+    AttributeBegin
+        ConcatTransform [ 0.988451004 0.151539996 -0 -0 -0.151539996 0.988451004 -0 -0 -0 0 1 -0 0.726220012 -4.20618296 0 1  ]
+        Material "mirror" 
+        Shape "plymesh" "string filename" "geometry/mesh_00379.ply" 
+        Material "mirror" 
+        Shape "plymesh" "string filename" "geometry/mesh_00380.ply" 
+    AttributeEnd
+
+    AttributeBegin
+        ConcatTransform [ 0.988451004 0.151539996 -0 -0 -0.151539996 0.988451004 -0 -0 -0 0 1 -0 0.726220012 -4.20618296 0 1  ]
+        Material "mirror" 
+        Shape "plymesh" "string filename" "geometry/mesh_00381.ply" 
+        Texture "tire_profile" "float" "imagemap" 
+                "string filename" [ "textures/tire_profile.png" ] 
+        Texture "tire_profile-scale" "float" "scale" 
+                "float tex2" [ 0.050000001 ] 
+                "texture tex1" [ "tire_profile" ] 
+        Material "plastic" 
+                "texture Kd" [ "wheel-kd-2" ] 
+                "texture Ks" [ "wheel-ks-2" ] 
+                "texture roughness" [ "wheel-roughness-2" ] 
+                "texture bumpmap" [ "tire_profile-scale" ] 
+        Shape "plymesh" "string filename" "geometry/mesh_00382.ply" 
+    AttributeEnd
+
+    AttributeBegin
+        ConcatTransform [ 0.988451004 0.151539996 -0 -0 -0.151539996 0.988451004 -0 -0 -0 0 1 -0 0.726220012 -4.20618296 0 1  ]
+        Material "mirror" 
+        Shape "plymesh" "string filename" "geometry/mesh_00383.ply" 
+    AttributeEnd
+
+    AttributeBegin
+        ConcatTransform [ 0.988451004 0.151539996 -0 -0 -0.151539996 0.988451004 -0 0 -0 0 1 -0 0.726221979 -4.206182 0 1  ]
+        Material "mirror" 
+        Shape "plymesh" "string filename" "geometry/mesh_00384.ply" 
+        Material "mirror" 
+        Shape "plymesh" "string filename" "geometry/mesh_00385.ply" 
+    AttributeEnd
+
+    AttributeBegin
+        ConcatTransform [ 0.988451004 0.151539996 -0 -0 -0.151539996 0.988451004 -0 0 -0 0 1 -0 0.726221979 -4.206182 0 1  ]
+        Material "mirror" 
+        Shape "plymesh" "string filename" "geometry/mesh_00386.ply" 
+        Texture "tire_profile" "float" "imagemap" 
+                "string filename" [ "textures/tire_profile.png" ] 
+        Texture "tire_profile-scale" "float" "scale" 
+                "float tex2" [ 0.050000001 ] 
+                "texture tex1" [ "tire_profile" ] 
+        Material "plastic" 
+                "texture Kd" [ "wheel-kd-2" ] 
+                "texture Ks" [ "wheel-ks-2" ] 
+                "texture roughness" [ "wheel-roughness-2" ] 
+                "texture bumpmap" [ "tire_profile-scale" ] 
+        Shape "plymesh" "string filename" "geometry/mesh_00387.ply" 
+    AttributeEnd
+
+    AttributeBegin
+        ConcatTransform [ 0.988451004 0.151539996 -0 -0 -0.151539996 0.988451004 -0 0 -0 0 1 -0 0.726221979 -4.206182 0 1  ]
+        Material "mirror" 
+        Shape "plymesh" "string filename" "geometry/mesh_00388.ply" 
+    AttributeEnd
+
+    AttributeBegin
+        ConcatTransform [ 0.988451004 0.151539996 -0 -0 -0.151539996 0.988451004 -0 0 -0 0 1 0 0.726221979 -4.20618486 0 1  ]
+        Material "mirror" 
+        Shape "plymesh" "string filename" "geometry/mesh_00389.ply" 
+        Material "mirror" 
+        Shape "plymesh" "string filename" "geometry/mesh_00390.ply" 
+    AttributeEnd
+
+    AttributeBegin
+        ConcatTransform [ 0.988451004 0.151539996 -0 -0 -0.151539996 0.988451004 -0 0 -0 0 1 0 0.726221979 -4.20618486 0 1  ]
+        Material "mirror" 
+        Shape "plymesh" "string filename" "geometry/mesh_00391.ply" 
+        Texture "tire_profile" "float" "imagemap" 
+                "string filename" [ "textures/tire_profile.png" ] 
+        Texture "tire_profile-scale" "float" "scale" 
+                "float tex2" [ 0.050000001 ] 
+                "texture tex1" [ "tire_profile" ] 
+        Material "plastic" 
+                "texture Kd" [ "wheel-kd-2" ] 
+                "texture Ks" [ "wheel-ks-2" ] 
+                "texture roughness" [ "wheel-roughness-2" ] 
+                "texture bumpmap" [ "tire_profile-scale" ] 
+        Shape "plymesh" "string filename" "geometry/mesh_00392.ply" 
+    AttributeEnd
+
+    AttributeBegin
+        ConcatTransform [ 0.988451004 0.151539996 -0 -0 -0.151539996 0.988451004 -0 0 -0 0 1 0 0.726221979 -4.20618486 0 1  ]
+        Material "mirror" 
+        Shape "plymesh" "string filename" "geometry/mesh_00393.ply" 
+    AttributeEnd
+AttributeEnd

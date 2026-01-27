@@ -14,6 +14,8 @@ uint32_t rootNodeIdx = 0, nodesUsed = 1;
 #define M_PI 3.14159265358979323846
 #endif
 
+const float RAY_T_MAX_INFINITE = 1e30f;
+
 bool isCorrectPixel = false;
 int correct_j = 326;
 int correct_i = 228;
@@ -1593,6 +1595,95 @@ Vec3f ApplyShading(const Ray& ray, const Scene& scene, const Camera& camera, con
             Vec3f specular = mat.specular_refl.elwiseMult(irradiance) * spec_factor;
             
             color = color + diffuse + specular;
+        }
+    }
+
+    // Directional lights (parallel, hard shadows, no distance attenuation)
+    for (const auto& dir_light : scene.directional_lights)
+    {
+        // Shadow ray direction: opposite of stored direction (light rays come from -direction)
+        Vec3f lightDir = -dir_light.direction;
+        Vec3f wi = lightDir.normalize();
+
+        Ray shadow_ray;
+        shadow_ray.origin = x + n_shading * eps_shift;
+        shadow_ray.direction = wi;
+        shadow_ray.depth = 0;
+        shadow_ray.time = ray.time;
+
+        bool in_shadow = false;
+        HitRecord shadow_hit;
+        if (FindClosestHit(shadow_ray, scene, camera, shadow_hit)) {
+            in_shadow = true;
+        }
+
+        if (!in_shadow) {
+            float cos_theta = std::max(0.0f, n_shading.dotProduct(wi));
+            if (cos_theta > 0.0f) {
+                // No distance attenuation
+                Vec3f irradiance = dir_light.radiance;
+
+                Vec3f diffuse = mat.diffuse_refl.elwiseMult(irradiance) * cos_theta;
+                Vec3f h = (wi + w0).normalize();
+                float cos_alpha = std::max(0.0f, n_shading.dotProduct(h));
+                float spec_factor = std::pow(cos_alpha, mat.phong_exponent);
+                Vec3f specular = mat.specular_refl.elwiseMult(irradiance) * spec_factor;
+
+                color = color + diffuse + specular;
+            }
+        }
+    }
+
+    // Spot lights
+    for (const auto& spot : scene.spot_lights)
+    {
+        Vec3f lightToPoint = x - spot.position; // direction FROM light TO surface
+        float distance = lightToPoint.length();
+        if (distance < 1e-6f) continue; // skip degenerate
+
+        Vec3f L = lightToPoint / distance; // normalized FROM light TO surface
+
+        float cosAlpha = clampF(spot.direction.dotProduct(L), -1.0f, 1.0f);
+        float alpha = std::acos(cosAlpha);
+
+        float coverage_rad = spot.coverage_angle * (float)M_PI / 180.0f;
+        float falloff_rad = spot.falloff_angle * (float)M_PI / 180.0f;
+        float coverage_half = coverage_rad * 0.5f;
+        float falloff_half = falloff_rad * 0.5f;
+
+        float s = 0.0f;
+        if (alpha <= falloff_half) {
+            s = 1.0f;
+        } else if (alpha <= coverage_half) {
+            float denom = std::cos(falloff_half) - std::cos(coverage_half);
+            if (std::fabs(denom) < 1e-6f) {
+                s = 0.0f;
+            } else {
+                float val = (std::cos(alpha) - std::cos(coverage_half)) / denom;
+                val = std::max(0.0f, val);
+                s = std::pow(val, 4);
+            }
+        } else {
+            s = 0.0f;
+        }
+
+        if (alpha > coverage_half || s < 1e-6f) continue;
+
+        // Shadow ray: from surface toward light => direction is -L
+        Ray shadowRay;
+        shadowRay.origin = x + n_shading * eps_shift;
+        shadowRay.direction = -L;
+        shadowRay.depth = 0;
+        shadowRay.time = ray.time;
+
+        // Use finite t_max = distance (so occluders beyond light don't block)
+        PointLight tempPL;
+        tempPL.position = spot.position;
+        tempPL.intensity = spot.intensity * s;
+
+        if (!InShadow(x, tempPL, n_shading, eps_shift, scene, ray.time)) {
+            // Reuse ComputeDiffuseAndSpecular by passing scaled intensity
+            color = color + ComputeDiffuseAndSpecular(ray.origin, mat, tempPL, x, n_shading, w0);
         }
     }
 

@@ -1,0 +1,86 @@
+{
+  "Scene": {
+    "BackgroundColor": "0 0 0",
+    "MaxRecursionDepth": "6",
+    "ShadowRayEpsilon": "1e-6",
+    "Cameras": {
+      "Camera": {
+        "_id": "1",
+        "_type": "lookAt",
+        "Position": "0 0 -10",
+        "GazePoint": "0 0 -1",
+        "Up": "0 1 0",
+        "FovY": "120",
+        "NearDistance": "1",
+        "ImageResolution": "1000 500",
+        "ImageName": "sphere_env_light.exr",
+        "NumSamples": "900",
+        "Tonemap": {
+          "TMO": "Photographic",
+          "TMOOptions": "0.18 1",
+          "Saturation": "1.0",
+          "Gamma": "2.2",
+          "Extension": "_phot.png"
+        }
+      }
+    },
+    "VertexData": {
+      "_data": "0 0 -6 -5 0 -6 5 0 -6 0 -2 0",
+      "_type": "xyz"
+    },
+    "Materials": {
+      "Material": {
+        "_id": "1",
+        "AmbientReflectance": "0 0 0",
+        "DiffuseReflectance": "1 1 1",
+        "SpecularReflectance": "0 0 0",
+        "MirrorReflectance": "0 0 0",
+        "PhongExponent": "100"
+      }
+    },
+    "Textures": {
+      "Images": {
+        "Image": {
+          "_data": "textures/campus_probe_latlong.exr",
+          "_id": "1"
+        }
+      }
+    },
+    "Lights": {
+      "SphericalDirectionalLight": {
+        "_id": "1",
+        "_type": "latlong",
+        "ImageId": "1",
+        "Sampler": "cosine"
+      }
+    },
+    "Objects": {
+      "Plane": {
+          "_id": "1",
+          "Point": "4",
+          "Normal": "0 1 0",
+          "Material": "1"
+      },
+      "Sphere": [
+        {
+          "_id": "1",
+          "Center": "1",
+          "Radius": "2",
+          "Material": "1"
+        },
+        {
+          "_id": "2",
+          "Center": "2",
+          "Radius": "2",
+          "Material": "1"
+        },
+        {
+          "_id": "3",
+          "Center": "3",
+          "Radius": "2",
+          "Material": "1"
+        }
+      ]
+    }
+  }
+}

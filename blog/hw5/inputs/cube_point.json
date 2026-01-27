@@ -1,0 +1,90 @@
+{
+  "Scene": {
+    "BackgroundColor": "0 0 0",
+    "Cameras": {
+      "Camera": {
+        "_id": "1",
+        "_type": "lookAt",
+        "Position": "5 5 5",
+        "GazePoint": "0 0 0",
+        "Up": "0 1 0",
+        "FovY": "45",
+        "NearDistance": "1",
+        "ImageResolution": "800 800",
+        "ImageName": "cube_point.png"
+      }
+    },
+    "Lights": {
+      "AmbientLight": "25 25 25",
+      "PointLight": {
+        "_id": "1",
+        "Position": "-5 4 5",
+        "Intensity": "10000 10000 10000"
+      }
+    },
+    "Materials": {
+      "Material": [
+        {
+          "_id": "1",
+          "AmbientReflectance": "1 1 1",
+          "DiffuseReflectance": "1 1 1",
+          "SpecularReflectance": "0 0 0",
+          "PhongExponent": "1"
+        },
+        {
+          "_id": "2",
+          "AmbientReflectance": "0.651 0.389 0.389",
+          "DiffuseReflectance": "0.651 0.389 0.389",
+          "SpecularReflectance": "0.651 0.389 0.389",
+          "PhongExponent": "1"
+        }
+      ]
+    },
+    "Transformations": {
+      "Translation": [
+        {
+          "_data": "-0.5 0 -0.5",
+          "_id": "1"
+        },
+        {
+          "_data": "-0.5 -0.5 -0.5",
+          "_id": "2"
+        },
+        {
+          "_data": "0.5 0.5 0.5",
+          "_id": "3"
+        }
+      ],
+      "Scaling": [
+        {
+          "_data": "1000 1000 1000",
+          "_id": "1"
+        },
+        {
+          "_data": "2 2 2",
+          "_id": "2"
+        }
+      ]
+    },
+    "Objects": {
+      "Mesh": [
+        {
+          "_id": "1",
+          "Material": "1",
+          "Transformations": "t1 s1",
+          "Faces": {
+            "_plyFile": "ply/plane.ply"
+          }
+        },
+        {
+          "_id": "2",
+          "Material": "2",
+          "Transformations": "t2 s2 t3",
+          "Faces": {
+            "_plyFile": "ply/cube.ply"
+          }
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,190 @@
+{
+  "Scene": {
+    "BackgroundColor": "12 12 12",
+    "ShadowRayEpsilon": "1e-3",
+    "MaxRecursionDepth": "6",
+    "Cameras": {
+      "Camera": {
+        "_id": "1",
+        "Position": "4.207026958465576 -10.014049530029297 3.8502249717712402",
+        "Gaze": "-0.39256003499031067 0.9159110188484192 -0.18368813991546631",
+        "Up": "0.03296642005443573 -0.07692152261734009 0.9964920282363892",
+        "NearPlane": "-1.77778 1.77778 -1.0 1.0",
+        "NearDistance": "3",
+        "ImageResolution": "2560 1440",
+        "NumSamples": "1",
+        "ImageName": "dragon_new_with_spot.png"
+      }
+    },
+    "Lights": {
+      "AmbientLight": "0 0 0",
+      "SpotLight": [
+        {
+          "_id": "1",
+          "Position": "-2 0 12",
+          "Direction": "0.1 0 -1",
+          "Intensity": "30000 0 0",
+          "CoverageAngle": "45",
+          "FalloffAngle": "30"
+        },
+        {
+          "_id": "2",
+          "Position": "-2 3 12",
+          "Direction": "0.1 0 -1",
+          "Intensity": "0 30000 0",
+          "CoverageAngle": "45",
+          "FalloffAngle": "30"
+        },
+        {
+          "_id": "3",
+          "Position": "2 -15 6",
+          "Direction": "0 1 -0.4",
+          "Intensity": "0 0 100000",
+          "CoverageAngle": "45",
+          "FalloffAngle": "30"
+        }
+      ]
+    },
+    "Materials": {
+      "Material": [
+        {
+          "_id": "1",
+          "AmbientReflectance": "1 1 1",
+          "DiffuseReflectance": "0.300000011920929 0.300000011920929 0.300000011920929",
+          "SpecularReflectance": "0.0 0.0 0.0",
+          "MirrorReflectance": "0.5 0.5 0.5",
+          "PhongExponent": "1"
+        },
+        {
+          "_id": "2",
+          "AmbientReflectance": "1 1 1",
+          "DiffuseReflectance": "0.9847445487976074 0.9847445487976074 0.9847445487976074",
+          "SpecularReflectance": "0.0 0.0 0.0",
+          "MirrorReflectance": "0.5 0.5 0.5",
+          "PhongExponent": "1"
+        },
+        {
+          "_id": "3",
+          "AmbientReflectance": "1 1 1",
+          "DiffuseReflectance": "0.800000011920929 0.800000011920929 0.800000011920929",
+          "SpecularReflectance": "0.0 0.0 0.0",
+          "MirrorReflectance": "0.5 0.5 0.5",
+          "PhongExponent": "1"
+        },
+        {
+          "_id": "4",
+          "AmbientReflectance": "0 0 0",
+          "DiffuseReflectance": "0 0 0",
+          "SpecularReflectance": "0 0 0",
+          "MirrorReflectance": "0 0 0",
+          "PhongExponent": "1"
+        },
+        {
+          "_id": "5",
+          "AmbientReflectance": "1 1 1",
+          "DiffuseReflectance": "0.300000011920929 0.300000011920929 0.300000011920929",
+          "SpecularReflectance": "0.0 0.0 0.0",
+          "MirrorReflectance": "0.5 0.5 0.5",
+          "PhongExponent": "1"
+        },
+        {
+          "_id": "6",
+          "AmbientReflectance": "1 1 1",
+          "DiffuseReflectance": "0.800000011920929 0.800000011920929 0.800000011920929",
+          "SpecularReflectance": "0.0 0.0 0.0",
+          "MirrorReflectance": "0.5 0.5 0.5",
+          "PhongExponent": "1"
+        },
+        {
+          "_id": "7",
+          "AmbientReflectance": "1 1 1",
+          "DiffuseReflectance": "0.800000011920929 0.800000011920929 0.800000011920929",
+          "SpecularReflectance": "0.0 0.0 0.0",
+          "MirrorReflectance": "0.5 0.5 0.5",
+          "PhongExponent": "1"
+        },
+        {
+          "_id": "8",
+          "AmbientReflectance": "1 1 1",
+          "DiffuseReflectance": "0.800000011920929 0.800000011920929 0.800000011920929",
+          "SpecularReflectance": "0.0 0.0 0.0",
+          "MirrorReflectance": "0.5 0.5 0.5",
+          "PhongExponent": "1"
+        },
+        {
+          "_id": "9",
+          "AmbientReflectance": "1 1 1",
+          "DiffuseReflectance": "0.800000011920929 0.800000011920929 0.800000011920929",
+          "SpecularReflectance": "0.0 0.0 0.0",
+          "MirrorReflectance": "0.5 0.5 0.5",
+          "PhongExponent": "1"
+        },
+        {
+          "_id": "10",
+          "AmbientReflectance": "1 1 1",
+          "DiffuseReflectance": "0.800000011920929 0.800000011920929 0.800000011920929",
+          "SpecularReflectance": "0.0 0.0 0.0",
+          "MirrorReflectance": "0.5 0.5 0.5",
+          "PhongExponent": "1"
+        },
+        {
+          "_id": "11",
+          "AmbientReflectance": "1 1 1",
+          "DiffuseReflectance": "0.800000011920929 0.800000011920929 0.800000011920929",
+          "SpecularReflectance": "0.0 0.0 0.0",
+          "MirrorReflectance": "0.5 0.5 0.5",
+          "PhongExponent": "1"
+        },
+        {
+          "_id": "12",
+          "AmbientReflectance": "1 1 1",
+          "DiffuseReflectance": "1.0 1.0 1.0",
+          "SpecularReflectance": "0.0 0.0 0.0",
+          "MirrorReflectance": "1.0 1.0 1.0",
+          "PhongExponent": "1"
+        }
+      ]
+    },
+    "Textures": {
+      "TextureMap": {
+        "_id": "1",
+        "_type": "perlin",
+        "DecalMode": "blend_kd",
+        "NoiseConversion": "absval",
+        "NoiseScale": "1",
+        "NumOctaves": "7"
+      }
+    },
+    "VertexData": {
+      "_data": "0 0 0",
+      "_type": "xyz"
+    },
+    "Objects": {
+      "Mesh": [
+        {
+          "_id": "1",
+          "Material": "5",
+          "Faces": {
+            "_plyFile": "dragon_new_ply_ply/mesh_1.ply"
+          }
+        },
+        {
+          "_id": "2",
+          "Material": "1",
+          "Faces": {
+            "_plyFile": "dragon_new_ply_ply/mesh_2.ply"
+          }
+        },
+        {
+          "_id": "3",
+          "_shadingMode": "smooth",
+          "Material": "11",
+          "Textures": "1",
+          "Faces": {
+            "_plyFile": "dragon_new_ply_ply/mesh_3.ply"
+          }
+        }
+      ]
+    }
+  }
+}
